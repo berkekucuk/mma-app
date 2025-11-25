@@ -1,0 +1,19 @@
+package com.berkekucuk.mmaapp.data.remote
+
+import com.berkekucuk.mmaapp.data.dto.EventDto
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Order
+
+class EventAPI(
+    private val supabase: SupabaseClient
+) : EventRemoteDataSource {
+
+    override suspend fun fetchAllEvents(): List<EventDto> {
+        return supabase.from("events")
+            .select {
+                order("datetime_utc", order = Order.DESCENDING)
+            }
+            .decodeList<EventDto>()
+    }
+}
