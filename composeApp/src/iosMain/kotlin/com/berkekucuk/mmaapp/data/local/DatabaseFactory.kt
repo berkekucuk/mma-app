@@ -2,12 +2,25 @@ package com.berkekucuk.mmaapp.data.local
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import platform.Foundation.NSHomeDirectory
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
 
-actual fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFilePath = NSHomeDirectory() + "/mma_app.db"
+fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFilePath = documentDirectory() + "/mma_app.db"
     return Room.databaseBuilder<AppDatabase>(
         name = dbFilePath,
-        factory = { AppDatabaseConstructor.initialize() }
     )
+}
+@OptIn(ExperimentalForeignApi::class)
+private fun documentDirectory(): String {
+    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )
+    return requireNotNull(documentDirectory?.path)
 }

@@ -1,10 +1,9 @@
 package com.berkekucuk.mmaapp.di
 
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import org.koin.dsl.module
 import com.berkekucuk.mmaapp.BuildConfig
 import com.berkekucuk.mmaapp.data.local.AppDatabase
-import com.berkekucuk.mmaapp.data.local.getDatabaseBuilder
+import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.EventAPI
 import com.berkekucuk.mmaapp.data.remote.SupabaseClientFactory
 import com.berkekucuk.mmaapp.data.remote.EventRemoteDataSource
@@ -15,6 +14,9 @@ import org.koin.core.module.dsl.viewModel
 
 val appModule = module {
 
+    includes(platformModule)
+
+    // supabase client
     single {
         SupabaseClientFactory.create(
             url = BuildConfig.SUPABASE_URL,
@@ -22,26 +24,28 @@ val appModule = module {
         )
     }
 
+    // local db
     single<AppDatabase> {
-        getDatabaseBuilder()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+        getRoomDatabase(get())
     }
 
-    single { get<AppDatabase>().eventDao() }
+    single {
+        get<AppDatabase>().eventDao()
+    }
 
-    // 2. Remote Data Source
+    // remote data source
     single<EventRemoteDataSource> {
         EventAPI(supabase = get())
     }
 
-    // 3. Repository
+    // repository
     single<EventRepository> {
         EventRepositoryImpl(
             remoteDataSource = get(),
             dao = get())
     }
 
+    // view model
     viewModel {
         HomeViewModel(repository = get())
     }

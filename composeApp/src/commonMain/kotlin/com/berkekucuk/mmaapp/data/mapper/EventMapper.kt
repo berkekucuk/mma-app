@@ -33,7 +33,7 @@ private fun parseEventStatus(status: String?): EventStatus {
     return when (status?.lowercase()) {
         "upcoming" -> EventStatus.UPCOMING
         "live" -> EventStatus.LIVE
-        "completed", "finished" -> EventStatus.COMPLETED
+        "completed" -> EventStatus.COMPLETED
         "cancelled" -> EventStatus.CANCELLED
         else -> EventStatus.UNKNOWN
     }
