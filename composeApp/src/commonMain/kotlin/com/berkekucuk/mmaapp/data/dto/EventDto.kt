@@ -3,10 +3,9 @@ package com.berkekucuk.mmaapp.data.dto
 import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlin.time.ExperimentalTime
 
 @Serializable
-data class EventDto @OptIn(ExperimentalTime::class) constructor(
+data class EventDto(
     @SerialName("event_id")
     val eventId: String,
 

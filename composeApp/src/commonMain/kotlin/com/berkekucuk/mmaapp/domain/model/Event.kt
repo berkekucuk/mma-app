@@ -1,9 +1,8 @@
 package com.berkekucuk.mmaapp.domain.model
 
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-data class Event @OptIn(ExperimentalTime::class) constructor(
+data class Event (
     val id: String,
     val name: String,
     val status: EventStatus,
