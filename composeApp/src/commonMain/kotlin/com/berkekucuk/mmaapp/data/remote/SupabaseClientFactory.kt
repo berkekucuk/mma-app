@@ -13,8 +13,8 @@ object SupabaseClientFactory {
             supabaseUrl = url,
             supabaseKey = key
         ) {
-            install(Postgrest)
-            install(Storage)
+            install(Postgrest.Companion)
+            install(Storage.Companion)
 
             defaultSerializer = KotlinXSerializer(
                 Json {

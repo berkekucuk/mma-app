@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.data.repository
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
-import com.berkekucuk.mmaapp.data.remote.EventRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import kotlinx.coroutines.CoroutineDispatcher

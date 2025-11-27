@@ -4,9 +4,9 @@ import org.koin.dsl.module
 import com.berkekucuk.mmaapp.BuildConfig
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
-import com.berkekucuk.mmaapp.data.remote.EventAPI
+import com.berkekucuk.mmaapp.data.remote.api.EventAPI
 import com.berkekucuk.mmaapp.data.remote.SupabaseClientFactory
-import com.berkekucuk.mmaapp.data.remote.EventRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.presentation.HomeViewModel

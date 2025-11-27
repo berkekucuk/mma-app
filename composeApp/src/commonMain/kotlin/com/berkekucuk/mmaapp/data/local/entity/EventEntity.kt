@@ -8,9 +8,9 @@ import kotlin.time.Instant
 data class EventEntity(
     @PrimaryKey
     val eventId: String,
-    val name: String,
+    val name: String?,
     val status: String?,
-    val datetimeUtc: Instant,
+    val datetimeUtc: Instant?,
     val venue: String?,
     val location: String?
 )

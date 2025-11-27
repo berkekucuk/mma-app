@@ -1,6 +1,6 @@
-package com.berkekucuk.mmaapp.data.remote
+package com.berkekucuk.mmaapp.data.remote.api
 
-import com.berkekucuk.mmaapp.data.dto.EventDto
+import com.berkekucuk.mmaapp.data.remote.dto.EventDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
@@ -11,7 +11,7 @@ class EventAPI(
 ) : EventRemoteDataSource {
 
     override suspend fun fetchEvents(afterDate: Instant?): List<EventDto> {
-        return supabase.from("events")
+        return supabase.from("events_view")
             .select {
                 if (afterDate != null) {
                     filter {

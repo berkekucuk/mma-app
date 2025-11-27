@@ -1,11 +1,11 @@
 package com.berkekucuk.mmaapp.data.mapper
 
-import com.berkekucuk.mmaapp.data.dto.EventDto
+import com.berkekucuk.mmaapp.data.remote.dto.EventDto
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.domain.model.EventStatus
+import kotlin.time.Instant
 
-// DTO -> Entity
 fun EventDto.toEntity(): EventEntity {
     return EventEntity(
         eventId = this.eventId,
@@ -17,15 +17,14 @@ fun EventDto.toEntity(): EventEntity {
     )
 }
 
-// Entity -> Domain
 fun EventEntity.toDomain(): Event {
     return Event(
         id = this.eventId,
-        name = this.name,
+        name = this.name ?: "N/A",
         status = parseEventStatus(this.status),
-        date = this.datetimeUtc,
-        venue = this.venue ?: "Unknown Venue",
-        location = this.location ?: "Unknown Location"
+        date = this.datetimeUtc ?: Instant.fromEpochMilliseconds(0),
+        venue = this.venue ?: "N/A",
+        location = this.location ?: "N/A"
     )
 }
 
