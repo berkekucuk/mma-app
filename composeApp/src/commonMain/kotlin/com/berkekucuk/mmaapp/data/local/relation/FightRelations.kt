@@ -14,7 +14,7 @@ data class ParticipantWithFighter(
         parentColumn = "fighterId",
         entityColumn = "fighterId"
     )
-    val fighter: FighterEntity?
+    val fighter: FighterEntity
 )
 
 data class FightCard(

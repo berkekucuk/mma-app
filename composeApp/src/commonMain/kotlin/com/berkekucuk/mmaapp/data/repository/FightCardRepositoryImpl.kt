@@ -4,17 +4,20 @@ import com.berkekucuk.mmaapp.data.local.dao.FightCardDao
 import com.berkekucuk.mmaapp.data.local.entity.FightEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.ParticipantEntity
-import com.berkekucuk.mmaapp.data.local.relation.FightCard
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.FightCardRemoteDataSource
 import com.berkekucuk.mmaapp.domain.repository.FightCardRepository
+import com.berkekucuk.mmaapp.data.mapper.toDomain
+import com.berkekucuk.mmaapp.domain.model.FightCardDomain
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
+
 
 class FightCardRepositoryImpl(
     private val remoteDataSource: FightCardRemoteDataSource,
@@ -22,8 +25,11 @@ class FightCardRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ): FightCardRepository {
 
-    override fun getFightsByEvent(eventId: String): Flow<List<FightCard>> {
+    override fun getFightsByEvent(eventId: String): Flow<List<FightCardDomain>> {
         return dao.getFightCardsByEvent(eventId)
+            .map { list ->
+                list.map { it.toDomain() }
+            }
             .flowOn(ioDispatcher)
     }
 

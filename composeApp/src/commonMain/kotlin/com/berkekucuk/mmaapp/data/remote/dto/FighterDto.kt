@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonElement
 @Serializable
 data class FighterDto(
     @SerialName("fighter_id") val fighterId: String,
-    val name: String,
+    val name: String? = null,
     val nickname: String? = null,
     @SerialName("weight_class_id") val weightClassId: String? = null,
     val record: JsonElement? = null,
