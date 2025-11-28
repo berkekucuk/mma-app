@@ -9,10 +9,21 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.local.dao.FightCardDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
+import com.berkekucuk.mmaapp.data.local.entity.FightEntity
+import com.berkekucuk.mmaapp.data.local.entity.ParticipantEntity
+import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-@Database(entities = [EventEntity::class], version = 1)
+@Database(
+    entities = [
+        EventEntity::class,
+        FightEntity::class,
+        ParticipantEntity::class,
+        FighterEntity::class
+    ],
+    version = 1
+)
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {

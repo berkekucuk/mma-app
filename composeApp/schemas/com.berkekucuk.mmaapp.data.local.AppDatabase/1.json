@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "644589b4afbf7a5a5c516dc464ee6a9a",
+    "identityHash": "12a14d8e3f5a640667da1e99fb5ffebc",
     "entities": [
       {
         "tableName": "events",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `name` TEXT NOT NULL, `status` TEXT, `datetimeUtc` INTEGER NOT NULL, `venue` TEXT, `location` TEXT, PRIMARY KEY(`eventId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`eventId` TEXT NOT NULL, `name` TEXT, `status` TEXT, `datetimeUtc` INTEGER, `venue` TEXT, `location` TEXT, PRIMARY KEY(`eventId`))",
         "fields": [
           {
             "fieldPath": "eventId",
@@ -17,8 +17,7 @@
           {
             "fieldPath": "name",
             "columnName": "name",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "status",
@@ -28,8 +27,7 @@
           {
             "fieldPath": "datetimeUtc",
             "columnName": "datetimeUtc",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "venue",
@@ -48,11 +46,272 @@
             "eventId"
           ]
         }
+      },
+      {
+        "tableName": "fights",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fightId` TEXT NOT NULL, `eventId` TEXT NOT NULL, `methodType` TEXT, `methodDetail` TEXT, `roundSummary` TEXT, `boutType` TEXT, `weightClassLbs` REAL, `roundsFormat` TEXT, `fightOrder` INTEGER, PRIMARY KEY(`fightId`), FOREIGN KEY(`eventId`) REFERENCES `events`(`eventId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "fightId",
+            "columnName": "fightId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventId",
+            "columnName": "eventId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodType",
+            "columnName": "methodType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "methodDetail",
+            "columnName": "methodDetail",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "roundSummary",
+            "columnName": "roundSummary",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "boutType",
+            "columnName": "boutType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weightClassLbs",
+            "columnName": "weightClassLbs",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "roundsFormat",
+            "columnName": "roundsFormat",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fightOrder",
+            "columnName": "fightOrder",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fightId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fights_eventId",
+            "unique": false,
+            "columnNames": [
+              "eventId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_fights_eventId` ON `${TABLE_NAME}` (`eventId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "events",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "eventId"
+            ],
+            "referencedColumns": [
+              "eventId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "participants",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `fightId` TEXT NOT NULL, `fighterId` TEXT NOT NULL, `oddsValue` INTEGER, `oddsLabel` TEXT, `result` TEXT, `recordAfterFight` TEXT, `isWinner` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`fightId`) REFERENCES `fights`(`fightId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`fighterId`) REFERENCES `fighters`(`fighterId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fightId",
+            "columnName": "fightId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fighterId",
+            "columnName": "fighterId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "oddsValue",
+            "columnName": "oddsValue",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "oddsLabel",
+            "columnName": "oddsLabel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "result",
+            "columnName": "result",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "recordAfterFight",
+            "columnName": "recordAfterFight",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isWinner",
+            "columnName": "isWinner",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_participants_fightId",
+            "unique": false,
+            "columnNames": [
+              "fightId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_participants_fightId` ON `${TABLE_NAME}` (`fightId`)"
+          },
+          {
+            "name": "index_participants_fighterId",
+            "unique": false,
+            "columnNames": [
+              "fighterId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_participants_fighterId` ON `${TABLE_NAME}` (`fighterId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "fights",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fightId"
+            ],
+            "referencedColumns": [
+              "fightId"
+            ]
+          },
+          {
+            "table": "fighters",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "fighterId"
+            ],
+            "referencedColumns": [
+              "fighterId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "fighters",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fighterId` TEXT NOT NULL, `name` TEXT, `nickname` TEXT, `weightClassId` TEXT, `record` TEXT, `height` TEXT, `reach` TEXT, `style` TEXT, `dateOfBirth` TEXT, `born` TEXT, `fightingOutOf` TEXT, `countryCode` TEXT, `imageUrl` TEXT, PRIMARY KEY(`fighterId`))",
+        "fields": [
+          {
+            "fieldPath": "fighterId",
+            "columnName": "fighterId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nickname",
+            "columnName": "nickname",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weightClassId",
+            "columnName": "weightClassId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "record",
+            "columnName": "record",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "height",
+            "columnName": "height",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "reach",
+            "columnName": "reach",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "style",
+            "columnName": "style",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dateOfBirth",
+            "columnName": "dateOfBirth",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "born",
+            "columnName": "born",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fightingOutOf",
+            "columnName": "fightingOutOf",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "countryCode",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fighterId"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '644589b4afbf7a5a5c516dc464ee6a9a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '12a14d8e3f5a640667da1e99fb5ffebc')"
     ]
   }
 }

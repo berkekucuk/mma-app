@@ -13,6 +13,9 @@ plugins {
 }
 
 kotlin {
+
+    applyDefaultHierarchyTemplate()
+
     androidTarget()
 
     listOf(
@@ -71,14 +74,7 @@ kotlin {
             }
         }
 
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
+        val iosMain by getting {
             dependencies {
                 implementation(libs.ktor.client.darwin)
             }
@@ -90,8 +86,13 @@ kotlin {
             }
         }
     }
+
     sourceSets.all {
-        languageSettings.optIn("kotlin.time.ExperimentalTime")
+        languageSettings{
+            optIn("kotlin.time.ExperimentalTime")
+            optIn("kotlin.RequiresOptIn")
+            enableLanguageFeature("ExpectActualClasses")
+        }
     }
 }
 
@@ -117,8 +118,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
