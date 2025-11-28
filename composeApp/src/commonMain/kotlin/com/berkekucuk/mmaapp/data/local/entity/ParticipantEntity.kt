@@ -23,7 +23,6 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("fightId"), Index("fighterId")]
 )
-
 data class ParticipantEntity(
     @PrimaryKey(autoGenerate = false)
     val id: Int,

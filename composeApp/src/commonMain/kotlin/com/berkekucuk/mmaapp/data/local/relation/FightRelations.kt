@@ -17,7 +17,7 @@ data class ParticipantWithFighter(
     val fighter: FighterEntity?
 )
 
-data class PopulatedFight(
+data class FightCard(
     @Embedded
     val fight: FightEntity,
 

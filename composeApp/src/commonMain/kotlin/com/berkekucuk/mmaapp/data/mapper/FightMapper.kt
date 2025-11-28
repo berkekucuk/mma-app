@@ -1,9 +1,9 @@
 package com.berkekucuk.mmaapp.data.mapper
 
 import com.berkekucuk.mmaapp.data.local.entity.FightEntity
-import com.berkekucuk.mmaapp.data.remote.dto.FightDto
+import com.berkekucuk.mmaapp.data.remote.dto.FightCardDto
 
-fun FightDto.toEntity(): FightEntity {
+fun FightCardDto.toEntity(): FightEntity {
     return FightEntity(
         fightId = this.fightId,
         eventId = this.eventId,

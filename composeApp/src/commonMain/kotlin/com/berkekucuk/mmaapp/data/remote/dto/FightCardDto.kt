@@ -3,9 +3,8 @@ package com.berkekucuk.mmaapp.data.remote.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class FightDto(
+data class FightCardDto(
     @SerialName("fight_id") val fightId: String,
     @SerialName("event_id") val eventId: String,
     @SerialName("method_type") val methodType: String? = null,

@@ -17,7 +17,6 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index("eventId")]
 )
-
 data class FightEntity(
     @PrimaryKey
     val fightId: String,

@@ -9,14 +9,14 @@ data class FighterEntity(
     val fighterId: String,
     val name: String?,
     val nickname: String?,
-    val imageUrl: String?,
+    val weightClassId: String?,
     val record: String?,
     val height: String?,
     val reach: String?,
-    val weightClassName: String?,
+    val style: String?,
     val dateOfBirth: String?,
     val born: String?,
     val fightingOutOf: String?,
-    val style: String?,
-    val countryCode: String?
-)
+    val countryCode: String?,
+    val imageUrl: String?,
+    )

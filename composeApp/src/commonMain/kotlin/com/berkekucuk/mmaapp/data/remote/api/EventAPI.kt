@@ -11,7 +11,7 @@ class EventAPI(
 ) : EventRemoteDataSource {
 
     override suspend fun fetchEvents(afterDate: Instant?): List<EventDto> {
-        return supabase.from("events_view")
+        return supabase.from("events")
             .select {
                 if (afterDate != null) {
                     filter {

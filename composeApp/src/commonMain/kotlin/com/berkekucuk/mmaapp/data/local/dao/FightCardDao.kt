@@ -8,11 +8,11 @@ import androidx.room.Transaction
 import com.berkekucuk.mmaapp.data.local.entity.FightEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.ParticipantEntity
-import com.berkekucuk.mmaapp.data.local.relation.PopulatedFight
+import com.berkekucuk.mmaapp.data.local.relation.FightCard
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface FightDao {
+interface FightCardDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFights(fights: List<FightEntity>)
 
@@ -22,9 +22,8 @@ interface FightDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertParticipants(participants: List<ParticipantEntity>)
 
-
     @Transaction
-    suspend fun insertFullEventData(
+    suspend fun insertFullFightCardData(
         fights: List<FightEntity>,
         fighters: List<FighterEntity>,
         participants: List<ParticipantEntity>
@@ -34,7 +33,10 @@ interface FightDao {
         insertParticipants(participants)
     }
 
+    @Query("SELECT COUNT(*) FROM fights WHERE eventId = :eventId")
+    suspend fun getFightCountForEvent(eventId: String): Int
+
     @Transaction
     @Query("SELECT * FROM fights WHERE eventId = :eventId ORDER BY fightOrder DESC")
-    fun getFightsByEventId(eventId: String): Flow<List<PopulatedFight>>
+    fun getFightCardsByEvent(eventId: String): Flow<List<FightCard>>
 }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CancellationException
 import kotlin.time.Instant
 
 class EventRepositoryImpl(
@@ -48,7 +49,7 @@ class EventRepositoryImpl(
 
             } catch (e: Exception) {
                 // If the coroutine is canceled, it should not disrupt the flow instead of returning Result.failure.
-                if (e is kotlinx.coroutines.CancellationException) throw e
+                if (e is CancellationException) throw e
                 Result.failure(e)
             }
         }

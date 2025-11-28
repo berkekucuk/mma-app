@@ -8,15 +8,15 @@ fun FighterDto.toEntity(): FighterEntity {
         fighterId = this.fighterId,
         name = this.name,
         nickname = this.nickname,
-        imageUrl = this.imageUrl,
+        weightClassId = this.weightClassId,
         record = this.record?.toString(),
         height = this.height?.toString(),
         reach = this.reach?.toString(),
-        weightClassName = this.weightClassName,
+        style = this.style,
         dateOfBirth = this.dateOfBirth,
         born = this.born,
         fightingOutOf = this.fightingOutOf,
-        style = this.style,
-        countryCode = this.countryCode
-    )
+        countryCode = this.countryCode,
+        imageUrl = this.imageUrl,
+        )
 }

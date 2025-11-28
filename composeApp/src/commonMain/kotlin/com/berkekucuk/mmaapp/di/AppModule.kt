@@ -5,10 +5,14 @@ import com.berkekucuk.mmaapp.BuildConfig
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.api.EventAPI
+import com.berkekucuk.mmaapp.data.remote.api.FightCardAPI
 import com.berkekucuk.mmaapp.data.remote.SupabaseClientFactory
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.FightCardRemoteDataSource
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
+import com.berkekucuk.mmaapp.domain.repository.FightCardRepository
+import com.berkekucuk.mmaapp.data.repository.FightCardRepositoryImpl
 import com.berkekucuk.mmaapp.presentation.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 
@@ -33,9 +37,17 @@ val appModule = module {
         get<AppDatabase>().eventDao()
     }
 
+    single {
+        get<AppDatabase>().fightCardDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventAPI(supabase = get())
+    }
+
+    single<FightCardRemoteDataSource> {
+        FightCardAPI(supabase = get())
     }
 
     // repository
@@ -43,6 +55,13 @@ val appModule = module {
         EventRepositoryImpl(
             remoteDataSource = get(),
             dao = get())
+    }
+
+    single<FightCardRepository> {
+        FightCardRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get()
+        )
     }
 
     // view model
