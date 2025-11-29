@@ -66,6 +66,6 @@ val appModule = module {
 
     // view model
     viewModel {
-        HomeViewModel(repository = get())
+        HomeViewModel(eventRepository = get(), fightCardRepository = get())
     }
 }
