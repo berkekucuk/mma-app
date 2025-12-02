@@ -40,10 +40,7 @@ fun ParticipantEntity.toDomain(): Participant {
 }
 
 fun parseResult(result: String?): Result {
-    if (result == null) {
-        return Result.UNKNOWN
-    }
-    return when(result.lowercase()){
+    return when(result?.lowercase()){
         "win" -> Result.WIN
         "loss" -> Result.LOSS
         "draw" -> Result.DRAW

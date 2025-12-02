@@ -18,7 +18,7 @@ class EventAPI(
                         gte("datetime_utc", afterDate)
                     }
                 }
-                order("datetime_utc", order = Order.DESCENDING)
+                order("datetime_utc", order = Order.ASCENDING)
             }
             .decodeList<EventDto>()
     }
