@@ -32,5 +32,5 @@ data class ParticipantEntity(
     val oddsLabel: String?,
     val result: String?,
     val recordAfterFight: String?,
-    val isWinner: Boolean
+    val isRedCorner: Boolean?
 )

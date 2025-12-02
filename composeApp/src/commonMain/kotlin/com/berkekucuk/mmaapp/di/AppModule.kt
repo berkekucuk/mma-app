@@ -13,7 +13,7 @@ import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.FightCardRepository
 import com.berkekucuk.mmaapp.data.repository.FightCardRepositoryImpl
-import com.berkekucuk.mmaapp.presentation.HomeViewModel
+import com.berkekucuk.mmaapp.presentation.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 
 val appModule = module {

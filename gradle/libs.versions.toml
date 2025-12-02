@@ -13,7 +13,7 @@ composeMultiplatform = "1.9.3"
 junit = "4.13.2"
 kotlin = "2.2.21"
 supabase = "3.2.6"
-ktor = "3.3.2"
+ktor = "3.3.3"
 coroutines = "1.10.2"
 serialization = "1.9.0"
 serializationPlugin = "2.2.21"
@@ -24,6 +24,7 @@ koin-compose-vm = "4.1.1"
 room = "2.8.4"
 sqlite = "2.6.2"
 ksp = "2.2.21-2.0.4"
+navigationCompose = "2.9.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -60,6 +61,8 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
 
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -69,7 +72,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializationPlugin" }
 
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.0" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.6" }
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }

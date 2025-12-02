@@ -13,5 +13,6 @@ data class ParticipantDto(
     @SerialName("odds_label") val oddsLabel: String? = null,
     val result: String? = null,
     @SerialName("record_after_fight") val recordAfterFight: JsonElement? = null,
+    @SerialName("is_red_corner") val isRedCorner: Boolean? = null,
     @SerialName("fighters") val fighter: FighterDto? = null
 )

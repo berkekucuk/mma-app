@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
-
 }
 
 kotlin {
@@ -61,6 +60,9 @@ kotlin {
 
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)
+
+                implementation(libs.navigation.compose)
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 

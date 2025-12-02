@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "12a14d8e3f5a640667da1e99fb5ffebc",
+    "identityHash": "057a5646070d43cd232b8eb6753fa06b",
     "entities": [
       {
         "tableName": "events",
@@ -132,7 +132,7 @@
       },
       {
         "tableName": "participants",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `fightId` TEXT NOT NULL, `fighterId` TEXT NOT NULL, `oddsValue` INTEGER, `oddsLabel` TEXT, `result` TEXT, `recordAfterFight` TEXT, `isWinner` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`fightId`) REFERENCES `fights`(`fightId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`fighterId`) REFERENCES `fighters`(`fighterId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `fightId` TEXT NOT NULL, `fighterId` TEXT NOT NULL, `oddsValue` INTEGER, `oddsLabel` TEXT, `result` TEXT, `recordAfterFight` TEXT, `isRedCorner` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`fightId`) REFERENCES `fights`(`fightId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`fighterId`) REFERENCES `fighters`(`fighterId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -173,10 +173,9 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "isWinner",
-            "columnName": "isWinner",
-            "affinity": "INTEGER",
-            "notNull": true
+            "fieldPath": "isRedCorner",
+            "columnName": "isRedCorner",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -311,7 +310,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '12a14d8e3f5a640667da1e99fb5ffebc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '057a5646070d43cd232b8eb6753fa06b')"
     ]
   }
 }

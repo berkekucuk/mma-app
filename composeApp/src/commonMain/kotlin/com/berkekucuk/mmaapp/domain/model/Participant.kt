@@ -5,8 +5,18 @@ data class Participant(
     val fighterId: String,
     val oddsValue: Int?,
     val oddsLabel: String,
-    val result: String,
+    val result: Result,
     val recordAfterFight: FighterRecord?,
-    val isWinner: Boolean,
+    val isRedCorner: Boolean,
     )
 
+enum class Result{
+    WIN,
+    LOSS,
+    DRAW,
+    NO_CONTEST,
+    PENDING,
+    CANCELLED,
+    FIZZLED,
+    UNKNOWN
+}

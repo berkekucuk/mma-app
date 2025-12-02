@@ -4,6 +4,7 @@ import com.berkekucuk.mmaapp.data.local.entity.ParticipantEntity
 import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDto
 import com.berkekucuk.mmaapp.domain.model.FighterRecord
 import com.berkekucuk.mmaapp.domain.model.Participant
+import com.berkekucuk.mmaapp.domain.model.Result
 import kotlinx.serialization.json.Json
 
 private val jsonParser = Json {
@@ -13,9 +14,6 @@ private val jsonParser = Json {
 }
 
 fun ParticipantDto.toEntity(): ParticipantEntity {
-
-    val isWin = this.result?.equals("win", ignoreCase = true) == true
-
     return ParticipantEntity(
         id = this.id,
         fightId = this.fightId,
@@ -23,8 +21,8 @@ fun ParticipantDto.toEntity(): ParticipantEntity {
         oddsValue = this.oddsValue,
         oddsLabel = this.oddsLabel,
         result = this.result,
-        recordAfterFight = this.recordAfterFight?.toString(),
-        isWinner = isWin
+        recordAfterFight = this.recordAfterFight?.let { jsonParser.encodeToString(it) },
+        isRedCorner = this.isRedCorner
     )
 }
 
@@ -35,8 +33,24 @@ fun ParticipantEntity.toDomain(): Participant {
         fighterId = this.fighterId,
         oddsValue = this.oddsValue,
         oddsLabel = this.oddsLabel ?: "N/A",
-        result = this.result ?: "N/A",
+        result = parseResult(this.result),
         recordAfterFight = this.recordAfterFight?.let { jsonParser.decodeFromString<FighterRecord>(it) },
-        isWinner = this.isWinner
+        isRedCorner = this.isRedCorner ?: false
     )
+}
+
+fun parseResult(result: String?): Result {
+    if (result == null) {
+        return Result.UNKNOWN
+    }
+    return when(result.lowercase()){
+        "win" -> Result.WIN
+        "loss" -> Result.LOSS
+        "draw" -> Result.DRAW
+        "no_contest" -> Result.NO_CONTEST
+        "pending" -> Result.PENDING
+        "cancelled" -> Result.CANCELLED
+        "fizzled" -> Result.FIZZLED
+        else -> Result.PENDING
+    }
 }

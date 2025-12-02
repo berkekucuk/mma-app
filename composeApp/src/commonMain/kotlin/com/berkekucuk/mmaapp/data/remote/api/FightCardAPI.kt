@@ -15,7 +15,7 @@ class FightCardAPI(
         val columnsToSelect = """
         fight_id, event_id, method_type, method_detail, round_summary, bout_type, weight_class_lbs, rounds_format, fight_order,
         participants (
-            id, fight_id, fighter_id, odds_value, odds_label, result, record_after_fight,
+            id, fight_id, fighter_id, odds_value, odds_label, result, record_after_fight, is_red_corner
             fighters (
                 fighter_id, name, nickname, image_url, record, height, reach, weight_class_id, date_of_birth, born, fighting_out_of, style, country_code
             )
