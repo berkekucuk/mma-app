@@ -1,0 +1,96 @@
+package com.berkekucuk.mmaapp.presentation.home.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.domain.model.Event
+import com.berkekucuk.mmaapp.presentation.components.FightItem
+import com.berkekucuk.mmaapp.presentation.theme.AppColors
+import com.berkekucuk.mmaapp.utils.toUserFriendlyDate
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.text.ifEmpty
+
+@Preview(showBackground = true)
+@Composable
+fun EventItem(
+    event: Event,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+    ) {
+        Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(AppColors.TopBarBackground)
+                    .padding(10.dp)
+            ) {
+                Text(
+                    text = event.name,
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = event.datetimeUtc?.toUserFriendlyDate() ?: "TBA",
+                    color = Color.Gray,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(top = 2.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            val mainEvent = event.mainEvent
+
+            if (mainEvent != null) {
+                FightItem(
+                    fight = mainEvent,
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .background(AppColors.RedGradient),
+                    contentAlignment = Alignment.Center
+                ){
+                    Text(
+                        text = "TO BE ANNOUNCED",
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+    }
+}
+
+

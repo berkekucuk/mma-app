@@ -1,0 +1,85 @@
+package com.berkekucuk.mmaapp.presentation.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.domain.model.Fight
+import com.berkekucuk.mmaapp.presentation.theme.AppColors
+
+@Composable
+fun FightItem(
+    fight: Fight,
+) {
+    val redFighter = fight.redCorner
+    val blueFighter = fight.blueCorner
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(120.dp)
+            .background(AppColors.RedGradient)
+            .padding(10.dp)
+    ) {
+        Column {
+            val methodText = buildString {
+                if (fight.method.isNotBlank()) {
+                    append(fight.method)
+                    if (fight.methodDetail.isNotBlank()) {
+                        append(" - ${fight.methodDetail}")
+                    }
+                }
+            }
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = methodText.ifEmpty { fight.weightClass.name + " BOUT" },
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                FighterPortrait(
+                    name = redFighter?.name,
+                    imageUrl = redFighter?.imageUrl,
+                    countryCode = redFighter?.countryCode,
+                    result = redFighter?.result?.name,
+                    record = redFighter?.recordAfterFight ?: redFighter?.record,
+                    alignment = Alignment.Start
+                )
+
+                FighterPortrait(
+                    name = blueFighter?.name,
+                    imageUrl = blueFighter?.imageUrl,
+                    countryCode = blueFighter?.countryCode,
+                    result = blueFighter?.result?.name,
+                    record = blueFighter?.recordAfterFight ?: blueFighter?.record,
+                    alignment = Alignment.End
+                )
+            }
+        }
+    }
+}
