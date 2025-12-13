@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp
+package com.berkekucuk.mmaapp.app
 
 import kotlinx.serialization.Serializable
 

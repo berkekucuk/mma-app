@@ -1,7 +1,9 @@
 package com.berkekucuk.mmaapp.presentation.home.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,11 +19,13 @@ fun EventsTab(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onEventClick: (String) -> Unit,
-    emptyMessage: String
+    emptyMessage: String,
+    listState: LazyListState = rememberLazyListState()
 ) {
     EventsListContainer(
         isRefreshing = isRefreshing,
-        onRefresh = onRefresh
+        onRefresh = onRefresh,
+        listState = listState
     ) {
         if (events.isEmpty()) {
             item {

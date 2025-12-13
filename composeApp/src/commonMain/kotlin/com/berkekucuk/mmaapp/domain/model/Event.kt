@@ -1,7 +1,9 @@
 package com.berkekucuk.mmaapp.domain.model
 
+import androidx.compose.runtime.Immutable
 import kotlin.time.Instant
 
+@Immutable
 data class Event(
     val id: String,
     val name: String,
@@ -15,6 +17,7 @@ data class Event(
         get() = fights.firstOrNull()
 }
 
+@Immutable
 data class Fight(
     val method: String,
     val methodDetail: String,
@@ -29,6 +32,7 @@ data class Fight(
         get() = participants.find { it.isRedCorner == false }
 }
 
+@Immutable
 data class Participant(
     val name: String,
     val record: String,

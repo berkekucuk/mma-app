@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.theme
+package com.berkekucuk.mmaapp.core.presentation
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color

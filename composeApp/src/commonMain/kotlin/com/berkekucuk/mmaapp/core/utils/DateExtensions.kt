@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.utils
+package com.berkekucuk.mmaapp.core.utils
 
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number

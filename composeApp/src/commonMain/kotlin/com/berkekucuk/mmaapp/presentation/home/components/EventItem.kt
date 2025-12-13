@@ -22,10 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
-import com.berkekucuk.mmaapp.presentation.theme.AppColors
-import com.berkekucuk.mmaapp.utils.toUserFriendlyDate
+import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import kotlin.text.ifEmpty
 
 @Preview(showBackground = true)
 @Composable

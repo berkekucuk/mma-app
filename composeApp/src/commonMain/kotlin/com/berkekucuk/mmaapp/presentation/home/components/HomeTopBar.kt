@@ -8,7 +8,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import com.berkekucuk.mmaapp.presentation.theme.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

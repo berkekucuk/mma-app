@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.presentation.home
 import com.berkekucuk.mmaapp.domain.model.Event
 
 data class HomeUiState(
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
     val isYearLoading: Boolean = false,
 
     val selectedYear: Int? = null,

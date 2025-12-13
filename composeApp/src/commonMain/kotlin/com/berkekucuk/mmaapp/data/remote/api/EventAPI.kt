@@ -11,7 +11,7 @@ import kotlinx.datetime.toInstant
 import kotlin.time.Instant
 
 class EventAPI(
-    private val supabase: SupabaseClient
+    private val client: SupabaseClient
 ) : EventRemoteDataSource {
 
     private val columnsToSelect = """
@@ -52,7 +52,7 @@ class EventAPI(
     }
 
     private suspend fun fetchEventsInternal(start: Instant, end: Instant?): List<EventDTO> {
-        return supabase.from("events").select(
+        return client.from("events").select(
             columns = Columns.raw(columnsToSelect)
         ) {
             filter {
@@ -61,6 +61,8 @@ class EventAPI(
                 if (end != null) {
                     lte("datetime_utc", end)
                 }
+
+                neq("status", "Cancelled")
             }
 
             order(column = "datetime_utc", order = Order.ASCENDING)

@@ -18,12 +18,9 @@ interface EventDao {
     @Query("SELECT * FROM events ORDER BY datetime_utc ASC")
     fun getAllEvents(): Flow<List<EventEntity>>
 
-    @Query("SELECT COUNT(*) FROM events")
-    suspend fun getEventCount(): Int
-
-    @Query("SELECT COUNT(*) FROM events WHERE datetime_utc >= :start AND datetime_utc <= :end")
-    suspend fun getEventCountForYear(start: Long, end: Long): Int
-
     @Query("SELECT MIN(datetime_utc) FROM events WHERE LOWER(status) != 'completed'")
     suspend fun getOldestPendingEventDate(): Long?
+
+    @Query("SELECT EXISTS(SELECT 1 FROM events WHERE datetime_utc BETWEEN :startTimestamp AND :endTimestamp)")
+    suspend fun hasEventsForYear(startTimestamp: Long, endTimestamp: Long): Boolean
 }

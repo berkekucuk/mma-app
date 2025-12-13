@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.presentation.home
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,7 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.presentation.home.components.CompletedTab
 import com.berkekucuk.mmaapp.presentation.home.components.EventsTab
 import com.berkekucuk.mmaapp.presentation.home.components.HomeTopBar
-import com.berkekucuk.mmaapp.presentation.theme.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppColors
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -68,6 +70,10 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
 
+    val featuredListState = rememberLazyListState()
+    val upcomingListState = rememberLazyListState()
+    val completedListState = rememberLazyListState()
+
     Scaffold(
         topBar = {  HomeTopBar() }
     ) { innerPadding ->
@@ -83,16 +89,15 @@ fun HomeScreen(
 
             if (isLoading) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().background(AppColors.PagerBackground),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    CircularProgressIndicator(color = AppColors.UfcRed)
                 }
             } else {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // TAB ROW
                     PrimaryTabRow(
                         selectedTabIndex = pagerState.currentPage,
                         containerColor = AppColors.TopBarBackground,
@@ -113,7 +118,13 @@ fun HomeScreen(
                                 selected = pagerState.currentPage == index,
                                 onClick = {
                                     coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
+                                        pagerState.animateScrollToPage(
+                                            page = index,
+                                            animationSpec = tween(
+                                                durationMillis = 250,
+                                                easing = FastOutSlowInEasing
+                                            )
+                                        )
                                     }
                                 },
                                 text = {
@@ -126,7 +137,6 @@ fun HomeScreen(
                         }
                     }
 
-                    // PAGER CONTENT
                     HorizontalPager(
                         state = pagerState,
                         modifier = Modifier.fillMaxSize().background(AppColors.PagerBackground)
@@ -137,7 +147,8 @@ fun HomeScreen(
                                 isRefreshing = state.isRefreshingFeaturedTab,
                                 onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                                emptyMessage = "No featured event available"
+                                emptyMessage = "No featured event available",
+                                listState = featuredListState
                             )
 
                             1 -> EventsTab(
@@ -145,7 +156,8 @@ fun HomeScreen(
                                 isRefreshing = state.isRefreshingUpcomingTab,
                                 onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                                emptyMessage = "No upcoming events available"
+                                emptyMessage = "No upcoming events available",
+                                listState = upcomingListState
                             )
 
                             2 -> CompletedTab(
@@ -157,6 +169,7 @@ fun HomeScreen(
                                 selectedYear = state.selectedYear,
                                 isYearLoading = state.isYearLoading,
                                 onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
+                                listState = completedListState
                             )
                         }
                     }

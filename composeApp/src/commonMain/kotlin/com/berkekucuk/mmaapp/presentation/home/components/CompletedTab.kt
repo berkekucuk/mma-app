@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -45,12 +47,14 @@ fun CompletedTab(
     selectedYear: Int?,
     isYearLoading: Boolean,
     onYearSelected: (Int) -> Unit,
+    listState: LazyListState = rememberLazyListState()
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     EventsListContainer(
         isRefreshing = isRefreshing,
-        onRefresh = onRefresh
+        onRefresh = onRefresh,
+        listState = listState
     ) {
         item {
             Row(

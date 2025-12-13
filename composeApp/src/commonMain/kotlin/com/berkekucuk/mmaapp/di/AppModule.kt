@@ -2,6 +2,8 @@ package com.berkekucuk.mmaapp.di
 
 import org.koin.dsl.module
 import com.berkekucuk.mmaapp.BuildConfig
+import com.berkekucuk.mmaapp.core.time.DateTimeProvider
+import com.berkekucuk.mmaapp.core.time.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.api.EventAPI
@@ -15,6 +17,9 @@ import org.koin.core.module.dsl.viewModel
 val appModule = module {
 
     includes(platformModule)
+
+    // time provider
+    single<DateTimeProvider> { SystemDateTimeProvider() }
 
     // supabase client
     single {
@@ -35,19 +40,23 @@ val appModule = module {
 
     // remote data source
     single<EventRemoteDataSource> {
-        EventAPI(supabase = get())
+        EventAPI(client = get())
     }
 
     // repository
     single<EventRepository> {
         EventRepositoryImpl(
             remoteDataSource = get(),
-            dao = get()
+            dao = get(),
+            dateTimeProvider = get()
         )
     }
 
     // view model
     viewModel {
-        HomeViewModel(eventRepository = get())
+        HomeViewModel(
+            eventRepository = get(),
+            dateTimeProvider = get()
+        )
     }
 }

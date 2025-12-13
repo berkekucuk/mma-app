@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.model.Fight
-import com.berkekucuk.mmaapp.presentation.theme.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppColors
 
 @Composable
 fun FightItem(

@@ -16,18 +16,23 @@ import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import coil3.compose.LocalPlatformContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.berkekucuk.mmaapp.presentation.theme.AppColors
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.berkekucuk.mmaapp.core.presentation.AppColors
 
 @Composable
 fun FighterPortrait(
@@ -77,6 +82,8 @@ private fun FighterImage(
     result: String?,
     alignment: Alignment.Horizontal
 ) {
+    val context = LocalPlatformContext.current
+
     Box(
         contentAlignment = if (alignment == Alignment.Start) Alignment.BottomStart else Alignment.BottomEnd
     ) {
@@ -87,8 +94,17 @@ private fun FighterImage(
             Modifier
         }
 
+        val imageRequest = remember(imageUrl) {
+            ImageRequest.Builder(context)
+                .data(imageUrl)
+                .crossfade(true)
+                .size(200, 200)
+                .memoryCacheKey(imageUrl)
+                .build()
+        }
+
         AsyncImage(
-            model = imageUrl,
+            model = imageRequest,
             contentDescription = name,
             modifier = Modifier
                 .size(55.dp)
@@ -99,20 +115,29 @@ private fun FighterImage(
         )
 
         countryCode?.let { code ->
-            val flagUrl = "https://flagcdn.com/w40/${code.lowercase()}.png"
+            val flagUrl = "https://ictgktsdedzcydjwhosx.supabase.co/storage/v1/object/public/flags/${code.lowercase()}.png"
+
+            val flagRequest = remember(flagUrl) {
+                ImageRequest.Builder(context)
+                    .data(flagUrl)
+                    .crossfade(true)
+                    .size(100, 100)
+                    .memoryCacheKey(flagUrl)
+                    .build()
+            }
+
             AsyncImage(
-                model = flagUrl,
+                model = flagRequest,
                 contentDescription = "Flag",
                 modifier = Modifier
-                    .size(18.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, AppColors.CardBackground, CircleShape),
+                    .size(width = 18.dp, height = 12.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .border(0.5.dp, AppColors.CardBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop
             )
         }
     }
 }
-
 
 @Composable
 private fun NameColumn(
@@ -123,7 +148,9 @@ private fun NameColumn(
     horizontalAlignment: Alignment.Horizontal,
     modifier: Modifier = Modifier
 ) {
-    val nameParts = name?.split(" ") ?: listOf("Unknown", "Fighter")
+    val nameParts = remember(name) {
+        name?.split(" ") ?: listOf("Unknown", "Fighter")
+    }
 
     Column(
         horizontalAlignment = horizontalAlignment,
