@@ -2,8 +2,7 @@ package com.berkekucuk.mmaapp.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berkekucuk.mmaapp.core.time.DateTimeProvider
-import com.berkekucuk.mmaapp.domain.model.Event
+import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
 import com.berkekucuk.mmaapp.domain.model.EventStatus
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +25,6 @@ class HomeViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<NavigationEvent>()
     val navigation = _navigation.asSharedFlow()
-    private var allEvents: List<Event> = emptyList()
 
     init {
         val currentYear = dateTimeProvider.currentYear
@@ -50,7 +48,7 @@ class HomeViewModel(
                     _state.update { it.copy(isLoading = false) }
                 }
                 .collect { events ->
-                    allEvents = events
+                    _state.update { it.copy(allEvents = events) }
                     recalculateLists()
                 }
         }
@@ -58,23 +56,22 @@ class HomeViewModel(
 
     private fun syncEvents() {
         viewModelScope.launch {
-            if (allEvents.isEmpty()) {
-                _state.update { it.copy(isLoading = true) }
-            }
-
             eventRepository.syncEvents()
+                .onSuccess {
+                    _state.update { it.copy(isLoading = false) }
+                }
                 .onFailure {
-                    if (allEvents.isEmpty()) _state.update { it.copy(isLoading = false) }
+                    _state.update { it.copy(isLoading = false) }
                 }
         }
     }
 
     private fun recalculateLists() {
         viewModelScope.launch(Dispatchers.Default) {
-            val currentState = _state.value
             val currentYear = dateTimeProvider.currentYear
-            val selectedYear = currentState.selectedYear ?: currentYear
             val now = dateTimeProvider.now
+            val selectedYear = _state.value.selectedYear ?: currentYear
+            val allEvents = _state.value.allEvents
 
             val featuredEvent = allEvents
                 .filter { it.datetimeUtc != null }
@@ -91,8 +88,6 @@ class HomeViewModel(
 
             _state.update {
                 it.copy(
-                    isLoading = false,
-                    isYearLoading = false,
                     featuredEvent = featuredEvent,
                     upcomingEvents = upcomingEvents,
                     completedEvents = completedEvents,
@@ -123,6 +118,7 @@ class HomeViewModel(
         }
 
         viewModelScope.launch(Dispatchers.Default) {
+            val allEvents = _state.value.allEvents
             val newCompletedList = allEvents
                 .filter { it.status == EventStatus.COMPLETED }
                 .filter { it.datetimeUtc?.toLocalDateTime(dateTimeProvider.timeZone)?.year == year }
@@ -134,9 +130,7 @@ class HomeViewModel(
                     isYearLoading = newCompletedList.isEmpty()
                 )
             }
-        }
 
-        viewModelScope.launch {
             eventRepository.getEventsByYear(year)
                 .onSuccess {
                     _state.update { it.copy(isYearLoading = false) }
@@ -151,7 +145,12 @@ class HomeViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingFeaturedTab = true) }
             eventRepository.refreshFeaturedEventTab()
-            _state.update { it.copy(isRefreshingFeaturedTab = false) }
+                .onSuccess {
+                    _state.update { it.copy(isRefreshingFeaturedTab = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isRefreshingFeaturedTab = false) }
+                }
         }
     }
 
@@ -159,7 +158,12 @@ class HomeViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingUpcomingTab = true) }
             eventRepository.refreshUpcomingEventsTab()
-            _state.update { it.copy(isRefreshingUpcomingTab = false) }
+                .onSuccess {
+                    _state.update { it.copy(isRefreshingUpcomingTab = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isRefreshingUpcomingTab = false) }
+                }
         }
     }
 
@@ -168,7 +172,12 @@ class HomeViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingCompletedTab = true) }
             eventRepository.getEventsByYear(selectedYear, forceRefresh = true)
-            _state.update { it.copy(isRefreshingCompletedTab = false) }
+                .onSuccess {
+                    _state.update { it.copy(isRefreshingCompletedTab = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isRefreshingCompletedTab = false) }
+                }
         }
     }
 

@@ -2,8 +2,8 @@ package com.berkekucuk.mmaapp.di
 
 import org.koin.dsl.module
 import com.berkekucuk.mmaapp.BuildConfig
-import com.berkekucuk.mmaapp.core.time.DateTimeProvider
-import com.berkekucuk.mmaapp.core.time.SystemDateTimeProvider
+import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
+import com.berkekucuk.mmaapp.core.utils.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.api.EventAPI

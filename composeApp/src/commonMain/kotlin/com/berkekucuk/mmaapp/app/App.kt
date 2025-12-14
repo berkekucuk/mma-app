@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp
+package com.berkekucuk.mmaapp.app
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

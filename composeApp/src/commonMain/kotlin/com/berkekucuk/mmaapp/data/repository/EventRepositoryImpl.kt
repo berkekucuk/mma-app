@@ -1,6 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
-import com.berkekucuk.mmaapp.core.time.DateTimeProvider
+import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.Event
