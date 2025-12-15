@@ -1,19 +1,15 @@
-package com.berkekucuk.mmaapp.presentation.home.components
+package com.berkekucuk.mmaapp.presentation.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,19 +18,22 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.Event
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,20 +46,38 @@ fun CompletedTab(
     selectedYear: Int?,
     isYearLoading: Boolean,
     onYearSelected: (Int) -> Unit,
-    listState: LazyListState = rememberLazyListState()
+    listState: LazyListState = rememberLazyListState(),
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    var showEmptyMessage by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isYearLoading, completedEvents) {
+        if (!isYearLoading && completedEvents.isEmpty()) {
+            delay(150)
+            showEmptyMessage = true
+        } else {
+            showEmptyMessage = false
+        }
+    }
+    val localContentPadding = remember(contentPadding) {
+        PaddingValues(
+            top = 8.dp,
+            bottom = contentPadding.calculateBottomPadding()
+        )
+    }
 
     EventsListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        listState = listState
+        listState = listState,
+        contentPadding = localContentPadding
     ) {
-        item {
+        item(key = "year_filter_row") {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -70,7 +87,7 @@ fun CompletedTab(
                 ) {
                     FilterChip(
                         selected = true,
-                        onClick = { },
+                        onClick = {},
                         label = {
                             Text(
                                 text = selectedYear?.toString() ?: "Select Year",
@@ -82,19 +99,26 @@ fun CompletedTab(
                         },
                         modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, true),
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            selectedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            selectedContainerColor = AppColors.dropdownMenuBackground,
+                            selectedLabelColor = AppColors.textPrimary,
+                            selectedTrailingIconColor = AppColors.textPrimary
                         )
                     )
 
                     ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.heightIn(max = 300.dp)
+                        modifier = Modifier.heightIn(max = 300.dp),
+                        containerColor = AppColors.dropdownMenuBackground
                     ) {
                         availableYears.forEach { year ->
                             DropdownMenuItem(
-                                text = { Text(year.toString()) },
+                                text = {
+                                    Text(
+                                        text = year.toString(),
+                                        color = AppColors.textPrimary
+                                    )
+                                },
                                 onClick = {
                                     onYearSelected(year)
                                     expanded = false
@@ -108,49 +132,26 @@ fun CompletedTab(
         }
 
         if (isYearLoading) {
-            item {
+            item(contentType = "Loader") {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
+                        .fillParentMaxSize()
+                        .background(AppColors.pagerBackground),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = AppColors.ufcRed)
                 }
             }
         } else if (completedEvents.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+            if (showEmptyMessage) {
+                item(contentType = "EmptyState") {
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.EventBusy,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
                         Text(
-                            text = "No events found for $selectedYear",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = "Try selecting a different year.",
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = "No events available for $selectedYear",
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -159,7 +160,8 @@ fun CompletedTab(
         } else {
             items(
                 items = completedEvents,
-                key = { it.id }
+                key = { it.id },
+                contentType = { "EventItem" }
             ) { event ->
                 EventItem(
                     event = event,
@@ -169,3 +171,4 @@ fun CompletedTab(
         }
     }
 }
+

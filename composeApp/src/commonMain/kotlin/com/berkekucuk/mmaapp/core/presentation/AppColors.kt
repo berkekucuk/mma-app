@@ -4,14 +4,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 object AppColors {
-    val TopBarBackground = Color(0xFF1A1A1A)
-    val PagerBackground = Color.Black
-    val TextPrimary = Color.White
-    val TextSecondary = Color(0xFFA3A3A3)
-    val UfcRed = Color(0xFFD30102)
-    val CardBackground = Color(0xFF2A2A2A)
-    val winner = Color(0xFF33A854)
-    val RedGradient = Brush.verticalGradient(
+    val topBarBackground = Color(0xFF1A1A1A)
+    val pagerBackground = Color.Black
+    val dropdownMenuBackground = Color(0xFF333333)
+    val textPrimary = Color.White
+    val textSecondary = Color(0xFFA3A3A3)
+    val ufcRed = Color(0xFFD30102)
+    val winnerFrame = Color(0xFF33A854)
+    val redGradient = Brush.verticalGradient(
         colors = listOf(
             Color(0xFF8B2E2E),
             Color(0xFF4A1F1F),

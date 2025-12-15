@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -9,6 +9,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,9 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.presentation.home.components.CompletedTab
-import com.berkekucuk.mmaapp.presentation.home.components.EventsTab
-import com.berkekucuk.mmaapp.presentation.home.components.HomeTopBar
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
@@ -42,21 +40,23 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onEventClick: (String) -> Unit,
-) {
+    bottomPadding: PaddingValues,
+    ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
                 is NavigationEvent.ToEventDetail -> onEventClick(event.eventId)
-                is NavigationEvent.Back -> { /* Handle back navigation if needed */ }
+                is NavigationEvent.Back -> { }
             }
         }
     }
 
     HomeScreen(
         state = uiState,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        bottomPadding = bottomPadding
     )
 }
 
@@ -64,7 +64,8 @@ fun HomeScreenRoot(
 @Composable
 fun HomeScreen(
     state: HomeUiState,
-    onAction: (HomeUiAction) -> Unit
+    onAction: (HomeUiAction) -> Unit,
+    bottomPadding: PaddingValues
 ) {
     val tabs = listOf("Featured", "Upcoming", "Completed")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -75,72 +76,90 @@ fun HomeScreen(
     val completedListState = rememberLazyListState()
 
     Scaffold(
-        topBar = {  HomeTopBar() }
-    ) { innerPadding ->
+        containerColor = AppColors.pagerBackground,
+        topBar = { HomeTopBar() }
+    ) { topBarPadding ->
 
-        AnimatedContent(
-            targetState = state.isLoading,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-            },
-            label = "HomeLoadingTransition",
-            modifier = Modifier.padding(innerPadding)
-        ) { isLoading ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AppColors.pagerBackground)
+                .padding(top = topBarPadding.calculateTopPadding())
+        ) {
 
-            if (isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize().background(AppColors.PagerBackground),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = AppColors.UfcRed)
-                }
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    PrimaryTabRow(
-                        selectedTabIndex = pagerState.currentPage,
-                        containerColor = AppColors.TopBarBackground,
-                        contentColor = AppColors.TextPrimary,
-                        indicator = {
-                            Box(
-                                modifier = Modifier
-                                    .tabIndicatorOffset(pagerState.currentPage)
-                                    .fillMaxWidth()
-                                    .height(3.dp)
-                                    .background(AppColors.UfcRed)
-                            )
-                        },
-                        divider = {}
-                    ) {
-                        tabs.forEachIndexed { index, title ->
-                            Tab(
-                                selected = pagerState.currentPage == index,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(
-                                            page = index,
-                                            animationSpec = tween(
-                                                durationMillis = 250,
-                                                easing = FastOutSlowInEasing
-                                            )
-                                        )
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        text = title,
-                                        style = MaterialTheme.typography.titleSmall
+            PrimaryTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = AppColors.topBarBackground,
+                contentColor = AppColors.textPrimary,
+                indicator = {
+                    Box(
+                        modifier = Modifier
+                            .tabIndicatorOffset(pagerState.currentPage)
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .background(AppColors.ufcRed)
+                    )
+                },
+                divider = {}
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(
+                                    page = index,
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = FastOutSlowInEasing
                                     )
-                                }
+                                )
+                            }
+                        },
+                        text = {
+                            Text(
+                                text = title,
+                                style = MaterialTheme.typography.titleSmall
                             )
                         }
-                    }
+                    )
+                }
+            }
 
+            AnimatedContent(
+                targetState = state.isLoading,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                },
+                label = "HomeContentTransition",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { isLoading ->
+
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(AppColors.pagerBackground),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = AppColors.ufcRed)
+                    }
+                } else {
                     HorizontalPager(
                         state = pagerState,
-                        modifier = Modifier.fillMaxSize().background(AppColors.PagerBackground)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(AppColors.pagerBackground),
+                        beyondViewportPageCount = 1
                     ) { page ->
+
+                        val sharedContentPadding = PaddingValues(
+                            top = 16.dp,
+                            bottom = bottomPadding.calculateBottomPadding() + 16.dp
+                        )
+
                         when (page) {
                             0 -> EventsTab(
                                 events = if (state.featuredEvent != null) listOf(state.featuredEvent) else emptyList(),
@@ -148,7 +167,8 @@ fun HomeScreen(
                                 onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
                                 emptyMessage = "No featured event available",
-                                listState = featuredListState
+                                listState = featuredListState,
+                                contentPadding = sharedContentPadding
                             )
 
                             1 -> EventsTab(
@@ -157,7 +177,8 @@ fun HomeScreen(
                                 onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
                                 emptyMessage = "No upcoming events available",
-                                listState = upcomingListState
+                                listState = upcomingListState,
+                                contentPadding = sharedContentPadding
                             )
 
                             2 -> CompletedTab(
@@ -169,13 +190,13 @@ fun HomeScreen(
                                 selectedYear = state.selectedYear,
                                 isYearLoading = state.isYearLoading,
                                 onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
-                                listState = completedListState
+                                listState = completedListState,
+                                contentPadding = sharedContentPadding
                             )
                         }
                     }
                 }
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home.components
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -24,9 +24,9 @@ fun HomeTopBar() {
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = AppColors.TopBarBackground,
-            scrolledContainerColor = AppColors.TopBarBackground,
-            titleContentColor = AppColors.TextPrimary
+            containerColor = AppColors.topBarBackground,
+            scrolledContainerColor = AppColors.topBarBackground,
+            titleContentColor = AppColors.textPrimary
         ),
     )
 }

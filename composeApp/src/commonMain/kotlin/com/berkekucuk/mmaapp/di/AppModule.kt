@@ -11,7 +11,7 @@ import com.berkekucuk.mmaapp.data.remote.SupabaseClientFactory
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
-import com.berkekucuk.mmaapp.presentation.home.HomeViewModel
+import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 
 val appModule = module {

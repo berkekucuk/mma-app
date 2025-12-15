@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,18 +23,20 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 @Composable
 fun FightItem(
     fight: Fight,
+    modifier: Modifier = Modifier
 ) {
     val redFighter = fight.redCorner
     val blueFighter = fight.blueCorner
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .background(AppColors.RedGradient)
+            .background(AppColors.redGradient)
             .padding(10.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             val methodText = buildString {
                 if (fight.method.isNotBlank()) {
                     append(fight.method)
@@ -43,6 +45,8 @@ fun FightItem(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.weight(0.3f))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -55,7 +59,8 @@ fun FightItem(
                     fontWeight = FontWeight.Medium
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -80,6 +85,8 @@ fun FightItem(
                     alignment = Alignment.End
                 )
             }
+
+            Spacer(modifier = Modifier.weight(0.4f))
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import com.berkekucuk.mmaapp.domain.model.Event
 

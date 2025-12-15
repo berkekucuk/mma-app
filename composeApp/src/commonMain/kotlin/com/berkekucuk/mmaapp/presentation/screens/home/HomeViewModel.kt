@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

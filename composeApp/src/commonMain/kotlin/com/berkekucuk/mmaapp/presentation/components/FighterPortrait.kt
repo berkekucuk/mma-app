@@ -89,7 +89,7 @@ private fun FighterImage(
     ) {
         val isWinner = result?.equals("WIN", ignoreCase = true) == true
         val borderModifier = if (isWinner) {
-            Modifier.border(2.dp, AppColors.winner, CircleShape)
+            Modifier.border(2.dp, AppColors.winnerFrame, CircleShape)
         } else {
             Modifier
         }
@@ -109,7 +109,7 @@ private fun FighterImage(
             modifier = Modifier
                 .size(55.dp)
                 .clip(CircleShape)
-                .background(AppColors.TopBarBackground)
+                .background(AppColors.topBarBackground)
                 .then(borderModifier),
             contentScale = ContentScale.Crop
         )
@@ -132,7 +132,7 @@ private fun FighterImage(
                 modifier = Modifier
                     .size(width = 18.dp, height = 12.dp)
                     .clip(RoundedCornerShape(2.dp))
-                    .border(0.5.dp, AppColors.CardBackground, RoundedCornerShape(2.dp)),
+                    .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop
             )
         }
@@ -158,7 +158,7 @@ private fun NameColumn(
     ) {
         Text(
             text = nameParts.joinToString(" "),
-            color = AppColors.TextPrimary,
+            color = AppColors.textPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
             textAlign = textAlign,
@@ -178,12 +178,12 @@ private fun NameColumn(
                         Icon(
                             imageVector = Icons.Default.ArrowDropUp,
                             contentDescription = "Win",
-                            tint = AppColors.winner,
+                            tint = AppColors.winnerFrame,
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
                             text = rec,
-                            color = AppColors.winner,
+                            color = AppColors.winnerFrame,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = textAlign,
@@ -211,7 +211,7 @@ private fun NameColumn(
                     else -> {
                         Text(
                             text = rec,
-                            color = AppColors.TextSecondary,
+                            color = AppColors.textSecondary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = textAlign,

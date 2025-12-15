@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 sealed interface HomeUiAction {
     data class OnEventClicked(val eventId: String) : HomeUiAction

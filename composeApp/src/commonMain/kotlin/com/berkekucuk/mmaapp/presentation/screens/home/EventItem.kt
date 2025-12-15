@@ -1,9 +1,10 @@
-package com.berkekucuk.mmaapp.presentation.home.components
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,9 +25,7 @@ import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview(showBackground = true)
 @Composable
 fun EventItem(
     event: Event,
@@ -35,16 +34,18 @@ fun EventItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(160.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.TopBarBackground)
+                    .background(AppColors.topBarBackground)
                     .padding(10.dp)
             ) {
                 Text(
@@ -71,13 +72,14 @@ fun EventItem(
             if (mainEvent != null) {
                 FightItem(
                     fight = mainEvent,
+                    modifier = Modifier.weight(1f)
                 )
             } else {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(120.dp)
-                        .background(AppColors.RedGradient),
+                        .weight(1f)
+                        .background(AppColors.redGradient),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
@@ -91,5 +93,3 @@ fun EventItem(
         }
     }
 }
-
-

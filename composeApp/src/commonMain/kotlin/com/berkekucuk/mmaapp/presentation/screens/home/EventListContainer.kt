@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.home.components
+package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +20,7 @@ fun EventsListContainer(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     content: LazyListScope.() -> Unit
 ) {
     PullToRefreshBox(
@@ -30,8 +31,15 @@ fun EventsListContainer(
         LazyColumn(
             state = listState,
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(
+                // Yan boşluklar listenin kendi tasarımıdır (Kendi karar verir)
+                start = 10.dp,
+                end = 10.dp,
+                // Dikey boşluklar dışarıdan (HomeScreen'den) gelir
+                top = contentPadding.calculateTopPadding(),
+                bottom = contentPadding.calculateBottomPadding()
+            ),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content
         )
     }
