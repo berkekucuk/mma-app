@@ -23,13 +23,12 @@ fun EventsTab(
     onEventClick: (String) -> Unit,
     emptyMessage: String,
     listState: LazyListState = rememberLazyListState(),
-    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     EventsListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = contentPadding
+        contentPadding = PaddingValues(top = 16.dp)
     ) {
         if (events.isEmpty()) {
             item(

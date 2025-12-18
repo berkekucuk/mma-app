@@ -5,11 +5,11 @@ import com.berkekucuk.mmaapp.data.remote.dto.EventDTO
 import com.berkekucuk.mmaapp.data.remote.dto.FightDTO
 import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDTO
 import com.berkekucuk.mmaapp.domain.model.Event
-import com.berkekucuk.mmaapp.domain.model.EventStatus
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Participant
-import com.berkekucuk.mmaapp.domain.model.Result
-import com.berkekucuk.mmaapp.domain.model.WeightClass
+import com.berkekucuk.mmaapp.domain.enums.EventStatus
+import com.berkekucuk.mmaapp.domain.enums.WeightClass
+import com.berkekucuk.mmaapp.domain.enums.Result
 
 fun EventDTO.toEntity(): EventEntity {
     return EventEntity(

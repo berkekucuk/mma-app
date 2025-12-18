@@ -12,6 +12,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.format.Padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,7 +21,7 @@ fun EventsListContainer(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
-    contentPadding: PaddingValues = PaddingValues(0.dp),
+    contentPadding: PaddingValues,
     content: LazyListScope.() -> Unit
 ) {
     PullToRefreshBox(
@@ -32,12 +33,10 @@ fun EventsListContainer(
             state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                // Yan boşluklar listenin kendi tasarımıdır (Kendi karar verir)
                 start = 10.dp,
                 end = 10.dp,
-                // Dikey boşluklar dışarıdan (HomeScreen'den) gelir
                 top = contentPadding.calculateTopPadding(),
-                bottom = contentPadding.calculateBottomPadding()
+                bottom = 16.dp
             ),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content

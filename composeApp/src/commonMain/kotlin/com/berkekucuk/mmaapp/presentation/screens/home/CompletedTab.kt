@@ -19,6 +19,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +35,10 @@ import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.Event
 import kotlinx.coroutines.delay
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.empty_events_for_year
+import mmaapp.composeapp.generated.resources.select_year
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +52,6 @@ fun CompletedTab(
     isYearLoading: Boolean,
     onYearSelected: (Int) -> Unit,
     listState: LazyListState = rememberLazyListState(),
-    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -61,18 +65,12 @@ fun CompletedTab(
             showEmptyMessage = false
         }
     }
-    val localContentPadding = remember(contentPadding) {
-        PaddingValues(
-            top = 8.dp,
-            bottom = contentPadding.calculateBottomPadding()
-        )
-    }
 
     EventsListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = localContentPadding
+        contentPadding = PaddingValues(top = 8.dp)
     ) {
         item(key = "year_filter_row") {
             Row(
@@ -90,7 +88,7 @@ fun CompletedTab(
                         onClick = {},
                         label = {
                             Text(
-                                text = selectedYear?.toString() ?: "Select Year",
+                                text = selectedYear?.toString() ?: stringResource(Res.string.select_year),
                                 fontWeight = FontWeight.Medium
                             )
                         },
@@ -150,7 +148,7 @@ fun CompletedTab(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No events available for $selectedYear",
+                            text = stringResource(Res.string.empty_events_for_year, selectedYear.toString()),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

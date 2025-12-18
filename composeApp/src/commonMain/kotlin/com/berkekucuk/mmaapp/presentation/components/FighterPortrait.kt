@@ -33,6 +33,12 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.content_description_flag
+import mmaapp.composeapp.generated.resources.content_description_loss
+import mmaapp.composeapp.generated.resources.content_description_win
+import mmaapp.composeapp.generated.resources.unknown_fighter
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FighterPortrait(
@@ -128,7 +134,7 @@ private fun FighterImage(
 
             AsyncImage(
                 model = flagRequest,
-                contentDescription = "Flag",
+                contentDescription = stringResource(Res.string.content_description_flag),
                 modifier = Modifier
                     .size(width = 18.dp, height = 12.dp)
                     .clip(RoundedCornerShape(2.dp))
@@ -148,8 +154,9 @@ private fun NameColumn(
     horizontalAlignment: Alignment.Horizontal,
     modifier: Modifier = Modifier
 ) {
-    val nameParts = remember(name) {
-        name?.split(" ") ?: listOf("Unknown", "Fighter")
+    val unknownFighter = stringResource(Res.string.unknown_fighter)
+    val nameParts = remember(name, unknownFighter) {
+        name?.split(" ") ?: unknownFighter.split(" ")
     }
 
     Column(
@@ -177,7 +184,7 @@ private fun NameColumn(
                     "WIN" -> {
                         Icon(
                             imageVector = Icons.Default.ArrowDropUp,
-                            contentDescription = "Win",
+                            contentDescription = stringResource(Res.string.content_description_win),
                             tint = AppColors.winnerFrame,
                             modifier = Modifier.size(16.dp)
                         )
@@ -194,7 +201,7 @@ private fun NameColumn(
                     "LOSS" -> {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "Loss",
+                            contentDescription = stringResource(Res.string.content_description_loss),
                             tint = Color.Red,
                             modifier = Modifier.size(16.dp)
                         )

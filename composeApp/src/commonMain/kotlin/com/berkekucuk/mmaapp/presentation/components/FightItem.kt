@@ -19,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.weight_class_bout
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FightItem(
@@ -53,7 +56,12 @@ fun FightItem(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = methodText.ifEmpty { fight.weightClass.name + " BOUT" },
+                    text = methodText.ifEmpty {
+                        stringResource(
+                            Res.string.weight_class_bout,
+                            fight.weightClass.name.lowercase().replaceFirstChar { it.uppercase() }
+                        )
+                    },
                     color = Color.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium

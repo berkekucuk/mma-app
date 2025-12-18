@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.presentation.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
-import com.berkekucuk.mmaapp.domain.model.EventStatus
+import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

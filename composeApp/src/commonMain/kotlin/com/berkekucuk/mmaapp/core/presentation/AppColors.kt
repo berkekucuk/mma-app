@@ -9,6 +9,7 @@ object AppColors {
     val dropdownMenuBackground = Color(0xFF333333)
     val textPrimary = Color.White
     val textSecondary = Color(0xFFA3A3A3)
+    val dateColor = Color(0xFFB0B0B0)
     val ufcRed = Color(0xFFD30102)
     val winnerFrame = Color(0xFF33A854)
     val redGradient = Brush.verticalGradient(

@@ -1,6 +1,9 @@
 package com.berkekucuk.mmaapp.domain.model
 
 import androidx.compose.runtime.Immutable
+import com.berkekucuk.mmaapp.domain.enums.EventStatus
+import com.berkekucuk.mmaapp.domain.enums.Result
+import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import kotlin.time.Instant
 
 @Immutable
@@ -43,35 +46,4 @@ data class Participant(
     val recordAfterFight: String?
 )
 
-enum class EventStatus {
-    UPCOMING,
-    LIVE,
-    COMPLETED,
-    CANCELLED,
-    UNKNOWN
-}
 
-enum class Result{
-    WIN,
-    LOSS,
-    DRAW,
-    NO_CONTEST,
-    PENDING,
-    CANCELLED,
-    FIZZLED,
-    UNKNOWN
-}
-
-enum class WeightClass{
-    STRAWWEIGHT,
-    FLYWEIGHT,
-    BANTAMWEIGHT,
-    FEATHERWEIGHT,
-    LIGHTWEIGHT,
-    WELTERWEIGHT,
-    MIDDLEWEIGHT,
-    LIGHTHEAVYWEIGHT,
-    HEAVYWEIGHT,
-    CATCHWEIGHT,
-    UNKNOWN
-}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- Home Screen -->
+    <string name="events_title">events</string>
+    <string name="tab_featured">Featured</string>
+    <string name="tab_upcoming">Upcoming</string>
+    <string name="tab_completed">Completed</string>
+
+    <!-- Empty States -->
+    <string name="empty_featured_events">No featured event available</string>
+    <string name="empty_upcoming_events">No upcoming events available</string>
+    <string name="empty_events_for_year">No events available for %1$s</string>
+
+    <!-- Event Item -->
+    <string name="date_tba">TBA</string>
+    <string name="to_be_announced">TO BE ANNOUNCED</string>
+
+    <!-- Year Filter -->
+    <string name="select_year">Select Year</string>
+
+    <!-- Fight Item -->
+    <string name="weight_class_bout">%1$s Bout</string>
+
+    <!-- Fighter Portrait -->
+    <string name="content_description_flag">Flag</string>
+    <string name="content_description_win">Win</string>
+    <string name="content_description_loss">Loss</string>
+    <string name="unknown_fighter">Unknown Fighter</string>
+</resources>
+

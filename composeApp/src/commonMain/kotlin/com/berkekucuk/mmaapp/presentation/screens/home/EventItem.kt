@@ -25,6 +25,10 @@ import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.date_tba
+import mmaapp.composeapp.generated.resources.to_be_announced
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun EventItem(
@@ -58,8 +62,8 @@ fun EventItem(
                 )
 
                 Text(
-                    text = event.datetimeUtc?.toUserFriendlyDate() ?: "TBA",
-                    color = Color.Gray,
+                    text = event.datetimeUtc?.toUserFriendlyDate() ?: stringResource(Res.string.date_tba),
+                    color = AppColors.dateColor,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 2.dp),
                     maxLines = 1,
@@ -83,7 +87,7 @@ fun EventItem(
                     contentAlignment = Alignment.Center
                 ){
                     Text(
-                        text = "TO BE ANNOUNCED",
+                        text = stringResource(Res.string.to_be_announced),
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
