@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.data.local
 
 import androidx.room.TypeConverter
 import com.berkekucuk.mmaapp.data.remote.dto.FightDTO
+import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDTO
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
 
@@ -11,31 +12,36 @@ class Converters {
         encodeDefaults = true
     }
 
-    @TypeConverter
-    fun fromFightsList(fights: List<FightDTO>?): String {
-        return json.encodeToString(fights ?: emptyList())
+    // Generic helper for encoding lists to JSON string
+    private inline fun <reified T> encodeList(list: List<T>?): String {
+        return json.encodeToString(list ?: emptyList())
     }
 
-    @TypeConverter
-    fun toFightsList(fightsString: String?): List<FightDTO> {
-        return if (fightsString.isNullOrEmpty()) {
+    // Generic helper for decoding JSON string to lists
+    private inline fun <reified T> decodeList(jsonString: String?): List<T> {
+        if (jsonString.isNullOrEmpty()) return emptyList()
+        return try {
+            json.decodeFromString(jsonString)
+        } catch (e: Exception) {
             emptyList()
-        } else {
-            try {
-                json.decodeFromString(fightsString)
-            } catch (e: Exception) {
-                emptyList()
-            }
         }
     }
 
     @TypeConverter
-    fun fromTimestamp(value: Long?): Instant? {
-        return value?.let { Instant.fromEpochMilliseconds(it) }
-    }
+    fun fromFightsList(fights: List<FightDTO>?): String = encodeList(fights)
 
     @TypeConverter
-    fun toTimestamp(date: Instant?): Long? {
-        return date?.toEpochMilliseconds()
-    }
+    fun toFightsList(fightsString: String?): List<FightDTO> = decodeList(fightsString)
+
+    @TypeConverter
+    fun fromParticipantsList(participants: List<ParticipantDTO>?): String = encodeList(participants)
+
+    @TypeConverter
+    fun toParticipantsList(participantsString: String?): List<ParticipantDTO> = decodeList(participantsString)
+
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.fromEpochMilliseconds(it) }
+
+    @TypeConverter
+    fun toTimestamp(date: Instant?): Long? = date?.toEpochMilliseconds()
 }

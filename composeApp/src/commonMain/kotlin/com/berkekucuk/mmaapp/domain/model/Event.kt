@@ -20,30 +20,4 @@ data class Event(
         get() = fights.firstOrNull()
 }
 
-@Immutable
-data class Fight(
-    val method: String,
-    val methodDetail: String,
-    val roundSummary: String,
-    val weightClass: WeightClass,
-    val participants: List<Participant>
-) {
-    val redCorner: Participant?
-        get() = participants.find { it.isRedCorner == true }
-
-    val blueCorner: Participant?
-        get() = participants.find { it.isRedCorner == false }
-}
-
-@Immutable
-data class Participant(
-    val name: String,
-    val record: String,
-    val imageUrl: String?,
-    val countryCode: String?,
-    val isRedCorner: Boolean?,
-    val result: Result,
-    val recordAfterFight: String?
-)
-
 

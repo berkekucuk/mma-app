@@ -8,26 +8,12 @@ import kotlin.time.Instant
 
 @Entity(tableName = "events")
 data class EventEntity(
-    @PrimaryKey
-    @ColumnInfo(name = "event_id")
-    val eventId: String,
-
-    @ColumnInfo(name = "name")
-    val name: String?,
-
-    @ColumnInfo(name = "status")
-    val status: String?,
-
-    @ColumnInfo(name = "datetime_utc")
-    val datetimeUtc: Instant?,
-
-    @ColumnInfo(name = "venue")
-    val venue: String?,
-
-    @ColumnInfo(name = "location")
-    val location: String?,
-
+    @PrimaryKey @ColumnInfo(name = "event_id") val eventId: String,
+    val status: String? = null,
+    val name: String? = null,
+    @ColumnInfo(name = "datetime_utc") val datetimeUtc: Instant? = null,
+    val venue: String? = null,
+    val location: String? = null,
     // Thanks to TypeConverter, this list will be embedded in a single cell as JSON text
-    @ColumnInfo(name = "fights_json")
-    val fights: List<FightDTO>
+    @ColumnInfo(name = "fights_json") val fights: List<FightDTO>
 )

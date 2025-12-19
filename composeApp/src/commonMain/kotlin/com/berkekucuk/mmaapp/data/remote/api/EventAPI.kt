@@ -22,6 +22,8 @@ class EventAPI(
             venue,
             location,
             fights(
+                fight_id,
+                event_id,
                 method_type,
                 method_detail,
                 round_summary,
@@ -31,6 +33,7 @@ class EventAPI(
                     record_after_fight,
                     is_red_corner,
                     fighters(
+                        fighter_id,
                         name,
                         record,
                         image_url,

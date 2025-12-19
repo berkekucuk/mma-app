@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c9179331c008022cbd4d8cd47b4c98c4",
+    "identityHash": "7e41b476d00f7339d128d2358e9f156d",
     "entities": [
       {
         "tableName": "events",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`event_id` TEXT NOT NULL, `name` TEXT, `status` TEXT, `datetime_utc` INTEGER, `venue` TEXT, `location` TEXT, `fights_json` TEXT NOT NULL, PRIMARY KEY(`event_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`event_id` TEXT NOT NULL, `status` TEXT, `name` TEXT, `datetime_utc` INTEGER, `venue` TEXT, `location` TEXT, `fights_json` TEXT NOT NULL, PRIMARY KEY(`event_id`))",
         "fields": [
           {
             "fieldPath": "eventId",
@@ -15,13 +15,13 @@
             "notNull": true
           },
           {
-            "fieldPath": "name",
-            "columnName": "name",
+            "fieldPath": "status",
+            "columnName": "status",
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "status",
-            "columnName": "status",
+            "fieldPath": "name",
+            "columnName": "name",
             "affinity": "TEXT"
           },
           {
@@ -52,11 +52,92 @@
             "event_id"
           ]
         }
+      },
+      {
+        "tableName": "fights",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fight_id` TEXT NOT NULL, `event_id` TEXT NOT NULL, `method_type` TEXT, `method_detail` TEXT, `round_summary` TEXT, `bout_type` TEXT, `weight_class_lbs` INTEGER, `weight_class_id` TEXT, `rounds_format` TEXT, `fight_order` INTEGER, `participants_json` TEXT NOT NULL, PRIMARY KEY(`fight_id`))",
+        "fields": [
+          {
+            "fieldPath": "fightId",
+            "columnName": "fight_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventId",
+            "columnName": "event_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodType",
+            "columnName": "method_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "methodDetail",
+            "columnName": "method_detail",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "roundSummary",
+            "columnName": "round_summary",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "boutType",
+            "columnName": "bout_type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weightClassLbs",
+            "columnName": "weight_class_lbs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "weightClassId",
+            "columnName": "weight_class_id",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "roundsFormat",
+            "columnName": "rounds_format",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "fightOrder",
+            "columnName": "fight_order",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "participants",
+            "columnName": "participants_json",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fight_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fights_event_id",
+            "unique": false,
+            "columnNames": [
+              "event_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_fights_event_id` ON `${TABLE_NAME}` (`event_id`)"
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c9179331c008022cbd4d8cd47b4c98c4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7e41b476d00f7339d128d2358e9f156d')"
     ]
   }
 }

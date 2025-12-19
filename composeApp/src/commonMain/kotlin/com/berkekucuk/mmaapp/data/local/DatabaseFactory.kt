@@ -8,12 +8,14 @@ import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
+import com.berkekucuk.mmaapp.data.local.entity.FightEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(
     entities = [
         EventEntity::class,
+        FightEntity::class
     ],
     version = 1
 )
