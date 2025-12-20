@@ -19,7 +19,6 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -158,12 +157,12 @@ fun CompletedTab(
         } else {
             items(
                 items = completedEvents,
-                key = { it.id },
+                key = { it.eventId },
                 contentType = { "EventItem" }
             ) { event ->
                 EventItem(
                     event = event,
-                    onClick = { onEventClick(event.id) }
+                    onClick = { onEventClick(event.eventId) }
                 )
             }
         }

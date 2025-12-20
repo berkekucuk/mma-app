@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 import kotlin.time.Instant
 
 @Serializable
-data class EventDTO(
+data class EventDto(
     @SerialName("event_id") val eventId: String,
     val name: String? = null,
     val status: String? = null,
     @SerialName("datetime_utc") val datetimeUtc: Instant? = null,
     val venue: String? = null,
     val location: String? = null,
-    val fights: List<FightDTO> = emptyList()
+    val fights: List<FightDto>? = null
 )

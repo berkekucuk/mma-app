@@ -5,11 +5,10 @@ import com.berkekucuk.mmaapp.domain.enums.Result
 
 @Immutable
 data class Participant(
-    val name: String,
-    val record: String,
-    val imageUrl: String?,
-    val countryCode: String?,
-    val isRedCorner: Boolean?,
+    val oddsValue: Int?,
+    val oddsLabel: String,
     val result: Result,
-    val recordAfterFight: String?
+    val recordAfterFight: Record?,
+    val isRedCorner: Boolean,
+    val fighter: Fighter
 )

@@ -3,8 +3,8 @@ package com.berkekucuk.mmaapp.data.remote.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecordDTO(
-    val wins: Int = 0,
-    val losses: Int = 0,
-    val draws: Int = 0
+data class RecordDto(
+    val wins: Int? = null,
+    val losses: Int? = null,
+    val draws: Int? = null
 )

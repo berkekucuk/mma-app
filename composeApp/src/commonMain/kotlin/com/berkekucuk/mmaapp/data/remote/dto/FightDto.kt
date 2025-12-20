@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FightDTO(
+data class FightDto(
     @SerialName("fight_id") val fightId: String,
     @SerialName("event_id") val eventId: String,
     @SerialName("method_type") val methodType: String? = null,
@@ -15,5 +15,5 @@ data class FightDTO(
     @SerialName("weight_class_id") val weightClassId: String? = null,
     @SerialName("rounds_format") val roundsFormat: String? = null,
     @SerialName("fight_order") val fightOrder: Int? = null,
-    @SerialName("participants") val participants: List<ParticipantDTO> = emptyList()
+    @SerialName("participants") val participants: List<ParticipantDto>? = null
 )

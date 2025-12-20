@@ -2,13 +2,11 @@ package com.berkekucuk.mmaapp.domain.model
 
 import androidx.compose.runtime.Immutable
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
-import com.berkekucuk.mmaapp.domain.enums.Result
-import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import kotlin.time.Instant
 
 @Immutable
 data class Event(
-    val id: String,
+    val eventId: String,
     val name: String,
     val status: EventStatus,
     val datetimeUtc: Instant?,

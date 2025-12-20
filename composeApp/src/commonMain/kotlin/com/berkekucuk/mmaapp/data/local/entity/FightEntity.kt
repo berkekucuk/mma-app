@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDTO
+import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDto
 
 @Entity(
     tableName = "fights",
@@ -21,5 +21,5 @@ data class FightEntity(
     @ColumnInfo(name = "weight_class_id") val weightClassId: String? = null,
     @ColumnInfo(name = "rounds_format") val roundsFormat: String? = null,
     @ColumnInfo(name = "fight_order") val fightOrder: Int? = null,
-    @ColumnInfo(name = "participants_json") val participants: List<ParticipantDTO> = emptyList(),
+    @ColumnInfo(name = "participants_json") val participants: List<ParticipantDto>? = null
 )

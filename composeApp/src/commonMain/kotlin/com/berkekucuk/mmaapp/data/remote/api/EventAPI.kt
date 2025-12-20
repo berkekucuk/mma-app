@@ -1,6 +1,6 @@
 package com.berkekucuk.mmaapp.data.remote.api
 
-import com.berkekucuk.mmaapp.data.remote.dto.EventDTO
+import com.berkekucuk.mmaapp.data.remote.dto.EventDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
@@ -44,17 +44,17 @@ class EventAPI(
             """.trimIndent().replace("\n", "").replace(" ", "")
 
 
-    override suspend fun fetchEventsByYear(year: Int): List<EventDTO> {
+    override suspend fun fetchEventsByYear(year: Int): List<EventDto> {
         val startOfYear = LocalDateTime(year, 1, 1, 0, 0, 0).toInstant(TimeZone.UTC)
         val endOfYear = LocalDateTime(year, 12, 31, 23, 59, 59).toInstant(TimeZone.UTC)
         return fetchEventsInternal(start = startOfYear, end = endOfYear)
     }
 
-    override suspend fun fetchEventsAfter(date: Instant): List<EventDTO> {
+    override suspend fun fetchEventsAfter(date: Instant): List<EventDto> {
         return fetchEventsInternal(start = date, end = null)
     }
 
-    private suspend fun fetchEventsInternal(start: Instant, end: Instant?): List<EventDTO> {
+    private suspend fun fetchEventsInternal(start: Instant, end: Instant?): List<EventDto> {
         return client.from("events").select(
             columns = Columns.raw(columnsToSelect)
         ) {
@@ -72,6 +72,6 @@ class EventAPI(
             order(column = "fight_order", order = Order.DESCENDING, nullsFirst = false, referencedTable = "fights")
             limit(count = 1, referencedTable = "fights")
 
-        }.decodeList<EventDTO>()
+        }.decodeList<EventDto>()
     }
 }

@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.data.remote.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MeasurementDTO(
+data class MeasurementDto(
     val metric: Int? = null,
     val imperial: String? = null
 )

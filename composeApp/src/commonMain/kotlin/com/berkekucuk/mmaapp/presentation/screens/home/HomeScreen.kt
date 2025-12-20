@@ -68,10 +68,10 @@ fun HomeScreen(
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppColors.pagerBackground)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AppColors.pagerBackground)
     ) {
         HomeTopBar(pagerState = pagerState, tabs = tabs)
 

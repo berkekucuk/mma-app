@@ -48,12 +48,12 @@ fun EventsTab(
         } else {
             items(
                 items = events,
-                key = { it.id },
+                key = { it.eventId },
                 contentType = { "EventItem" }
             ) { event ->
                 EventItem(
                     event = event,
-                    onClick = { onEventClick(event.id) }
+                    onClick = { onEventClick(event.eventId) }
                 )
             }
         }

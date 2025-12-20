@@ -28,8 +28,8 @@ fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier
 ) {
-    val redFighter = fight.redCorner
-    val blueFighter = fight.blueCorner
+    val redCorner = fight.redCorner
+    val blueCorner = fight.blueCorner
 
     Box(
         modifier = modifier
@@ -41,8 +41,8 @@ fun FightItem(
             modifier = Modifier.fillMaxSize()
         ) {
             val methodText = buildString {
-                if (fight.method.isNotBlank()) {
-                    append(fight.method)
+                if (fight.methodType.isNotBlank()) {
+                    append(fight.methodType)
                     if (fight.methodDetail.isNotBlank()) {
                         append(" - ${fight.methodDetail}")
                     }
@@ -76,20 +76,20 @@ fun FightItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 FighterPortrait(
-                    name = redFighter?.name,
-                    imageUrl = redFighter?.imageUrl,
-                    countryCode = redFighter?.countryCode,
-                    result = redFighter?.result?.name,
-                    record = redFighter?.recordAfterFight ?: redFighter?.record,
+                    name = redCorner?.fighter?.name,
+                    imageUrl = redCorner?.fighter?.imageUrl,
+                    countryCode = redCorner?.fighter?.countryCode,
+                    result = redCorner?.result?.name,
+                    record = redCorner?.recordAfterFight?.toString() ?: redCorner?.fighter?.record?.toString(),
                     alignment = Alignment.Start
                 )
 
                 FighterPortrait(
-                    name = blueFighter?.name,
-                    imageUrl = blueFighter?.imageUrl,
-                    countryCode = blueFighter?.countryCode,
-                    result = blueFighter?.result?.name,
-                    record = blueFighter?.recordAfterFight ?: blueFighter?.record,
+                    name = blueCorner?.fighter?.name,
+                    imageUrl = blueCorner?.fighter?.imageUrl,
+                    countryCode = blueCorner?.fighter?.countryCode,
+                    result = blueCorner?.result?.name,
+                    record = blueCorner?.recordAfterFight?.toString() ?: blueCorner?.fighter?.record?.toString(),
                     alignment = Alignment.End
                 )
             }
