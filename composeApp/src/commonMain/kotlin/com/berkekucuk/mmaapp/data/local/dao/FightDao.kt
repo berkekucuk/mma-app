@@ -17,4 +17,7 @@ interface FightDao {
 
     @Query("SELECT * FROM fights WHERE event_id = :eventId ORDER BY fight_order ASC")
     fun getFightsByEvent(eventId: String): Flow<List<FightEntity>>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM fights WHERE event_id = :eventId)")
+    suspend fun hasFightsForEvent(eventId: String): Boolean
 }

@@ -3,9 +3,9 @@ package com.berkekucuk.mmaapp.core.utils
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class FetchRateLimiter(
+class RateLimiter(
     private val dateTimeProvider: DateTimeProvider,
-    private val timeoutMs: Long = 10_000L
+    private val timeoutMs: Long
 ) {
     private val timestamps = mutableMapOf<String, Long>()
     private val mutex = Mutex()

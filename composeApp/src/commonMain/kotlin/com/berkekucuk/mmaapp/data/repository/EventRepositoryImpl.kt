@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
+import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.Event
@@ -24,13 +25,15 @@ import kotlin.time.Instant
 class EventRepositoryImpl(
     private val remoteDataSource: EventRemoteDataSource,
     private val dao: EventDao,
-    private val dateTimeProvider: DateTimeProvider
+    private val dateTimeProvider: DateTimeProvider,
+    private val rateLimiter: RateLimiter
 ) : EventRepository {
 
-    private val rateLimitMs = 10_000L
-    private val keyUpcomingTab = -1
-    private val keyFeaturedTab = -2
-    private val lastFetchTimes = mutableMapOf<Int, Long>()
+    private companion object {
+        const val KEY_UPCOMING_TAB = "tab_upcoming"
+        const val KEY_FEATURED_TAB = "tab_featured"
+        fun getYearKey(year: Int) = "year_$year"
+    }
 
     override fun getEvents(): Flow<List<Event>> {
         return dao.getAllEvents()
@@ -56,13 +59,13 @@ class EventRepositoryImpl(
     override suspend fun refreshFeaturedEventTab(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (isRateLimited(keyFeaturedTab)) {
+                if (!rateLimiter.shouldFetch(KEY_FEATURED_TAB)) {
                     return@runCatching
                 }
                 fetchInitialData()
-                updateLastFetchTime(keyFeaturedTab)
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(KEY_FEATURED_TAB)
             }
         }
     }
@@ -70,21 +73,22 @@ class EventRepositoryImpl(
     override suspend fun refreshUpcomingEventsTab(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (isRateLimited(keyUpcomingTab)) {
+                if (!rateLimiter.shouldFetch(KEY_UPCOMING_TAB)) {
                     return@runCatching
                 }
                 fetchPendingEvents()
-                updateLastFetchTime(keyUpcomingTab)
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(KEY_UPCOMING_TAB)
             }
         }
     }
 
     override suspend fun getEventsByYear(year: Int, forceRefresh: Boolean): Result<Unit> {
         return withContext(Dispatchers.IO) {
+            val yearKey = getYearKey(year)
             runCatching {
-                if (forceRefresh && isRateLimited(year)) {
+                if (!rateLimiter.shouldFetch(yearKey)) {
                     return@runCatching
                 }
 
@@ -92,9 +96,12 @@ class EventRepositoryImpl(
                     val events = remoteDataSource.fetchEventsByYear(year)
                     if (events.isNotEmpty()) {
                         dao.insertEvents(events.map { it.toEntity() })
-                        updateLastFetchTime(year)
+                        rateLimiter.markAsFetched(yearKey)
                     }
                 }
+            }.onFailure {
+                if (it is CancellationException) throw it
+                rateLimiter.reset(yearKey)
             }
         }
     }
@@ -129,7 +136,7 @@ class EventRepositoryImpl(
                     val events = remoteDataSource.fetchEventsByYear(year)
                     if (events.isNotEmpty()) {
                         dao.insertEvents(events.map { it.toEntity() })
-                        updateLastFetchTime(year)
+                        rateLimiter.markAsFetched(getYearKey(year))
                     }
                 }
             }.forEach { it.await() }
@@ -148,15 +155,5 @@ class EventRepositoryImpl(
         if (events.isNotEmpty()) {
             dao.insertEvents(events.map { it.toEntity() })
         }
-    }
-
-    private fun isRateLimited(key: Int): Boolean {
-        val lastFetch = lastFetchTimes[key] ?: 0L
-        val now = dateTimeProvider.now.toEpochMilliseconds()
-        return (now - lastFetch) < rateLimitMs
-    }
-
-    private fun updateLastFetchTime(key: Int) {
-        lastFetchTimes[key] = dateTimeProvider.now.toEpochMilliseconds()
     }
 }
