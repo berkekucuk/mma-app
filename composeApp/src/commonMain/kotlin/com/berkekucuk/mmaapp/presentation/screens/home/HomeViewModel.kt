@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.toLocalDateTime
-import kotlin.math.abs
+import kotlin.time.Duration.Companion.hours
 
 class HomeViewModel(
     private val eventRepository: EventRepository,
@@ -73,9 +73,14 @@ class HomeViewModel(
             val selectedYear = _state.value.selectedYear ?: currentYear
             val allEvents = _state.value.allEvents
 
+            val thresholdDate = now.minus(24.hours)
+
             val featuredEvent = allEvents
-                .filter { it.datetimeUtc != null }
-                .minByOrNull { abs((it.datetimeUtc!! - now).inWholeMilliseconds) }
+                .filter {
+                    it.datetimeUtc != null && it.datetimeUtc >= thresholdDate
+                }
+                .sortedBy { it.datetimeUtc }
+                .firstOrNull()
 
             val upcomingEvents = allEvents
                 .filter { it.status == EventStatus.UPCOMING }
@@ -144,7 +149,7 @@ class HomeViewModel(
     private fun onRefreshFeaturedTab() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingFeaturedTab = true) }
-            eventRepository.refreshFeaturedEventTab()
+            eventRepository.refreshEvents()
                 .onSuccess {
                     _state.update { it.copy(isRefreshingFeaturedTab = false) }
                 }
@@ -157,7 +162,7 @@ class HomeViewModel(
     private fun onRefreshUpcomingTab() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingUpcomingTab = true) }
-            eventRepository.refreshUpcomingEventsTab()
+            eventRepository.refreshEvents()
                 .onSuccess {
                     _state.update { it.copy(isRefreshingUpcomingTab = false) }
                 }

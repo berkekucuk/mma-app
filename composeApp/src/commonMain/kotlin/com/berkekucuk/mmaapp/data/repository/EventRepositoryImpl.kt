@@ -30,9 +30,9 @@ class EventRepositoryImpl(
 ) : EventRepository {
 
     private companion object {
-        const val KEY_UPCOMING_TAB = "tab_upcoming"
-        const val KEY_FEATURED_TAB = "tab_featured"
-        fun getYearKey(year: Int) = "year_$year"
+
+        const val KEY_REFRESH = "key_refresh"
+        fun getYearKey(year: Int) = "key_$year"
     }
 
     override fun getEvents(): Flow<List<Event>> {
@@ -56,30 +56,17 @@ class EventRepositoryImpl(
         }
     }
 
-    override suspend fun refreshFeaturedEventTab(): Result<Unit> {
+    override suspend fun refreshEvents(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (!rateLimiter.shouldFetch(KEY_FEATURED_TAB)) {
-                    return@runCatching
-                }
-                fetchInitialData()
-            }.onFailure {
-                if (it is CancellationException) throw it
-                rateLimiter.reset(KEY_FEATURED_TAB)
-            }
-        }
-    }
-
-    override suspend fun refreshUpcomingEventsTab(): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                if (!rateLimiter.shouldFetch(KEY_UPCOMING_TAB)) {
+                if (!rateLimiter.shouldFetch(KEY_REFRESH)) {
                     return@runCatching
                 }
                 fetchPendingEvents()
+                rateLimiter.markAsFetched(KEY_REFRESH)
             }.onFailure {
                 if (it is CancellationException) throw it
-                rateLimiter.reset(KEY_UPCOMING_TAB)
+                rateLimiter.reset(KEY_REFRESH)
             }
         }
     }
