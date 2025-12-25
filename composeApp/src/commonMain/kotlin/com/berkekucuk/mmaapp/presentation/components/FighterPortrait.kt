@@ -121,7 +121,7 @@ private fun FighterImage(
         )
 
         countryCode?.let { code ->
-            val flagUrl = "https://ictgktsdedzcydjwhosx.supabase.co/storage/v1/object/public/flags/${code.lowercase()}.png"
+            val flagUrl = "https://flags-v1.s3.eu-central-1.amazonaws.com/${code.lowercase()}.png"
 
             val flagRequest = remember(flagUrl) {
                 ImageRequest.Builder(context)
