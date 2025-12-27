@@ -5,9 +5,6 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlin.time.Instant
 
 class EventAPI(
@@ -19,6 +16,7 @@ class EventAPI(
             name,
             status,
             datetime_utc,
+            event_year,
             venue,
             location,
             fights(
@@ -43,35 +41,29 @@ class EventAPI(
             )
             """.trimIndent().replace("\n", "").replace(" ", "")
 
-
     override suspend fun fetchEventsByYear(year: Int): List<EventDto> {
-        val startOfYear = LocalDateTime(year, 1, 1, 0, 0, 0).toInstant(TimeZone.UTC)
-        val endOfYear = LocalDateTime(year, 12, 31, 23, 59, 59).toInstant(TimeZone.UTC)
-        return fetchEventsInternal(start = startOfYear, end = endOfYear)
-    }
-
-    override suspend fun fetchEventsAfter(date: Instant): List<EventDto> {
-        return fetchEventsInternal(start = date, end = null)
-    }
-
-    private suspend fun fetchEventsInternal(start: Instant, end: Instant?): List<EventDto> {
         return client.from("events").select(
             columns = Columns.raw(columnsToSelect)
         ) {
             filter {
-                gte("datetime_utc", start)
-
-                if (end != null) {
-                    lte("datetime_utc", end)
-                }
-
+                eq("event_year", year)
                 neq("status", "Cancelled")
             }
+            order(column = "datetime_utc", order = Order.DESCENDING)
+            order(column = "fight_order", order = Order.DESCENDING, referencedTable = "fights")
+        }.decodeList<EventDto>()
+    }
 
+    override suspend fun fetchEventsAfter(date: Instant): List<EventDto> {
+        return client.from("events").select(
+            columns = Columns.raw(columnsToSelect)
+        ) {
+            filter {
+                gte("datetime_utc", date)
+                neq("status", "Cancelled")
+            }
             order(column = "datetime_utc", order = Order.ASCENDING)
-            order(column = "fight_order", order = Order.DESCENDING, nullsFirst = false, referencedTable = "fights")
-            limit(count = 1, referencedTable = "fights")
-
+            order(column = "fight_order", order = Order.DESCENDING, referencedTable = "fights")
         }.decodeList<EventDto>()
     }
 }
