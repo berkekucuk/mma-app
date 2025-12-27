@@ -13,6 +13,7 @@ fun EventDto.toEntity(): EventEntity {
         datetimeUtc = this.datetimeUtc,
         venue = this.venue,
         location = this.location,
+        eventYear = this.eventYear,
         fights = this.fights
     )
 }
@@ -25,6 +26,7 @@ fun EventEntity.toDomain(): Event {
         datetimeUtc = this.datetimeUtc ,
         venue = this.venue ?: "N/A",
         location = this.location ?: "N/A",
+        eventYear = this.eventYear,
         fights = fights?.map { it.toDomain() } ?: emptyList()
     )
 }
