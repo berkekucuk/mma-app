@@ -31,7 +31,6 @@ class HomeViewModel(
             it.copy(
                 selectedYear = currentYear,
                 availableYears = (1993..currentYear).toList().reversed(),
-                isLoading = true
             )
         }
 

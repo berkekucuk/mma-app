@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface EventRepository {
     fun getEvents(): Flow<List<Event>>
+    fun getEventById(eventId: String): Flow<Event>
     suspend fun syncEvents(): Result<Unit>
     suspend fun refreshEvents(): Result<Unit>
     suspend fun getEventsByYear(year: Int, forceRefresh: Boolean = false): Result<Unit>

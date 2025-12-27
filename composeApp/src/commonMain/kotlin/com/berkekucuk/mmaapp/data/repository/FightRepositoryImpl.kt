@@ -5,6 +5,7 @@ import com.berkekucuk.mmaapp.data.local.dao.FightDao
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.FightRemoteDataSource
+import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.repository.FightRepository
 import kotlinx.coroutines.Dispatchers
@@ -30,12 +31,12 @@ class FightRepositoryImpl(
 
     override suspend fun syncFights(
         eventId: String,
-        eventStatus: String,
+        status: EventStatus,
         forceRefresh: Boolean
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (shouldFetchFromApi(eventId, eventStatus, forceRefresh)) {
+                if (shouldFetchFromApi(eventId, status, forceRefresh)) {
                     val fights = remoteDataSource.fetchFightsByEvent(eventId)
                     if (fights.isNotEmpty()) {
                         dao.insertFights(fights.map { it.toEntity() })
@@ -50,10 +51,10 @@ class FightRepositoryImpl(
 
     private suspend fun shouldFetchFromApi(
         eventId: String,
-        eventStatus: String,
+        status: EventStatus,
         forceRefresh: Boolean
     ): Boolean {
-        val isCompleted = eventStatus.equals("Completed", ignoreCase = true)
+        val isCompleted = status == EventStatus.COMPLETED
         val hasLocalData = dao.hasFightsForEvent(eventId)
 
         if (isCompleted && hasLocalData && !forceRefresh) {

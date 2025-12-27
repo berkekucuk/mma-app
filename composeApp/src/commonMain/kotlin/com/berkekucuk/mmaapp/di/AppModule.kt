@@ -16,6 +16,7 @@ import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FightRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FightRepository
+import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 
@@ -65,8 +66,8 @@ val appModule = module {
         EventRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
-            dateTimeProvider = get(),
-            rateLimiter = get()
+            rateLimiter = get(),
+            dateTimeProvider = get()
         )
     }
 
@@ -83,6 +84,14 @@ val appModule = module {
         HomeViewModel(
             eventRepository = get(),
             dateTimeProvider = get()
+        )
+    }
+
+    viewModel {
+        EventDetailViewModel(
+            eventRepository = get(),
+            fightRepository = get(),
+            savedStateHandle = get()
         )
     }
 }

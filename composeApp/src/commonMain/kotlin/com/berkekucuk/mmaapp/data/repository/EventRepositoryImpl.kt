@@ -16,9 +16,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Instant
 
@@ -39,6 +36,11 @@ class EventRepositoryImpl(
         return dao.getAllEvents()
             .map { entities -> entities.map { it.toDomain() } }
             .flowOn(Dispatchers.IO)
+    }
+
+    override fun getEventById(eventId: String): Flow<Event> {
+        return dao.getEventById(eventId)
+            .map { it.toDomain() }
     }
 
     override suspend fun syncEvents(): Result<Unit> {
