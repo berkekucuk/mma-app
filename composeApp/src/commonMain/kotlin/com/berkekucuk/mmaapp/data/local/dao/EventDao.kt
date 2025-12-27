@@ -21,6 +21,6 @@ interface EventDao {
     @Query("SELECT MIN(datetime_utc) FROM events WHERE LOWER(status) != 'completed'")
     suspend fun getOldestPendingEventDate(): Long?
 
-    @Query("SELECT EXISTS(SELECT 1 FROM events WHERE datetime_utc BETWEEN :startTimestamp AND :endTimestamp)")
-    suspend fun hasEventsForYear(startTimestamp: Long, endTimestamp: Long): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM events WHERE event_year = :year)")
+    suspend fun hasEventsForYear(year: Int): Boolean
 }

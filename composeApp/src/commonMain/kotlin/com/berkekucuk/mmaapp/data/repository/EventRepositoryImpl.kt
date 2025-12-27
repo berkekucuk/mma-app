@@ -95,16 +95,7 @@ class EventRepositoryImpl(
 
     private suspend fun shouldFetchFromApi(year: Int, forceRefresh: Boolean): Boolean {
         if (forceRefresh) return true
-
-        val startInstant = LocalDateTime(year, 1, 1, 0, 0, 0)
-            .toInstant(TimeZone.UTC)
-            .toEpochMilliseconds()
-
-        val endInstant = LocalDateTime(year, 12, 31, 23, 59, 59)
-            .toInstant(TimeZone.UTC)
-            .toEpochMilliseconds()
-
-        return !dao.hasEventsForYear(startInstant, endInstant)
+        return !dao.hasEventsForYear(year)
     }
 
     private suspend fun fetchInitialData() {

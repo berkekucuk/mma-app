@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.hours
 
 class HomeViewModel(
@@ -88,7 +87,7 @@ class HomeViewModel(
 
             val completedEvents = allEvents
                 .filter { it.status == EventStatus.COMPLETED }
-                .filter { it.datetimeUtc?.toLocalDateTime(dateTimeProvider.timeZone)?.year == selectedYear }
+                .filter { it.eventYear == selectedYear }
                 .sortedByDescending { it.datetimeUtc }
 
             _state.update {
@@ -126,7 +125,7 @@ class HomeViewModel(
             val allEvents = _state.value.allEvents
             val newCompletedList = allEvents
                 .filter { it.status == EventStatus.COMPLETED }
-                .filter { it.datetimeUtc?.toLocalDateTime(dateTimeProvider.timeZone)?.year == year }
+                .filter { it.eventYear == year }
                 .sortedByDescending { it.datetimeUtc }
 
             _state.update {
