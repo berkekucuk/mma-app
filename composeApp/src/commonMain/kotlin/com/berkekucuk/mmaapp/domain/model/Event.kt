@@ -12,6 +12,7 @@ data class Event(
     val datetimeUtc: Instant?,
     val venue: String,
     val location: String,
+    val eventYear: Int,
     val fights: List<Fight>
 ) {
     val mainEvent: Fight?

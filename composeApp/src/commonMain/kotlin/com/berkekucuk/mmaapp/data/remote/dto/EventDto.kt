@@ -12,5 +12,6 @@ data class EventDto(
     @SerialName("datetime_utc") val datetimeUtc: Instant? = null,
     val venue: String? = null,
     val location: String? = null,
+    @SerialName("event_year") val eventYear: Int,
     val fights: List<FightDto>? = null
 )

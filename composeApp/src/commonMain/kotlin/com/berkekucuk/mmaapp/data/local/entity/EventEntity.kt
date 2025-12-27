@@ -14,6 +14,7 @@ data class EventEntity(
     @ColumnInfo(name = "datetime_utc") val datetimeUtc: Instant? = null,
     val venue: String? = null,
     val location: String? = null,
+    @ColumnInfo(name = "event_year") val eventYear: Int,
     // Thanks to TypeConverter, this list will be embedded in a single cell as JSON text
     @ColumnInfo(name = "fights_json") val fights: List<FightDto>? = null
 )
