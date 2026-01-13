@@ -72,12 +72,14 @@ class EventDetailViewModel(
 
     private fun processAndSetFights(fights: List<Fight>) {
         val mainCard = fights.filter { fight ->
-            fight.boutType.contains("Main Card", ignoreCase = true)
-        }.sortedBy { it.fightOrder }
+            fight.boutType.contains("Main Card", ignoreCase = true) ||
+            fight.boutType.contains("Main Event", ignoreCase = true) ||
+            fight.boutType.contains("Co-Main", ignoreCase = true)
+        }.sortedByDescending { it.fightOrder }
 
         val prelims = fights.filter { fight ->
             fight.boutType.contains("Prelim", ignoreCase = true)
-        }.sortedBy { it.fightOrder }
+        }.sortedByDescending { it.fightOrder }
 
         _state.update {
             it.copy(
