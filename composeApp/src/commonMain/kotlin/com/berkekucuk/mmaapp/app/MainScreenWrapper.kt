@@ -77,12 +77,12 @@ fun MainScreenWrapper(
                 }
             }
         }
-    ) { bottomBarPadding ->
+    ) { innerPadding ->
 
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottomBarPadding),
+                .padding(innerPadding),
             color = AppColors.pagerBackground
         ) {
             NavHost(

@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.Event
+import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import kotlinx.coroutines.delay
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.empty_events_for_year
@@ -65,7 +66,7 @@ fun CompletedTab(
         }
     }
 
-    EventsListContainer(
+    ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
@@ -87,14 +88,18 @@ fun CompletedTab(
                         onClick = {},
                         label = {
                             Text(
-                                text = selectedYear?.toString() ?: stringResource(Res.string.select_year),
+                                text = selectedYear?.toString()
+                                    ?: stringResource(Res.string.select_year),
                                 fontWeight = FontWeight.Medium
                             )
                         },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                         },
-                        modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, true),
+                        modifier = Modifier.menuAnchor(
+                            ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                            true
+                        ),
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = AppColors.dropdownMenuBackground,
                             selectedLabelColor = AppColors.textPrimary,
@@ -147,7 +152,10 @@ fun CompletedTab(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = stringResource(Res.string.empty_events_for_year, selectedYear.toString()),
+                            text = stringResource(
+                                Res.string.empty_events_for_year,
+                                selectedYear.toString()
+                            ),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

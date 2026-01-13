@@ -68,7 +68,7 @@ fun HomeScreen(
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
 
-        Column(
+    Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AppColors.pagerBackground)
@@ -110,7 +110,7 @@ fun HomeScreen(
                                 isRefreshing = state.isRefreshingFeaturedTab,
                                 onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                            emptyMessage = stringResource(Res.string.empty_featured_events),
+                                emptyMessage = stringResource(Res.string.empty_featured_events),
                                 listState = featuredListState,
                             )
 
@@ -119,7 +119,7 @@ fun HomeScreen(
                                 isRefreshing = state.isRefreshingUpcomingTab,
                                 onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
                                 onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                            emptyMessage = stringResource(Res.string.empty_upcoming_events),
+                                emptyMessage = stringResource(Res.string.empty_upcoming_events),
                                 listState = upcomingListState,
                             )
 

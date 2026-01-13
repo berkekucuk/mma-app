@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.screens.home
+package com.berkekucuk.mmaapp.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,11 +12,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.format.Padding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventsListContainer(
+fun ListContainer(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
