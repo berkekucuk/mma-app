@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
@@ -49,7 +48,7 @@ fun EventDetailTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(64.dp)
-                .padding(horizontal = 16.dp),
+                .padding(start = 8.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
@@ -67,8 +66,7 @@ fun EventDetailTopBar(
                 color = AppColors.textPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.padding(start = 4.dp)
             )
         }
 
