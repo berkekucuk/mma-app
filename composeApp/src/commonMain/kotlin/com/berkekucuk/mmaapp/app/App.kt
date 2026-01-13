@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 
 
 @Composable
@@ -23,16 +24,10 @@ fun App() {
             )
         }
 
-        composable<Route.EventDetail> { backStackEntry ->
-            val route: Route.EventDetail = backStackEntry.toRoute()
-
-//            EventDetailScreen(
-//                eventId = route.eventId,
-//                onBackClick = { rootNavController.navigateUp() },
-//                onFighterClick = { fighterId ->
-//                    rootNavController.navigate(Route.FighterDetail(fighterId))
-//                }
-//            )
+        composable<Route.EventDetail> {
+            EventDetailScreenRoot(
+                onBackClick = { rootNavController.navigateUp() }
+            )
         }
 
         composable<Route.FighterDetail> { backStackEntry ->
