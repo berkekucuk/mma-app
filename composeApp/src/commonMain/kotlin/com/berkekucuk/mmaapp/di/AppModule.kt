@@ -52,6 +52,10 @@ val appModule = module {
         get<AppDatabase>().eventDao()
     }
 
+    single {
+        get<AppDatabase>().fightDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventAPI(client = get())
