@@ -23,6 +23,10 @@ class FightRepositoryImpl(
     private val rateLimiter: RateLimiter
 ) : FightRepository {
 
+    private companion object {
+        fun getRefreshKey(eventId: String) = "refresh_fight_$eventId"
+    }
+
     override fun getFightsByEvent(eventId: String): Flow<List<Fight>> {
         return dao.getFightsByEvent(eventId)
             .map { entities -> entities.map { it.toDomain() } }
@@ -31,12 +35,11 @@ class FightRepositoryImpl(
 
     override suspend fun syncFights(
         eventId: String,
-        status: EventStatus,
-        forceRefresh: Boolean
+        status: EventStatus
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (shouldFetchFromApi(eventId, status, forceRefresh)) {
+                if (shouldFetchFromApi(eventId, status)) {
                     val fights = remoteDataSource.fetchFightsByEvent(eventId)
                     if (fights.isNotEmpty()) {
                         dao.insertFights(fights.map { it.toEntity() })
@@ -49,15 +52,33 @@ class FightRepositoryImpl(
         }
     }
 
+    override suspend fun refreshFights(eventId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            val refreshKey = getRefreshKey(eventId)
+            runCatching {
+                if (!rateLimiter.shouldFetch(refreshKey)) {
+                    return@runCatching
+                }
+                val fights = remoteDataSource.fetchFightsByEvent(eventId)
+                if (fights.isNotEmpty()) {
+                    dao.insertFights(fights.map { it.toEntity() })
+                }
+                rateLimiter.markAsFetched(refreshKey)
+            }.onFailure { error ->
+                if (error is CancellationException) throw error
+                rateLimiter.reset(refreshKey)
+            }
+        }
+    }
+
     private suspend fun shouldFetchFromApi(
         eventId: String,
-        status: EventStatus,
-        forceRefresh: Boolean
+        status: EventStatus
     ): Boolean {
         val isCompleted = status == EventStatus.COMPLETED
         val hasLocalData = dao.hasFightsForEvent(eventId)
 
-        if (isCompleted && hasLocalData && !forceRefresh) {
+        if (isCompleted && hasLocalData) {
             return false
         }
 

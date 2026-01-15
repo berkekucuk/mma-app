@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FightRepository {
     fun getFightsByEvent(eventId: String): Flow<List<Fight>>
-    suspend fun syncFights(eventId: String, status: EventStatus, forceRefresh: Boolean): Result<Unit>
+    suspend fun syncFights(eventId: String, status: EventStatus): Result<Unit>
+    suspend fun refreshFights(eventId: String): Result<Unit>
 }
