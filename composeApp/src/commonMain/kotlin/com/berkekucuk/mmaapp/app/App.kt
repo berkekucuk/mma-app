@@ -79,9 +79,47 @@ fun App() {
             }
         ) {
             EventDetailScreenRoot(
+                onNavigateToFightDetail = { fightId ->
+                    rootNavController.navigate(Route.FightDetail(fightId))
+                },
                 onBackClick = { rootNavController.navigateUp() }
             )
         }
+
+
+        composable<Route.FightDetail>(
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(300)
+                )
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(300)
+                )
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(300)
+                )
+            }
+        ) { backStackEntry ->
+            val route: Route.FightDetail = backStackEntry.toRoute()
+            // TODO: FightDetailScreenRoot(
+            //     fightId = route.fightId,
+            //     onBackClick = { rootNavController.navigateUp() }
+            // )
+        }
+
 
         composable<Route.FighterDetail> { backStackEntry ->
             val route: Route.FighterDetail = backStackEntry.toRoute()
