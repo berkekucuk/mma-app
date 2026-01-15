@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,20 +27,30 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun EventDetailScreenRoot(
     viewModel: EventDetailViewModel = koinViewModel(),
+    onNavigateToFightDetail: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.navigation.collect { event ->
+            when (event) {
+                is EventDetailNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.fightId)
+                is EventDetailNavigationEvent.Back -> onBackClick()
+            }
+        }
+    }
+
     EventDetailScreen(
         state = uiState,
-        onBackClick = onBackClick,
+        onAction = viewModel::onAction,
     )
 }
 
 @Composable
 fun EventDetailScreen(
     state: EventDetailUiState,
-    onBackClick: () -> Unit,
+    onAction: (EventDetailUiAction) -> Unit,
 ) {
     val tabs = listOf("Main Card", "Prelims")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
@@ -56,7 +67,7 @@ fun EventDetailScreen(
             pagerState = pagerState,
             tabs = tabs,
             eventName = state.event?.name ?: "Event Details",
-            onBackClick = onBackClick
+            onBackClick = { onAction(EventDetailUiAction.OnBackClicked) }
         )
 
         AnimatedContent(
