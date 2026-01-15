@@ -17,7 +17,7 @@ import com.berkekucuk.mmaapp.presentation.components.ListContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventsTab(
+fun UpcomingTab(
     events: List<Event>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,

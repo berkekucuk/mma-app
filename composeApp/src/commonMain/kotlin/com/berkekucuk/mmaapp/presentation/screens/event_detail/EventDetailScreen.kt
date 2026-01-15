@@ -54,7 +54,6 @@ fun EventDetailScreen(
 ) {
     val tabs = listOf("Main Card", "Prelims")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
-
     val mainCardListState = rememberLazyListState()
     val prelimsListState = rememberLazyListState()
 

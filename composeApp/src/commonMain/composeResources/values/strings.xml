@@ -2,12 +2,10 @@
 <resources>
     <!-- Home Screen -->
     <string name="events_title">events</string>
-    <string name="tab_featured">Featured</string>
     <string name="tab_upcoming">Upcoming</string>
     <string name="tab_completed">Completed</string>
 
     <!-- Empty States -->
-    <string name="empty_featured_events">No featured event available</string>
     <string name="empty_upcoming_events">No upcoming events available</string>
     <string name="empty_events_for_year">No events available for %1$s</string>
 

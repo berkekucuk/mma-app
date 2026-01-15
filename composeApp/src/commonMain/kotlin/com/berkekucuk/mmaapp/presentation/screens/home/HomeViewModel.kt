@@ -80,8 +80,11 @@ class HomeViewModel(
                 .sortedBy { it.datetimeUtc }
                 .firstOrNull()
 
+            val featuredEventId = featuredEvent?.eventId
+
             val upcomingEvents = allEvents
-                .filter { it.status == EventStatus.UPCOMING }
+                .filter { it.status == EventStatus.UPCOMING || it.status == EventStatus.LIVE }
+                .filter { it.eventId != featuredEventId }
                 .sortedBy { it.datetimeUtc }
 
             val completedEvents = allEvents
@@ -91,7 +94,6 @@ class HomeViewModel(
 
             _state.update {
                 it.copy(
-                    featuredEvent = featuredEvent,
                     upcomingEvents = upcomingEvents,
                     completedEvents = completedEvents,
                     selectedYear = selectedYear
@@ -104,7 +106,6 @@ class HomeViewModel(
         when (action) {
             is HomeUiAction.OnEventClicked -> navigateTo(HomeNavigationEvent.ToEventDetail(action.eventId))
             is HomeUiAction.OnYearSelected -> onYearSelected(action.year)
-            is HomeUiAction.OnRefreshFeaturedTab -> onRefreshFeaturedTab()
             is HomeUiAction.OnRefreshUpcomingTab -> onRefreshUpcomingTab()
             is HomeUiAction.OnRefreshCompletedTab -> onRefreshCompletedTab()
         }
@@ -140,19 +141,6 @@ class HomeViewModel(
                 }
                 .onFailure {
                     _state.update { it.copy(isYearLoading = false) }
-                }
-        }
-    }
-
-    private fun onRefreshFeaturedTab() {
-        viewModelScope.launch {
-            _state.update { it.copy(isRefreshingFeaturedTab = true) }
-            eventRepository.refreshEvents()
-                .onSuccess {
-                    _state.update { it.copy(isRefreshingFeaturedTab = false) }
-                }
-                .onFailure {
-                    _state.update { it.copy(isRefreshingFeaturedTab = false) }
                 }
         }
     }

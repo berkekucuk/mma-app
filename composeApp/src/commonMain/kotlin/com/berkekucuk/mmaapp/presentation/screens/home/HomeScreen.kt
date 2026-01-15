@@ -22,10 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.empty_featured_events
 import mmaapp.composeapp.generated.resources.empty_upcoming_events
 import mmaapp.composeapp.generated.resources.tab_completed
-import mmaapp.composeapp.generated.resources.tab_featured
 import mmaapp.composeapp.generated.resources.tab_upcoming
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -57,13 +55,10 @@ fun HomeScreen(
     onAction: (HomeUiAction) -> Unit,
 ) {
     val tabs = listOf(
-        stringResource(Res.string.tab_featured),
         stringResource(Res.string.tab_upcoming),
         stringResource(Res.string.tab_completed)
     )
     val pagerState = rememberPagerState(pageCount = { tabs.size })
-
-    val featuredListState = rememberLazyListState()
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
 
@@ -104,16 +99,7 @@ fun HomeScreen(
                 ) { page ->
 
                     when (page) {
-                        0 -> EventsTab(
-                            events = if (state.featuredEvent != null) listOf(state.featuredEvent) else emptyList(),
-                            isRefreshing = state.isRefreshingFeaturedTab,
-                            onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
-                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                            emptyMessage = stringResource(Res.string.empty_featured_events),
-                            listState = featuredListState,
-                        )
-
-                        1 -> EventsTab(
+                        0 -> UpcomingTab(
                             events = state.upcomingEvents,
                             isRefreshing = state.isRefreshingUpcomingTab,
                             onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
@@ -122,7 +108,7 @@ fun HomeScreen(
                             listState = upcomingListState,
                         )
 
-                        2 -> CompletedTab(
+                        1 -> CompletedTab(
                             completedEvents = state.completedEvents,
                             isRefreshing = state.isRefreshingCompletedTab,
                             onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
