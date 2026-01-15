@@ -72,23 +72,27 @@ class HomeViewModel(
             val allEvents = _state.value.allEvents
 
             val thresholdDate = now.minus(24.hours)
-
             val featuredEvent = allEvents
-                .filter {
-                    it.datetimeUtc != null && it.datetimeUtc >= thresholdDate
-                }
+                .filter { it.datetimeUtc != null && it.datetimeUtc >= thresholdDate }
                 .sortedBy { it.datetimeUtc }
                 .firstOrNull()
 
             val featuredEventId = featuredEvent?.eventId
 
-            val upcomingEvents = allEvents
+            val upcomingAndLiveEvents = allEvents
                 .filter { it.status == EventStatus.UPCOMING || it.status == EventStatus.LIVE }
                 .filter { it.eventId != featuredEventId }
                 .sortedBy { it.datetimeUtc }
 
+            val upcomingEvents = if (featuredEvent != null) {
+                listOf(featuredEvent) + upcomingAndLiveEvents
+            } else {
+                upcomingAndLiveEvents
+            }
+
             val completedEvents = allEvents
                 .filter { it.status == EventStatus.COMPLETED }
+                .filter { it.eventId != featuredEventId }
                 .filter { it.eventYear == selectedYear }
                 .sortedByDescending { it.datetimeUtc }
 
