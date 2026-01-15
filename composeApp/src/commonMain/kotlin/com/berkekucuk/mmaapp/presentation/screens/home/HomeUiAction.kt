@@ -7,8 +7,3 @@ sealed interface HomeUiAction {
     data object OnRefreshUpcomingTab : HomeUiAction
     data object OnRefreshCompletedTab : HomeUiAction
 }
-
-sealed interface NavigationEvent {
-    data class ToEventDetail(val eventId: String) : NavigationEvent
-    data object Back : NavigationEvent
-}

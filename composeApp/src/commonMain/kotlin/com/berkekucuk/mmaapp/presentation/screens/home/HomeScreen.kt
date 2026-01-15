@@ -34,14 +34,13 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onEventClick: (String) -> Unit,
-    ) {
+) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is NavigationEvent.ToEventDetail -> onEventClick(event.eventId)
-                is NavigationEvent.Back -> { }
+                is HomeNavigationEvent.ToEventDetail -> onEventClick(event.eventId)
             }
         }
     }
@@ -69,71 +68,71 @@ fun HomeScreen(
     val completedListState = rememberLazyListState()
 
     Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AppColors.pagerBackground)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.pagerBackground)
     ) {
         HomeTopBar(pagerState = pagerState, tabs = tabs)
 
-            AnimatedContent(
-                targetState = state.isLoading,
-                transitionSpec = {
-                    fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-                },
-                label = "HomeContentTransition",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) { isLoading ->
+        AnimatedContent(
+            targetState = state.isLoading,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+            },
+            label = "HomeContentTransition",
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) { isLoading ->
 
-                if (isLoading) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(AppColors.pagerBackground),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(color = AppColors.ufcRed)
-                    }
-                } else {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(AppColors.pagerBackground),
-                        beyondViewportPageCount = 1
-                    ) { page ->
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AppColors.pagerBackground),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = AppColors.ufcRed)
+                }
+            } else {
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(AppColors.pagerBackground),
+                    beyondViewportPageCount = 1
+                ) { page ->
 
-                        when (page) {
-                            0 -> EventsTab(
-                                events = if (state.featuredEvent != null) listOf(state.featuredEvent) else emptyList(),
-                                isRefreshing = state.isRefreshingFeaturedTab,
-                                onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
-                                onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                                emptyMessage = stringResource(Res.string.empty_featured_events),
-                                listState = featuredListState,
-                            )
+                    when (page) {
+                        0 -> EventsTab(
+                            events = if (state.featuredEvent != null) listOf(state.featuredEvent) else emptyList(),
+                            isRefreshing = state.isRefreshingFeaturedTab,
+                            onRefresh = { onAction(HomeUiAction.OnRefreshFeaturedTab) },
+                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                            emptyMessage = stringResource(Res.string.empty_featured_events),
+                            listState = featuredListState,
+                        )
 
-                            1 -> EventsTab(
-                                events = state.upcomingEvents,
-                                isRefreshing = state.isRefreshingUpcomingTab,
-                                onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
-                                onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                                emptyMessage = stringResource(Res.string.empty_upcoming_events),
-                                listState = upcomingListState,
-                            )
+                        1 -> EventsTab(
+                            events = state.upcomingEvents,
+                            isRefreshing = state.isRefreshingUpcomingTab,
+                            onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
+                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                            emptyMessage = stringResource(Res.string.empty_upcoming_events),
+                            listState = upcomingListState,
+                        )
 
-                            2 -> CompletedTab(
-                                completedEvents = state.completedEvents,
-                                isRefreshing = state.isRefreshingCompletedTab,
-                                onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
-                                onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                                availableYears = state.availableYears,
-                                selectedYear = state.selectedYear,
-                                isYearLoading = state.isYearLoading,
-                                onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
-                                listState = completedListState,
-                            )
+                        2 -> CompletedTab(
+                            completedEvents = state.completedEvents,
+                            isRefreshing = state.isRefreshingCompletedTab,
+                            onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
+                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                            availableYears = state.availableYears,
+                            selectedYear = state.selectedYear,
+                            isYearLoading = state.isYearLoading,
+                            onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
+                            listState = completedListState,
+                        )
                     }
                 }
             }

@@ -22,7 +22,7 @@ class HomeViewModel(
 
     private val _state = MutableStateFlow(HomeUiState())
     val state = _state.asStateFlow()
-    private val _navigation = MutableSharedFlow<NavigationEvent>()
+    private val _navigation = MutableSharedFlow<HomeNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 
     init {
@@ -102,7 +102,7 @@ class HomeViewModel(
 
     fun onAction(action: HomeUiAction) {
         when (action) {
-            is HomeUiAction.OnEventClicked -> navigateTo(NavigationEvent.ToEventDetail(action.eventId))
+            is HomeUiAction.OnEventClicked -> navigateTo(HomeNavigationEvent.ToEventDetail(action.eventId))
             is HomeUiAction.OnYearSelected -> onYearSelected(action.year)
             is HomeUiAction.OnRefreshFeaturedTab -> onRefreshFeaturedTab()
             is HomeUiAction.OnRefreshUpcomingTab -> onRefreshUpcomingTab()
@@ -184,7 +184,7 @@ class HomeViewModel(
         }
     }
 
-    private fun navigateTo(event: NavigationEvent) {
+    private fun navigateTo(event: HomeNavigationEvent) {
         viewModelScope.launch {
             _navigation.emit(event)
         }
