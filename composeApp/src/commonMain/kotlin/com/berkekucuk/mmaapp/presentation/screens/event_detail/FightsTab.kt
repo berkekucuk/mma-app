@@ -19,12 +19,15 @@ import com.berkekucuk.mmaapp.presentation.components.ListContainer
 @Composable
 fun FightsTab(
     fights: List<Fight>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onFightClick: (String) -> Unit,
     emptyMessage: String,
     listState: LazyListState
 ) {
     ListContainer(
-        isRefreshing = false,
-        onRefresh = { },
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
         listState = listState,
         contentPadding = PaddingValues(top = 16.dp)
     ) {

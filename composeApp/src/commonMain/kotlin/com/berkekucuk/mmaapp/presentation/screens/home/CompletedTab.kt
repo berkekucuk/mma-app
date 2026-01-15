@@ -51,7 +51,7 @@ fun CompletedTab(
     selectedYear: Int?,
     isYearLoading: Boolean,
     onYearSelected: (Int) -> Unit,
-    listState: LazyListState = rememberLazyListState(),
+    listState: LazyListState
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
 

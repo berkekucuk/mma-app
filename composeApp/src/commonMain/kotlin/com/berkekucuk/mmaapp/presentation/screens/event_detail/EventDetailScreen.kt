@@ -100,11 +100,17 @@ fun EventDetailScreen(
                     when (page) {
                         0 -> FightsTab(
                             fights = state.mainCardFights,
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = {onAction(EventDetailUiAction.OnRefresh)},
+                            onFightClick = { onAction(EventDetailUiAction.OnFightClicked(it)) },
                             emptyMessage = "No main card fights available",
                             listState = mainCardListState
                         )
                         1 -> FightsTab(
                             fights = state.prelimFights,
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = {onAction(EventDetailUiAction.OnRefresh)},
+                            onFightClick = { onAction(EventDetailUiAction.OnFightClicked(it)) },
                             emptyMessage = "No prelim fights available",
                             listState = prelimsListState
                         )

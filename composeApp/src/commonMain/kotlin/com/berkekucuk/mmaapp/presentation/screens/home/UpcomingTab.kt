@@ -23,7 +23,7 @@ fun UpcomingTab(
     onRefresh: () -> Unit,
     onEventClick: (String) -> Unit,
     emptyMessage: String,
-    listState: LazyListState = rememberLazyListState(),
+    listState: LazyListState
 ) {
     ListContainer(
         isRefreshing = isRefreshing,

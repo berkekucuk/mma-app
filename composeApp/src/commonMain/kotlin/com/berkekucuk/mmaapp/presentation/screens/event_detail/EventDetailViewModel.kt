@@ -102,13 +102,13 @@ class EventDetailViewModel(
 
     private fun onRefresh() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isRefreshing = true) }
             fightRepository.refreshFights(eventId)
                 .onSuccess {
-                    _state.update { it.copy(isLoading = false) }
+                    _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure {
-                    _state.update { it.copy(isLoading = false) }
+                    _state.update { it.copy(isRefreshing = false) }
                 }
         }
     }
