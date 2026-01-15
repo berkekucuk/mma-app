@@ -24,7 +24,8 @@ class FightRepositoryImpl(
 ) : FightRepository {
 
     private companion object {
-        fun getRefreshKey(eventId: String) = "refresh_fight_$eventId"
+        fun getSyncKey(eventId: String) = "sync_fights_$eventId"
+        fun getRefreshKey(eventId: String) = "refresh_fights_$eventId"
     }
 
     override fun getFightsByEvent(eventId: String): Flow<List<Fight>> {
@@ -47,7 +48,7 @@ class FightRepositoryImpl(
                 }
             }.onFailure { error ->
                 if (error is CancellationException) throw error
-                rateLimiter.reset(eventId)
+                rateLimiter.reset(getSyncKey(eventId))
             }
         }
     }
@@ -82,7 +83,7 @@ class FightRepositoryImpl(
             return false
         }
 
-        if (!rateLimiter.shouldFetch(eventId)) {
+        if (!rateLimiter.shouldFetch(getSyncKey(eventId))) {
             return false
         }
         return true

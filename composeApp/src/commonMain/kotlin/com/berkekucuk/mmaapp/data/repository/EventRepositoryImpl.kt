@@ -27,9 +27,8 @@ class EventRepositoryImpl(
 ) : EventRepository {
 
     private companion object {
-
-        const val KEY_REFRESH = "key_refresh"
-        fun getYearKey(year: Int) = "key_$year"
+        private const val KEY_REFRESH_PENDING_EVENTS = "refresh_pending_events"
+        fun getSyncKey(year: Int) = "sync_events_$year"
     }
 
     override fun getEvents(): Flow<List<Event>> {
@@ -61,23 +60,23 @@ class EventRepositoryImpl(
     override suspend fun refreshEvents(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if (!rateLimiter.shouldFetch(KEY_REFRESH)) {
+                if (!rateLimiter.shouldFetch(KEY_REFRESH_PENDING_EVENTS)) {
                     return@runCatching
                 }
                 fetchPendingEvents()
-                rateLimiter.markAsFetched(KEY_REFRESH)
+                rateLimiter.markAsFetched(KEY_REFRESH_PENDING_EVENTS)
             }.onFailure {
                 if (it is CancellationException) throw it
-                rateLimiter.reset(KEY_REFRESH)
+                rateLimiter.reset(KEY_REFRESH_PENDING_EVENTS)
             }
         }
     }
 
     override suspend fun getEventsByYear(year: Int, forceRefresh: Boolean): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            val yearKey = getYearKey(year)
+            val syncKey = getSyncKey(year)
             runCatching {
-                if (!rateLimiter.shouldFetch(yearKey)) {
+                if (!rateLimiter.shouldFetch(syncKey)) {
                     return@runCatching
                 }
 
@@ -85,12 +84,12 @@ class EventRepositoryImpl(
                     val events = remoteDataSource.fetchEventsByYear(year)
                     if (events.isNotEmpty()) {
                         dao.insertEvents(events.map { it.toEntity() })
-                        rateLimiter.markAsFetched(yearKey)
+                        rateLimiter.markAsFetched(syncKey)
                     }
                 }
             }.onFailure {
                 if (it is CancellationException) throw it
-                rateLimiter.reset(yearKey)
+                rateLimiter.reset(syncKey)
             }
         }
     }
@@ -116,7 +115,7 @@ class EventRepositoryImpl(
                     val events = remoteDataSource.fetchEventsByYear(year)
                     if (events.isNotEmpty()) {
                         dao.insertEvents(events.map { it.toEntity() })
-                        rateLimiter.markAsFetched(getYearKey(year))
+                        rateLimiter.markAsFetched(getSyncKey(year))
                     }
                 }
             }.forEach { it.await() }
