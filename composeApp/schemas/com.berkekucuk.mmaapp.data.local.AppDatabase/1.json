@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c215715415c7435eb73b5856a72dad57",
+    "identityHash": "383dd1003d76d81beac3c6f0d0184613",
     "entities": [
       {
         "tableName": "events",
@@ -56,91 +56,11 @@
             "event_id"
           ]
         }
-      },
-      {
-        "tableName": "fights",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fight_id` TEXT NOT NULL, `event_id` TEXT NOT NULL, `method_type` TEXT, `method_detail` TEXT, `round_summary` TEXT, `bout_type` TEXT, `weight_class_lbs` INTEGER, `weight_class_id` TEXT, `rounds_format` TEXT, `fight_order` INTEGER, `participants_json` TEXT, PRIMARY KEY(`fight_id`))",
-        "fields": [
-          {
-            "fieldPath": "fightId",
-            "columnName": "fight_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "eventId",
-            "columnName": "event_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "methodType",
-            "columnName": "method_type",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "methodDetail",
-            "columnName": "method_detail",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "roundSummary",
-            "columnName": "round_summary",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "boutType",
-            "columnName": "bout_type",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "weightClassLbs",
-            "columnName": "weight_class_lbs",
-            "affinity": "INTEGER"
-          },
-          {
-            "fieldPath": "weightClassId",
-            "columnName": "weight_class_id",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "roundsFormat",
-            "columnName": "rounds_format",
-            "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "fightOrder",
-            "columnName": "fight_order",
-            "affinity": "INTEGER"
-          },
-          {
-            "fieldPath": "participants",
-            "columnName": "participants_json",
-            "affinity": "TEXT"
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "fight_id"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_fights_event_id",
-            "unique": false,
-            "columnNames": [
-              "event_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_fights_event_id` ON `${TABLE_NAME}` (`event_id`)"
-          }
-        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c215715415c7435eb73b5856a72dad57')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '383dd1003d76d81beac3c6f0d0184613')"
     ]
   }
 }
