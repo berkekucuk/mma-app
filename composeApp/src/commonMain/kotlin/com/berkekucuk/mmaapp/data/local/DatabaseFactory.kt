@@ -7,7 +7,6 @@ import androidx.room.RoomDatabaseConstructor
 import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
-import com.berkekucuk.mmaapp.data.local.dao.FightDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FightEntity
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,6 @@ import kotlinx.coroutines.IO
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
-    abstract fun fightDao(): FightDao
 }
 
 @Suppress("KotlinNoActualForExpect")
