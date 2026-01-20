@@ -29,6 +29,7 @@ class EventRepositoryImpl(
     private companion object {
         private const val KEY_REFRESH_PENDING_EVENTS = "refresh_pending_events"
         fun getSyncKey(year: Int) = "sync_events_$year"
+        fun getRefreshEventKey(eventId: String) = "refresh_event_$eventId"
     }
 
     override fun getEvents(): Flow<List<Event>> {
@@ -68,6 +69,25 @@ class EventRepositoryImpl(
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(KEY_REFRESH_PENDING_EVENTS)
+            }
+        }
+    }
+
+    override suspend fun refreshEventById(eventId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            val refreshKey = getRefreshEventKey(eventId)
+            runCatching {
+                if (!rateLimiter.shouldFetch(refreshKey)) {
+                    return@runCatching
+                }
+                val events = remoteDataSource.fetchEventsById(eventId)
+                if (events.isNotEmpty()) {
+                    dao.insertEvents(events.map { it.toEntity() })
+                }
+                rateLimiter.markAsFetched(refreshKey)
+            }.onFailure {
+                if (it is CancellationException) throw it
+                rateLimiter.reset(refreshKey)
             }
         }
     }
