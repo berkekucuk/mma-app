@@ -1,11 +1,13 @@
 package com.berkekucuk.mmaapp.presentation.screens.event_detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.Fight
@@ -52,21 +56,28 @@ fun FightsTab(
                 }
             }
         } else {
-            itemsIndexed(
-                items = fights,
-                key = { _, fight -> fight.fightId },
-                contentType = { _, _ -> "FightItem" }
-            ) { index, fight ->
-                FightItem(
-                    fight = fight,
-                    modifier = Modifier.height(108.dp),
-                )
-                if (index < fights.lastIndex) {
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        thickness = 1.dp,
-                        color = AppColors.dividerColor
-                    )
+            item(
+                contentType = "FightsContainer"
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(AppColors.fightItemBackground)
+                ) {
+                    fights.forEachIndexed { index, fight ->
+                        FightItem(
+                            fight = fight,
+                            modifier = Modifier.height(108.dp),
+                        )
+                        if (index < fights.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(),
+                                thickness = 1.dp,
+                                color = AppColors.dividerColor
+                            )
+                        }
+                    }
                 }
             }
         }
