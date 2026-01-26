@@ -83,7 +83,7 @@ fun EventItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .background(AppColors.redGradient),
+                        .background(AppColors.fightItemBackground),
                     contentAlignment = Alignment.Center
                 ){
                     Text(

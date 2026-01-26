@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun FightItem(
     fight: Fight,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val redCorner = fight.redCorner
     val blueCorner = fight.blueCorner
@@ -35,7 +34,7 @@ fun FightItem(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(AppColors.redGradient)
+            .background(AppColors.fightItemBackground)
             .padding(10.dp)
     ) {
         Column(
@@ -63,7 +62,7 @@ fun FightItem(
                             fight.weightClass.name.lowercase().replaceFirstChar { it.uppercase() }
                         )
                     },
-                    color = Color.White,
+                    color = AppColors.textSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -92,7 +91,7 @@ fun FightItem(
                 ) {
                     Text(
                         text = "VS",
-                        color = Color.White,
+                        color = AppColors.textSecondary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
