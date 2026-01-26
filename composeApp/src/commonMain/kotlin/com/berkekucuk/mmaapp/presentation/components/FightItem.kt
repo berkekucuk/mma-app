@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,8 +73,8 @@ fun FightItem(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FighterPortrait(
                     name = redCorner?.fighter?.name,
@@ -81,8 +82,21 @@ fun FightItem(
                     countryCode = redCorner?.fighter?.countryCode,
                     result = redCorner?.result?.name,
                     record = redCorner?.recordAfterFight?.toString() ?: redCorner?.fighter?.record?.toString(),
-                    alignment = Alignment.Start
+                    alignment = Alignment.Start,
+                    modifier = Modifier.weight(1f)
                 )
+
+                Box(
+                    modifier = Modifier.height(55.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "VS",
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 FighterPortrait(
                     name = blueCorner?.fighter?.name,
@@ -90,7 +104,8 @@ fun FightItem(
                     countryCode = blueCorner?.fighter?.countryCode,
                     result = blueCorner?.result?.name,
                     record = blueCorner?.recordAfterFight?.toString() ?: blueCorner?.fighter?.record?.toString(),
-                    alignment = Alignment.End
+                    alignment = Alignment.End,
+                    modifier = Modifier.weight(1f)
                 )
             }
 

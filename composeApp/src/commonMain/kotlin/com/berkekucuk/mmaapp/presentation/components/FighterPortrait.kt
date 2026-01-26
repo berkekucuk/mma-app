@@ -47,12 +47,13 @@ fun FighterPortrait(
     countryCode: String?,
     result: String?,
     record: String?,
-    alignment: Alignment.Horizontal
+    alignment: Alignment.Horizontal,
+    modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = if (alignment == Alignment.Start) Arrangement.Start else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.width(160.dp)
+        modifier = modifier
     ) {
         if (alignment == Alignment.End) {
             NameColumn(
@@ -155,8 +156,17 @@ private fun NameColumn(
     modifier: Modifier = Modifier
 ) {
     val unknownFighter = stringResource(Res.string.unknown_fighter)
-    val nameParts = remember(name, unknownFighter) {
-        name?.split(" ") ?: unknownFighter.split(" ")
+    val fullName = name ?: unknownFighter
+
+    val (firstName, lastName) = remember(fullName) {
+        val parts = fullName.split(" ")
+        if (fullName.length > 14 && parts.size > 1) {
+            val first = parts.first()
+            val last = parts.drop(1).joinToString(" ")
+            first to last
+        } else {
+            fullName to null
+        }
     }
 
     Column(
@@ -164,7 +174,7 @@ private fun NameColumn(
         modifier = modifier
     ) {
         Text(
-            text = nameParts.joinToString(" "),
+            text = firstName,
             color = AppColors.textPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
@@ -172,6 +182,18 @@ private fun NameColumn(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+
+        if (lastName != null) {
+            Text(
+                text = lastName,
+                color = AppColors.textPrimary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = textAlign,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
         record?.let { rec ->
             val resultUpper = result?.uppercase()

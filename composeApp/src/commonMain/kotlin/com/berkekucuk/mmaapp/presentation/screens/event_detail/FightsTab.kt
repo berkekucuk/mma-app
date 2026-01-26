@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.presentation.screens.event_detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,7 +54,8 @@ fun FightsTab(
                 contentType = { "FightItem" }
             ) { fight ->
                 FightItem(
-                    fight = fight
+                    fight = fight,
+                    modifier = Modifier.height(108.dp)
                 )
             }
         }
