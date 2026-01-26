@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.presentation.screens.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,7 +42,8 @@ fun EventItem(
             .height(160.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = BorderStroke(1.dp, AppColors.cardBorder),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -49,7 +51,7 @@ fun EventItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.topBarBackground)
+                    .background(AppColors.cardHeaderBackground)
                     .padding(10.dp)
             ) {
                 Text(

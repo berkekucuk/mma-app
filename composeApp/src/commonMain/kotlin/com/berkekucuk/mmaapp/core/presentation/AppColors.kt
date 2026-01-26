@@ -14,4 +14,7 @@ object AppColors {
     val winnerFrame = Color(0xFF33A854)
     val fightItemBackground = Color(0xFF171C1F)
     val dividerColor = Color(0xFF2C2C2C)
+
+    val cardHeaderBackground = Color(0xFF20232A)
+    val cardBorder = Color(0xFF3E4149)
 }
