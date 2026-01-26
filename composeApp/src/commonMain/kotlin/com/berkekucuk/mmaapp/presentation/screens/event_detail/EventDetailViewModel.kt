@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class EventDetailViewModel(
     private val eventRepository: EventRepository,
@@ -44,16 +46,20 @@ class EventDetailViewModel(
         }
     }
 
-    private fun processAndSetFights(fights: List<Fight>) {
-        val mainCard = fights.filter { fight ->
-            fight.boutType.contains("Main Card", ignoreCase = true) ||
-            fight.boutType.contains("Main Event", ignoreCase = true) ||
-            fight.boutType.contains("Co-Main", ignoreCase = true)
-        }.sortedByDescending { it.fightOrder }
+    private suspend fun processAndSetFights(fights: List<Fight>) {
+        val (mainCard, prelims) = withContext(Dispatchers.Default) {
+             val main = fights.filter { fight ->
+                fight.boutType.contains("Main Card", ignoreCase = true) ||
+                        fight.boutType.contains("Main Event", ignoreCase = true) ||
+                        fight.boutType.contains("Co-Main", ignoreCase = true)
+            }.sortedByDescending { it.fightOrder }
 
-        val prelims = fights.filter { fight ->
-            fight.boutType.contains("Prelim", ignoreCase = true)
-        }.sortedByDescending { it.fightOrder }
+             val pre = fights.filter { fight ->
+                fight.boutType.contains("Prelim", ignoreCase = true)
+            }.sortedByDescending { it.fightOrder }
+
+            main to pre
+        }
 
         _state.update {
             it.copy(

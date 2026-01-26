@@ -13,6 +13,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -36,11 +37,14 @@ class EventRepositoryImpl(
         return dao.getAllEvents()
             .map { entities -> entities.map { it.toDomain() } }
             .flowOn(Dispatchers.IO)
+            .distinctUntilChanged()
     }
 
     override fun getEventById(eventId: String): Flow<Event> {
         return dao.getEventById(eventId)
             .map { it.toDomain() }
+            .flowOn(Dispatchers.IO)
+            .distinctUntilChanged()
     }
 
     override suspend fun syncEvents(): Result<Unit> {
