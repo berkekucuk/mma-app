@@ -36,6 +36,8 @@ fun EventItem(
     event: Event,
     onClick: () -> Unit
 ) {
+    val mainEvent = event.mainEvent
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,8 +74,6 @@ fun EventItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
-            val mainEvent = event.mainEvent
 
             if (mainEvent != null) {
                 FightItem(

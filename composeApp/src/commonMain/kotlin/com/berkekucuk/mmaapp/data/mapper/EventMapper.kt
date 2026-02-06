@@ -27,7 +27,7 @@ fun EventEntity.toDomain(): Event {
         venue = this.venue ?: "N/A",
         location = this.location ?: "N/A",
         eventYear = this.eventYear,
-        fights = fights?.map { it.toDomain() } ?: emptyList()
+        fights = fights?.map { it.toDomain() }?.sortedByDescending { it.fightOrder } ?: emptyList()
     )
 }
 

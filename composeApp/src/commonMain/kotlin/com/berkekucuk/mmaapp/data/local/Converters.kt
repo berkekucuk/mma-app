@@ -2,7 +2,6 @@ package com.berkekucuk.mmaapp.data.local
 
 import androidx.room.TypeConverter
 import com.berkekucuk.mmaapp.data.remote.dto.FightDto
-import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDto
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
 
@@ -32,12 +31,6 @@ class Converters {
 
     @TypeConverter
     fun toFightsList(fightsString: String?): List<FightDto> = decodeList(fightsString)
-
-    @TypeConverter
-    fun fromParticipantsList(participants: List<ParticipantDto>?): String = encodeList(participants)
-
-    @TypeConverter
-    fun toParticipantsList(participantsString: String?): List<ParticipantDto> = decodeList(participantsString)
 
     @TypeConverter
     fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.fromEpochMilliseconds(it) }
