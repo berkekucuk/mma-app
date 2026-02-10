@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.apollo)
 }
 
 kotlin {
@@ -32,12 +33,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
+                implementation(libs.runtime)
+                implementation(libs.foundation)
+                implementation(libs.material3)
+                implementation(libs.ui)
+                implementation(libs.compose.resources)
+                implementation(libs.compose.material.icons.extended)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
 
@@ -50,12 +51,9 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.datetime)
 
-
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
-
-                implementation(compose.materialIconsExtended)
 
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.androidx.sqlite.bundled)
@@ -64,12 +62,13 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
+
+                implementation(libs.apollo.runtime)
             }
         }
 
         val androidMain by getting {
             dependencies {
-                implementation(compose.preview)
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.ktor.client.okhttp)
                 implementation(libs.koin.android)
@@ -136,22 +135,31 @@ if (localPropertiesFile.exists()) {
 buildConfig {
     packageName("com.berkekucuk.mmaapp")
 
-    val url = localProperties.getProperty("SUPABASE_URL") ?: ""
-    val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
+//    val url = localProperties.getProperty("SUPABASE_URL") ?: ""
+//    val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
+//    buildConfigField("String", "SUPABASE_URL", "\"$url\"")
+//    buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
 
-    buildConfigField("String", "SUPABASE_URL", "\"$url\"")
-    buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
+    val appsyncUrl = localProperties.getProperty("APPSYNC_API_URL") ?: ""
+    val appsyncKey = localProperties.getProperty("APPSYNC_API_KEY") ?: ""
+    buildConfigField("String", "APPSYNC_API_URL", "\"$appsyncUrl\"")
+    buildConfigField("String", "APPSYNC_API_KEY", "\"$appsyncKey\"")
 }
 
 dependencies {
-    debugImplementation(compose.uiTooling)
+    debugImplementation(libs.compose.ui.tooling)
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosX64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
-    // Add any other platform target you use in your project, for example kspDesktop
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.berkekucuk.mmaapp.graphql")
+    }
 }
