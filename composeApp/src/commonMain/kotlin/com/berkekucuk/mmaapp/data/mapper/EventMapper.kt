@@ -4,6 +4,21 @@ import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.remote.dto.EventDto
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
+import com.berkekucuk.mmaapp.graphql.GetEventsQuery
+import kotlin.time.Instant
+
+fun GetEventsQuery.GetEvent.toDto(): EventDto {
+    return EventDto(
+        eventId = event_id,
+        name = name,
+        status = status,
+        datetimeUtc = datetime_utc?.let { Instant.parse(it) },
+        venue = venue,
+        location = location,
+        eventYear = event_year,
+        fights = fights?.mapNotNull { it?.toDto() }
+    )
+}
 
 fun EventDto.toEntity(): EventEntity {
     return EventEntity(

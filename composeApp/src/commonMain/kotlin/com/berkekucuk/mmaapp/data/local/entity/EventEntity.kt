@@ -9,8 +9,8 @@ import kotlin.time.Instant
 @Entity(tableName = "events")
 data class EventEntity(
     @PrimaryKey @ColumnInfo(name = "event_id") val eventId: String,
-    val status: String? = null,
     val name: String? = null,
+    val status: String? = null,
     @ColumnInfo(name = "datetime_utc") val datetimeUtc: Instant? = null,
     val venue: String? = null,
     val location: String? = null,

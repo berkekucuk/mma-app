@@ -8,15 +8,14 @@ data class Fighter(
     val fighterId: String,
     val name: String,
     val nickname: String,
+    val imageUrl: String,
     val record: Record,
-    val dateOfBirth: String,
     val height: Measurement,
     val reach: Measurement,
     val weightClassId: WeightClass,
+    val dateOfBirth: String,
     val born: String,
     val fightingOutOf: String,
-    val style: String,
     val countryCode: String,
-    val imageUrl: String
 )
 
