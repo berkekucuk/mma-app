@@ -1,0 +1,59 @@
+query GetEvents($eventId: ID, $year: Int, $afterDate: String) {
+
+    getEvents(eventId: $eventId, year: $year, afterDate: $afterDate) {
+        event_id
+        name
+        status
+        datetime_utc
+        event_year
+        venue
+        location
+        fights {
+            fight_id
+            event_id
+            method_type
+            method_detail
+            round_summary
+            bout_type
+            weight_class_lbs
+            weight_class_id
+            rounds_format
+            fight_order
+            participants {
+                odds_value
+                odds_label
+                result
+                record_after_fight {
+                    wins
+                    losses
+                    draws
+                }
+                is_red_corner
+                fighters {
+                    fighter_id
+                    name
+                    nickname
+                    image_url
+                    record {
+                        wins
+                        losses
+                        draws
+                    }
+                    height {
+                        metric
+                        imperial
+                    }
+                    reach {
+                        metric
+                        imperial
+                    }
+                    weight_class_id
+                    date_of_birth
+                    born
+                    fighting_out_of
+                    country_code
+                }
+            }
+        }
+    }
+}

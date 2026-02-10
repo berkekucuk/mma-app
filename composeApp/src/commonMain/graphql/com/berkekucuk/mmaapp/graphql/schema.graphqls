@@ -1,0 +1,67 @@
+type Event {
+    event_id: ID!
+    name: String
+    status: String
+    datetime_utc: String
+    event_year: Int
+    venue: String
+    location: String
+    fights: [Fight]
+}
+
+type Fight {
+    fight_id: ID!
+    event_id: String!
+    method_type: String
+    method_detail: String
+    round_summary: String
+    bout_type: String
+    weight_class_lbs: Int
+    weight_class_id: String
+    rounds_format: String
+    fight_order: Int
+    participants: [Participant]
+}
+
+type Fighter {
+    fighter_id: ID!
+    name: String
+    nickname: String
+    image_url: String
+    record: Record
+    height: Measurement
+    reach: Measurement
+    weight_class_id: String
+    date_of_birth: String
+    born: String
+    fighting_out_of: String
+    country_code: String
+}
+
+type Measurement {
+    metric: String
+    imperial: String
+}
+
+type Participant {
+    odds_value: String
+    odds_label: String
+    result: String
+    record_after_fight: Record
+    is_red_corner: Boolean
+    fighters: Fighter
+}
+
+type Record {
+    wins: Int
+    losses: Int
+    draws: Int
+}
+
+type Query {
+    getEvents(eventId: ID, year: Int, afterDate: String): [Event]
+}
+
+schema {
+    query: Query
+}

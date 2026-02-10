@@ -7,7 +7,7 @@ import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import kotlin.time.Instant
 
-class EventAPI(
+class EventSupabaseAPI(
     private val client: SupabaseClient
 ) : EventRemoteDataSource {
 

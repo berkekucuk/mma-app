@@ -7,8 +7,8 @@ import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.core.utils.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
-import com.berkekucuk.mmaapp.data.remote.api.EventAPI
-import com.berkekucuk.mmaapp.data.remote.SupabaseClientFactory
+import com.berkekucuk.mmaapp.data.remote.factory.ApolloClientFactory
+import com.berkekucuk.mmaapp.data.remote.api.EventGraphqlAPI
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
@@ -32,10 +32,18 @@ val appModule = module {
     }
 
     // supabase client
+    //    single {
+    //        SupabaseClientFactory.create(
+    //            url = BuildConfig.SUPABASE_URL,
+    //            key = BuildConfig.SUPABASE_KEY
+    //        )
+    //    }
+
+    // apollo client
     single {
-        SupabaseClientFactory.create(
-            url = BuildConfig.SUPABASE_URL,
-            key = BuildConfig.SUPABASE_KEY
+        ApolloClientFactory.create(
+            url = BuildConfig.APPSYNC_API_URL,
+            apiKey = BuildConfig.APPSYNC_API_KEY
         )
     }
 
@@ -50,7 +58,7 @@ val appModule = module {
 
     // remote data source
     single<EventRemoteDataSource> {
-        EventAPI(client = get())
+        EventGraphqlAPI(apolloClient = get())
     }
 
     // repository
