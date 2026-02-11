@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import org.jetbrains.compose.resources.stringResource
 fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
     val redCorner = fight.redCorner
     val blueCorner = fight.blueCorner
@@ -36,6 +38,10 @@ fun FightItem(
         modifier = modifier
             .fillMaxWidth()
             .background(AppColors.fightItemBackground)
+            .then(
+                if (onClick != null) Modifier.clickable { onClick() }
+                else Modifier
+            )
             .padding(10.dp)
     ) {
         Column(

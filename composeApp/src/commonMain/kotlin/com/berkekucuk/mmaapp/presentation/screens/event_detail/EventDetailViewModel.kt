@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.berkekucuk.mmaapp.app.Route
+import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,7 +34,8 @@ class EventDetailViewModel(
 
     private fun observeEvent() {
         viewModelScope.launch {
-            eventRepository.getEventById(eventId).collect { event ->
+            eventRepository.getEventById(eventId)
+                .collect { event ->
                 _state.update {
                     it.copy(
                         event = event,
@@ -72,7 +73,7 @@ class EventDetailViewModel(
 
     fun onAction(action: EventDetailUiAction){
         when(action){
-            is EventDetailUiAction.OnFightClicked -> navigateTo(EventDetailNavigationEvent.ToFightDetail(action.fightId))
+            is EventDetailUiAction.OnFightClicked -> navigateTo(EventDetailNavigationEvent.ToFightDetail(eventId, action.fightId))
             is EventDetailUiAction.OnBackClicked -> navigateTo(EventDetailNavigationEvent.Back)
             is EventDetailUiAction.OnRefresh -> onRefresh()
         }

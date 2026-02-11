@@ -69,6 +69,7 @@ fun FightsTab(
                         FightItem(
                             fight = fight,
                             modifier = Modifier.height(108.dp),
+                            onClick = { onFightClick(fight.fightId) }
                         )
                         if (index < fights.lastIndex) {
                             HorizontalDivider(

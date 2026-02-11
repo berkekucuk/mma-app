@@ -13,6 +13,7 @@ import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
+import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import org.koin.core.module.dsl.viewModel
 
@@ -81,6 +82,13 @@ val appModule = module {
 
     viewModel {
         EventDetailViewModel(
+            eventRepository = get(),
+            savedStateHandle = get()
+        )
+    }
+
+    viewModel {
+        FightDetailViewModel(
             eventRepository = get(),
             savedStateHandle = get()
         )
