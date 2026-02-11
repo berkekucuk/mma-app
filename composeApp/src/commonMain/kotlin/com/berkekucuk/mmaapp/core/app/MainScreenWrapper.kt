@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.app
+package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.foundation.layout.Box
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeScreenRoot

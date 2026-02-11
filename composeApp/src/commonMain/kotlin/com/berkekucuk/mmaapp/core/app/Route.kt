@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.app
+package com.berkekucuk.mmaapp.core.app
 
 import kotlinx.serialization.Serializable
 sealed interface Route {
@@ -7,6 +7,6 @@ sealed interface Route {
     @Serializable data object Rankings : Route
     @Serializable data object Profile : Route
     @Serializable data class EventDetail(val eventId: String) : Route
-    @Serializable data class FightDetail(val fightId: String) : Route
+    @Serializable data class FightDetail(val eventId: String, val fightId: String) : Route
     @Serializable data class FighterDetail(val fighterId: String) : Route
 }

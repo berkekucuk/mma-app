@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.app
+package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
