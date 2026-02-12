@@ -46,7 +46,7 @@ class HomeViewModel(
                     _state.update { it.copy(isLoading = false) }
                 }
                 .collect { events ->
-                    _state.update { it.copy(allEvents = events) }
+                    _state.update { it.copy(allEvents = events, isLoading = false) }
                     recalculateLists()
                 }
         }
@@ -55,12 +55,6 @@ class HomeViewModel(
     private fun syncEvents() {
         viewModelScope.launch {
             eventRepository.syncEvents()
-                .onSuccess {
-                    _state.update { it.copy(isLoading = false) }
-                }
-                .onFailure {
-                    _state.update { it.copy(isLoading = false) }
-                }
         }
     }
 

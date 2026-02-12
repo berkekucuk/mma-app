@@ -104,7 +104,7 @@ fun EventDetailScreen(
                         0 -> FightsTab(
                             fights = state.mainCardFights,
                             isRefreshing = state.isRefreshing,
-                            onRefresh = {onAction(EventDetailUiAction.OnRefresh)},
+                            onRefresh = { onAction(EventDetailUiAction.OnRefresh) },
                             onFightClick = { onAction(EventDetailUiAction.OnFightClicked(it)) },
                             emptyMessage = "No main card fights available",
                             listState = mainCardListState

@@ -1,28 +1,19 @@
 package com.berkekucuk.mmaapp.presentation.screens.home
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.empty_upcoming_events
 import mmaapp.composeapp.generated.resources.tab_completed
 import mmaapp.composeapp.generated.resources.tab_upcoming
 import org.jetbrains.compose.resources.stringResource
@@ -69,58 +60,35 @@ fun HomeScreen(
     ) {
         HomeTopBar(pagerState = pagerState, tabs = tabs)
 
-        AnimatedContent(
-            targetState = state.isLoading,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
-            },
-            label = "HomeContentTransition",
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-        ) { isLoading ->
+                .background(AppColors.pagerBackground),
+            beyondViewportPageCount = 1
+        ) { page ->
 
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(AppColors.pagerBackground),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = AppColors.ufcRed)
-                }
-            } else {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(AppColors.pagerBackground),
-                    beyondViewportPageCount = 1
-                ) { page ->
+            when (page) {
+                0 -> UpcomingTab(
+                    events = state.upcomingEvents,
+                    isRefreshing = state.isRefreshingUpcomingTab,
+                    onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
+                    onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                    listState = upcomingListState,
+                )
 
-                    when (page) {
-                        0 -> UpcomingTab(
-                            events = state.upcomingEvents,
-                            isRefreshing = state.isRefreshingUpcomingTab,
-                            onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
-                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                            emptyMessage = stringResource(Res.string.empty_upcoming_events),
-                            listState = upcomingListState,
-                        )
-
-                        1 -> CompletedTab(
-                            completedEvents = state.completedEvents,
-                            isRefreshing = state.isRefreshingCompletedTab,
-                            onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
-                            onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
-                            availableYears = state.availableYears,
-                            selectedYear = state.selectedYear,
-                            isYearLoading = state.isYearLoading,
-                            onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
-                            listState = completedListState,
-                        )
-                    }
-                }
+                1 -> CompletedTab(
+                    completedEvents = state.completedEvents,
+                    isRefreshing = state.isRefreshingCompletedTab,
+                    onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
+                    onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                    availableYears = state.availableYears,
+                    selectedYear = state.selectedYear,
+                    isYearLoading = state.isYearLoading,
+                    onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
+                    listState = completedListState,
+                )
             }
         }
     }
