@@ -24,6 +24,7 @@ class HomeViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<HomeNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
+    private var isInitialSyncInProgress = true
 
     init {
         val currentYear = dateTimeProvider.currentYear
@@ -34,8 +35,22 @@ class HomeViewModel(
             )
         }
 
-        observeEvents()
         syncEvents()
+        observeEvents()
+    }
+
+    private fun syncEvents() {
+        viewModelScope.launch {
+            try {
+                isInitialSyncInProgress = true
+                eventRepository.syncEvents()
+            } catch (e: Exception) {
+                println("Error syncing events: $e")
+            } finally {
+                isInitialSyncInProgress = false
+                recalculateLists()
+            }
+        }
     }
 
     private fun observeEvents() {
@@ -46,15 +61,9 @@ class HomeViewModel(
                     _state.update { it.copy(isLoading = false) }
                 }
                 .collect { events ->
-                    _state.update { it.copy(allEvents = events, isLoading = false) }
+                    _state.update { it.copy(allEvents = events) }
                     recalculateLists()
                 }
-        }
-    }
-
-    private fun syncEvents() {
-        viewModelScope.launch {
-            eventRepository.syncEvents()
         }
     }
 
@@ -90,11 +99,15 @@ class HomeViewModel(
                 .filter { it.eventYear == selectedYear }
                 .sortedByDescending { it.datetimeUtc }
 
+            val hasData = allEvents.isNotEmpty()
+            val shouldShowSplash = !hasData && isInitialSyncInProgress
+
             _state.update {
                 it.copy(
                     upcomingEvents = upcomingEvents,
                     completedEvents = completedEvents,
-                    selectedYear = selectedYear
+                    selectedYear = selectedYear,
+                    isLoading = shouldShowSplash
                 )
             }
         }

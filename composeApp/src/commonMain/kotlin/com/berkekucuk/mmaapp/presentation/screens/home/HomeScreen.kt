@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.empty_upcoming_events
 import mmaapp.composeapp.generated.resources.tab_completed
 import mmaapp.composeapp.generated.resources.tab_upcoming
 import org.jetbrains.compose.resources.stringResource
@@ -75,6 +76,7 @@ fun HomeScreen(
                     isRefreshing = state.isRefreshingUpcomingTab,
                     onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
                     onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                    emptyMessage = stringResource(Res.string.empty_upcoming_events),
                     listState = upcomingListState,
                 )
 
