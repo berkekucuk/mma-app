@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import kotlinx.coroutines.flow.Flow
+import kotlin.time.Instant
 
 @Dao
 interface EventDao {
@@ -22,7 +23,7 @@ interface EventDao {
     fun getAllEvents(): Flow<List<EventEntity>>
 
     @Query("SELECT MIN(datetime_utc) FROM events WHERE LOWER(status) NOT IN ('completed', 'cancelled')")
-    suspend fun getOldestPendingEventDate(): Long?
+    suspend fun getOldestPendingEventDate(): Instant?
 
     @Query("SELECT EXISTS(SELECT 1 FROM events WHERE event_year = :year)")
     suspend fun hasEventsForYear(year: Int): Boolean

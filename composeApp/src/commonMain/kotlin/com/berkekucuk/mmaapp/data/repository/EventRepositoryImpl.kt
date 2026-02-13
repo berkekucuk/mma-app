@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.time.Instant
 
 class EventRepositoryImpl(
     private val remoteDataSource: EventRemoteDataSource,
@@ -147,11 +146,7 @@ class EventRepositoryImpl(
     }
 
     private suspend fun fetchPendingEvents() {
-        val lastPendingTimestamp = dao.getOldestPendingEventDate()
-
-        val syncAfterDate = lastPendingTimestamp?.let {
-            Instant.fromEpochMilliseconds(it)
-        } ?: dateTimeProvider.now
+        val syncAfterDate = dao.getOldestPendingEventDate() ?: dateTimeProvider.now
 
         val events = remoteDataSource.fetchEventsAfter(syncAfterDate)
 

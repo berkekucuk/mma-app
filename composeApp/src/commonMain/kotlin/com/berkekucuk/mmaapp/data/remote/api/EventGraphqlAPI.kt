@@ -26,7 +26,7 @@ class EventGraphqlAPI(
     }
 
     override suspend fun fetchEventsAfter(date: Instant): List<EventDto> {
-        val dateString = date.toString()
+        val dateString = date.toString().replace("Z", "+00:00")
         val response = apolloClient.query(
             GetEventsQuery(afterDate = Optional.Present(dateString))
         ).execute()
