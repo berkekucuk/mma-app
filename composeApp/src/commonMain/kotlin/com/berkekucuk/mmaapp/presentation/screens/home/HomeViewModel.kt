@@ -6,6 +6,7 @@ import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +25,8 @@ class HomeViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<HomeNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
-    private var isInitialSyncInProgress = true
+    private var isMinSplashTimePassed = false
+    private var isDataReady = false
 
     init {
         val currentYear = dateTimeProvider.currentYear
@@ -35,21 +37,19 @@ class HomeViewModel(
             )
         }
 
-        syncEvents()
+        viewModelScope.launch {
+            delay(800)
+            isMinSplashTimePassed = true
+            checkLoadingState()
+        }
+
         observeEvents()
+        syncEvents()
     }
 
-    private fun syncEvents() {
-        viewModelScope.launch {
-            try {
-                isInitialSyncInProgress = true
-                eventRepository.syncEvents()
-            } catch (e: Exception) {
-                println("Error syncing events: $e")
-            } finally {
-                isInitialSyncInProgress = false
-                recalculateLists()
-            }
+    private fun checkLoadingState() {
+        if (isMinSplashTimePassed && isDataReady) {
+            _state.update { it.copy(isLoading = false) }
         }
     }
 
@@ -58,12 +58,19 @@ class HomeViewModel(
             eventRepository.getEvents()
                 .catch { error ->
                     println("Error observing events: $error")
-                    _state.update { it.copy(isLoading = false) }
+                    isDataReady = true
+                    checkLoadingState()
                 }
                 .collect { events ->
                     _state.update { it.copy(allEvents = events) }
                     recalculateLists()
                 }
+        }
+    }
+
+    private fun syncEvents() {
+        viewModelScope.launch {
+            eventRepository.syncEvents()
         }
     }
 
@@ -99,17 +106,16 @@ class HomeViewModel(
                 .filter { it.eventYear == selectedYear }
                 .sortedByDescending { it.datetimeUtc }
 
-            val hasData = allEvents.isNotEmpty()
-            val shouldShowSplash = !hasData && isInitialSyncInProgress
-
             _state.update {
                 it.copy(
                     upcomingEvents = upcomingEvents,
                     completedEvents = completedEvents,
                     selectedYear = selectedYear,
-                    isLoading = shouldShowSplash
                 )
             }
+
+            isDataReady = true
+            checkLoadingState()
         }
     }
 
