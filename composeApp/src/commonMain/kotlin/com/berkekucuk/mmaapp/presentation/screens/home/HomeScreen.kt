@@ -7,10 +7,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import mmaapp.composeapp.generated.resources.Res
@@ -23,14 +31,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
-    onEventClick: (String) -> Unit,
+    onNavigateToEventDetail: (String) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is HomeNavigationEvent.ToEventDetail -> onEventClick(event.eventId)
+                is HomeNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
             }
         }
     }
@@ -41,6 +49,7 @@ fun HomeScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     state: HomeUiState,
@@ -53,6 +62,10 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
+    val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
+    val onRefreshCompletedTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshCompletedTab) } }
+    val onEventClicked = remember(onAction) { { eventId: String -> onAction(HomeUiAction.OnEventClicked(eventId)) } }
+    val onYearSelected = remember(onAction) { { year: Int -> onAction(HomeUiAction.OnYearSelected(year)) } }
 
     Column(
         modifier = Modifier
@@ -74,8 +87,8 @@ fun HomeScreen(
                 0 -> UpcomingTab(
                     events = state.upcomingEvents,
                     isRefreshing = state.isRefreshingUpcomingTab,
-                    onRefresh = { onAction(HomeUiAction.OnRefreshUpcomingTab) },
-                    onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                    onRefresh = onRefreshUpcomingTab,
+                    onEventClick = onEventClicked,
                     emptyMessage = stringResource(Res.string.empty_upcoming_events),
                     listState = upcomingListState,
                 )
@@ -83,12 +96,12 @@ fun HomeScreen(
                 1 -> CompletedTab(
                     completedEvents = state.completedEvents,
                     isRefreshing = state.isRefreshingCompletedTab,
-                    onRefresh = { onAction(HomeUiAction.OnRefreshCompletedTab) },
-                    onEventClick = { onAction(HomeUiAction.OnEventClicked(it)) },
+                    onRefresh = onRefreshCompletedTab,
+                    onEventClick = onEventClicked,
                     availableYears = state.availableYears,
                     selectedYear = state.selectedYear,
                     isYearLoading = state.isYearLoading,
-                    onYearSelected = { onAction(HomeUiAction.OnYearSelected(it)) },
+                    onYearSelected = onYearSelected,
                     listState = completedListState,
                 )
             }

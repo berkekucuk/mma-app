@@ -91,7 +91,7 @@ fun MainScreenWrapper(
             ) {
                 composable<Route.Home> {
                     HomeScreenRoot(
-                        onEventClick = onNavigateToEventDetail,
+                        onNavigateToEventDetail = onNavigateToEventDetail,
                     )
                 }
 

@@ -53,7 +53,7 @@ fun UpcomingTab(
             ) { event ->
                 EventItem(
                     event = event,
-                    onClick = { onEventClick(event.eventId) }
+                    onClick = onEventClick
                 )
             }
         }

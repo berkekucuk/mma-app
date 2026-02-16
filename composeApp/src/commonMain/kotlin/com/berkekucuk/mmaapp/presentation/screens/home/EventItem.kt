@@ -34,7 +34,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun EventItem(
     event: Event,
-    onClick: () -> Unit
+    onClick: (String) -> Unit
 ) {
     val mainEvent = event.mainEvent
 
@@ -43,7 +43,7 @@ fun EventItem(
             .fillMaxWidth()
             .height(160.dp)
             .clip(RoundedCornerShape(12.dp))
-            .clickable { onClick() },
+            .clickable { onClick(event.eventId) },
         border = BorderStroke(1.dp, AppColors.cardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
