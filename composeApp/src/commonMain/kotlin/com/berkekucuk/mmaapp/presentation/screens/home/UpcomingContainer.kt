@@ -13,15 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.empty_upcoming_events
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpcomingTab(
+fun UpcomingContainer(
     events: List<Event>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onEventClick: (String) -> Unit,
-    emptyMessage: String,
     listState: LazyListState
 ) {
     ListContainer(
@@ -39,7 +41,7 @@ fun UpcomingTab(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = emptyMessage,
+                        text = stringResource(Res.string.empty_upcoming_events),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

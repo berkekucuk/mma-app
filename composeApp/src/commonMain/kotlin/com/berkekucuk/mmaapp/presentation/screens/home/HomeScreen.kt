@@ -2,27 +2,36 @@ package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppFonts
+import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.LoadingContent
+import kotlinx.coroutines.launch
 import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.empty_upcoming_events
+import mmaapp.composeapp.generated.resources.events_title
 import mmaapp.composeapp.generated.resources.tab_completed
 import mmaapp.composeapp.generated.resources.tab_upcoming
 import org.jetbrains.compose.resources.stringResource
@@ -62,48 +71,83 @@ fun HomeScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
     val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
     val onRefreshCompletedTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshCompletedTab) } }
     val onEventClicked = remember(onAction) { { eventId: String -> onAction(HomeUiAction.OnEventClicked(eventId)) } }
     val onYearSelected = remember(onAction) { { year: Int -> onAction(HomeUiAction.OnYearSelected(year)) } }
 
-    Column(
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.pagerBackground)
-    ) {
-        HomeTopBar(pagerState = pagerState, tabs = tabs)
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = AppColors.pagerBackground,
+        contentWindowInsets = WindowInsets(0),
+        topBar = {
+            Column(
+                modifier = Modifier.background(AppColors.topBarBackground)
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(Res.string.events_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontFamily = AppFonts.RobotoCondensed,
+                            fontWeight = FontWeight.Bold,
+                            color = AppColors.textPrimary
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = AppColors.topBarBackground,
+                        scrolledContainerColor = AppColors.topBarBackground,
+                    ),
+                    scrollBehavior = scrollBehavior
+                )
 
-        HorizontalPager(
-            state = pagerState,
+                AppTabRow(
+                    tabs = tabs,
+                    pagerState = pagerState,
+                    coroutineScope = coroutineScope
+                )
+            }
+        }
+    ) { innerPadding ->
+        LoadingContent(
+            isLoading = state.isLoading,
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .background(AppColors.pagerBackground),
-            beyondViewportPageCount = 1
-        ) { page ->
-
-            when (page) {
-                0 -> UpcomingTab(
-                    events = state.upcomingEvents,
-                    isRefreshing = state.isRefreshingUpcomingTab,
-                    onRefresh = onRefreshUpcomingTab,
-                    onEventClick = onEventClicked,
-                    emptyMessage = stringResource(Res.string.empty_upcoming_events),
-                    listState = upcomingListState,
-                )
-
-                1 -> CompletedTab(
-                    completedEvents = state.completedEvents,
-                    isRefreshing = state.isRefreshingCompletedTab,
-                    onRefresh = onRefreshCompletedTab,
-                    onEventClick = onEventClicked,
-                    availableYears = state.availableYears,
-                    selectedYear = state.selectedYear,
-                    isYearLoading = state.isYearLoading,
-                    onYearSelected = onYearSelected,
-                    listState = completedListState,
-                )
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AppColors.pagerBackground),
+                beyondViewportPageCount = 1
+            ) { page ->
+                when (page) {
+                    0 -> UpcomingContainer(
+                        events = state.upcomingEvents,
+                        isRefreshing = state.isRefreshingUpcomingTab,
+                        onRefresh = onRefreshUpcomingTab,
+                        onEventClick = onEventClicked,
+                        listState = upcomingListState,
+                    )
+                    1 -> CompletedContainer(
+                        completedEvents = state.completedEvents,
+                        isRefreshing = state.isRefreshingCompletedTab,
+                        onRefresh = onRefreshCompletedTab,
+                        onEventClick = onEventClicked,
+                        availableYears = state.availableYears,
+                        selectedYear = state.selectedYear,
+                        isYearLoading = state.isYearLoading,
+                        onYearSelected = onYearSelected,
+                        listState = completedListState,
+                    )
+                }
             }
         }
     }

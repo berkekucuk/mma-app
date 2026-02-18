@@ -78,33 +78,28 @@ fun MainScreenWrapper(
             }
         }
     ) { innerPadding ->
-
-        Surface(
+        NavHost(
+            navController = bottomNavController,
+            startDestination = Route.Home,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            color = AppColors.pagerBackground
+                .padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            NavHost(
-                navController = bottomNavController,
-                startDestination = Route.Home
-            ) {
-                composable<Route.Home> {
-                    HomeScreenRoot(
-                        onNavigateToEventDetail = onNavigateToEventDetail,
-                    )
-                }
+            composable<Route.Home> {
+                HomeScreenRoot(
+                    onNavigateToEventDetail = onNavigateToEventDetail,
+                )
+            }
 
-                composable<Route.Rankings> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Rankings Screen", color = Color.White)
-                    }
+            composable<Route.Rankings> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Rankings Screen", color = Color.White)
                 }
+            }
 
-                composable<Route.Profile> {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("Profile Screen", color = Color.White)
-                    }
+            composable<Route.Profile> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Profile Screen", color = Color.White)
                 }
             }
         }
