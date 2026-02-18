@@ -10,7 +10,6 @@
     <string name="empty_events_for_year">No events available for %1$s</string>
 
     <!-- Event Item -->
-    <string name="date_tba">TBA</string>
     <string name="to_be_announced">TO BE ANNOUNCED</string>
 
     <!-- Year Filter -->
@@ -24,5 +23,13 @@
     <string name="content_description_win">Win</string>
     <string name="content_description_loss">Loss</string>
     <string name="unknown_fighter">Unknown Fighter</string>
+
+    <!-- Event Detail Screen -->
+    <string name="event_details_fallback">Event Details</string>
+    <string name="content_description_back">Back</string>
+    <string name="tab_main_card">Main Card</string>
+    <string name="tab_prelims">Prelims</string>
+    <string name="empty_main_card_fights">No main card fights available</string>
+    <string name="empty_prelim_fights">No prelim fights available</string>
 </resources>
 

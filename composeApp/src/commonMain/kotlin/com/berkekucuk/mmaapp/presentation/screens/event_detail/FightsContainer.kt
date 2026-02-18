@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
@@ -31,15 +32,27 @@ fun FightsTab(
     onRefresh: () -> Unit,
     onFightClick: (String) -> Unit,
     emptyMessage: String,
-    listState: LazyListState
+    listState: LazyListState,
+    eventDate: String?,
+    eventVenueAndLocation: String?
 ) {
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = PaddingValues(top = 16.dp),
+        contentPadding = PaddingValues(top = 10.dp),
         verticalSpacing = 0.dp
     ) {
+        item(contentType = "EventHeader") {
+            Column {
+                EventInfoCard(
+                    date = eventDate,
+                    venueAndLocation = eventVenueAndLocation
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+        }
+
         if (fights.isEmpty()) {
             item(
                 contentType = "EmptyState"

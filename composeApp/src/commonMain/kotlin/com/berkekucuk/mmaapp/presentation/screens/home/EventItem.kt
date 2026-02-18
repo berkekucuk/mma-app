@@ -27,7 +27,6 @@ import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.date_tba
 import mmaapp.composeapp.generated.resources.to_be_announced
 import org.jetbrains.compose.resources.stringResource
 
@@ -66,7 +65,7 @@ fun EventItem(
                 )
 
                 Text(
-                    text = event.datetimeUtc?.toUserFriendlyDate() ?: stringResource(Res.string.date_tba),
+                    text = event.datetimeUtc?.toUserFriendlyDate() ?: stringResource(Res.string.to_be_announced),
                     color = AppColors.dateColor,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 2.dp),
