@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.Fight
@@ -26,7 +25,7 @@ import com.berkekucuk.mmaapp.presentation.components.ListContainer
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FightsTab(
+fun FightsContainer(
     fights: List<Fight>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -41,7 +40,8 @@ fun FightsTab(
         onRefresh = onRefresh,
         listState = listState,
         contentPadding = PaddingValues(top = 10.dp),
-        verticalSpacing = 0.dp
+        verticalSpacing = 0.dp,
+        userScrollEnabled = fights.isNotEmpty()
     ) {
         item(contentType = "EventHeader") {
             Column {
