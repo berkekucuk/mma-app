@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,41 +34,66 @@ fun NameColumn(
     record: String?,
     textAlign: TextAlign,
     horizontalAlignment: Alignment.Horizontal,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val unknownFighter = stringResource(Res.string.unknown_fighter)
+    val winContentDescription = stringResource(Res.string.content_description_win)
+    val lossContentDescription = stringResource(Res.string.content_description_loss)
+
     val fullName = name ?: unknownFighter
 
     val (firstName, lastName) = remember(fullName) {
         val parts = fullName.split(" ")
         if (fullName.length > 14 && parts.size > 1) {
-            val first = parts.first()
-            val last = parts.drop(1).joinToString(" ")
-            first to last
+            parts.first() to parts.drop(1).joinToString(" ")
         } else {
             fullName to null
         }
     }
 
     val resultUpper = result?.uppercase()
+
     val nameColor = when (resultUpper) {
         "WIN" -> AppColors.textPrimary
         "LOSS" -> AppColors.textSecondary
         else -> AppColors.textPrimary
     }
 
+    val recordColor: Color = when (resultUpper) {
+        "WIN" -> AppColors.winnerFrame
+        else -> AppColors.textSecondary
+    }
+
+    val recordIcon: ImageVector? = when (resultUpper) {
+        "WIN" -> Icons.Default.ArrowDropUp
+        "LOSS" -> Icons.Default.ArrowDropDown
+        else -> null
+    }
+
+    val recordIconContentDescription: String? = when (resultUpper) {
+        "WIN" -> winContentDescription
+        "LOSS" -> lossContentDescription
+        else -> null
+    }
+
+    val recordRowArrangement = if (horizontalAlignment == Alignment.End) {
+        Arrangement.End
+    } else {
+        Arrangement.Start
+    }
+
     Column(
         horizontalAlignment = horizontalAlignment,
-        modifier = modifier
+        modifier = modifier,
     ) {
         Text(
             text = firstName,
             color = nameColor,
             fontSize = 12.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
             textAlign = textAlign,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
         )
 
         if (lastName != null) {
@@ -75,67 +101,35 @@ fun NameColumn(
                 text = lastName,
                 color = nameColor,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 textAlign = textAlign,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         }
 
-        record?.let { rec ->
-            val resultUpper = result?.uppercase()
-
+        if (record != null) {
             Row(
-                horizontalArrangement = if (horizontalAlignment == Alignment.End) Arrangement.End else Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = recordRowArrangement,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                when (resultUpper) {
-                    "WIN" -> {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropUp,
-                            contentDescription = stringResource(Res.string.content_description_win),
-                            tint = AppColors.winnerFrame,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = rec,
-                            color = AppColors.winnerFrame,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = textAlign,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    "LOSS" -> {
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = stringResource(Res.string.content_description_loss),
-                            tint = Color.Red,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = rec,
-                            color = Color.Red,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = textAlign,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    else -> {
-                        Text(
-                            text = rec,
-                            color = AppColors.textSecondary,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = textAlign,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                if (recordIcon != null && recordIconContentDescription != null) {
+                    Icon(
+                        imageVector = recordIcon,
+                        contentDescription = recordIconContentDescription,
+                        tint = recordColor,
+                        modifier = Modifier.size(16.dp),
+                    )
                 }
+                Text(
+                    text = record,
+                    color = recordColor,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    textAlign = textAlign,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
     }

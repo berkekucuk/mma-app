@@ -28,29 +28,42 @@ fun FighterImage(
     name: String?,
     countryCode: String?,
     result: String?,
-    alignment: Alignment.Horizontal
+    alignment: Alignment.Horizontal,
 ) {
     val context = LocalPlatformContext.current
 
-    Box(
-        contentAlignment = if (alignment == Alignment.Start) Alignment.BottomStart else Alignment.BottomEnd
-    ) {
-        val isWinner = result?.equals("WIN", ignoreCase = true) == true
-        val borderModifier = if (isWinner) {
-            Modifier.border(2.dp, AppColors.winnerFrame, CircleShape)
-        } else {
-            Modifier
-        }
+    val boxAlignment = if (alignment == Alignment.Start) Alignment.BottomStart else Alignment.BottomEnd
 
-        val imageRequest = remember(imageUrl) {
+    val isWinner = result?.equals("WIN", ignoreCase = true) == true
+    val borderModifier = if (isWinner) Modifier.border(2.dp, AppColors.winnerFrame, CircleShape) else Modifier
+
+    val imageRequest = remember(imageUrl) {
+        ImageRequest.Builder(context)
+            .data(imageUrl)
+            .crossfade(true)
+            .size(200, 200)
+            .memoryCacheKey(imageUrl)
+            .build()
+    }
+
+    val flagUrl = remember(countryCode) {
+        countryCode?.let { "https://flags-v1.s3.eu-central-1.amazonaws.com/${it.lowercase()}.png" }
+    }
+
+    val flagRequest = remember(flagUrl) {
+        flagUrl?.let {
             ImageRequest.Builder(context)
-                .data(imageUrl)
+                .data(it)
                 .crossfade(true)
-                .size(200, 200)
-                .memoryCacheKey(imageUrl)
+                .size(100, 100)
+                .memoryCacheKey(it)
                 .build()
         }
+    }
 
+    val flagContentDescription = stringResource(Res.string.content_description_flag)
+
+    Box(contentAlignment = boxAlignment) {
         AsyncImage(
             model = imageRequest,
             contentDescription = name,
@@ -59,29 +72,18 @@ fun FighterImage(
                 .clip(CircleShape)
                 .background(AppColors.topBarBackground)
                 .then(borderModifier),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
-        countryCode?.let { code ->
-            val flagUrl = "https://flags-v1.s3.eu-central-1.amazonaws.com/${code.lowercase()}.png"
-
-            val flagRequest = remember(flagUrl) {
-                ImageRequest.Builder(context)
-                    .data(flagUrl)
-                    .crossfade(true)
-                    .size(100, 100)
-                    .memoryCacheKey(flagUrl)
-                    .build()
-            }
-
+        if (flagRequest != null) {
             AsyncImage(
                 model = flagRequest,
-                contentDescription = stringResource(Res.string.content_description_flag),
+                contentDescription = flagContentDescription,
                 modifier = Modifier
                     .size(width = 18.dp, height = 12.dp)
                     .clip(RoundedCornerShape(2.dp))
                     .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
         }
     }

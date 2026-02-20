@@ -13,14 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.domain.model.Fight
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.weight_class_bout
 import org.jetbrains.compose.resources.stringResource
@@ -34,28 +34,44 @@ fun FightItem(
     val redCorner = fight.redCorner
     val blueCorner = fight.blueCorner
 
+    val methodText = remember(fight.methodType, fight.methodDetail) {
+        buildString {
+            if (fight.methodType.isNotBlank()) {
+                append(fight.methodType)
+                if (fight.methodDetail.isNotBlank()) {
+                    append(" - ${fight.methodDetail}")
+                }
+            }
+        }
+    }
+
+    val weightClassLabel = stringResource(
+        Res.string.weight_class_bout,
+        fight.weightClass.name.lowercase().replaceFirstChar { it.uppercase() }
+    )
+
+    val headerText = remember(methodText, weightClassLabel) {
+        methodText.ifEmpty { weightClassLabel }
+    }
+
+    val redRecord = remember(redCorner) {
+        redCorner?.recordAfterFight?.toString() ?: redCorner?.fighter?.record?.toString()
+    }
+
+    val blueRecord = remember(blueCorner) {
+        blueCorner?.recordAfterFight?.toString() ?: blueCorner?.fighter?.record?.toString()
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(AppColors.fightItemBackground)
-            .then(
-                if (onClick != null) Modifier.clickable { onClick() }
-                else Modifier
-            )
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .padding(10.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            val methodText = buildString {
-                if (fight.methodType.isNotBlank()) {
-                    append(fight.methodType)
-                    if (fight.methodDetail.isNotBlank()) {
-                        append(" - ${fight.methodDetail}")
-                    }
-                }
-            }
-
             Spacer(modifier = Modifier.weight(0.3f))
 
             Box(
@@ -63,15 +79,10 @@ fun FightItem(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = methodText.ifEmpty {
-                        stringResource(
-                            Res.string.weight_class_bout,
-                            fight.weightClass.name.lowercase().replaceFirstChar { it.uppercase() }
-                        )
-                    },
+                    text = headerText,
                     color = AppColors.textSecondary,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
 
@@ -80,16 +91,16 @@ fun FightItem(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 FighterPortrait(
                     name = redCorner?.fighter?.name,
                     imageUrl = redCorner?.fighter?.imageUrl,
                     countryCode = redCorner?.fighter?.countryCode,
                     result = redCorner?.result?.name,
-                    record = redCorner?.recordAfterFight?.toString() ?: redCorner?.fighter?.record?.toString(),
+                    record = redRecord,
                     alignment = Alignment.Start,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
 
                 Box(
@@ -100,7 +111,7 @@ fun FightItem(
                         text = "VS",
                         color = AppColors.textSecondary,
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
 
@@ -109,9 +120,9 @@ fun FightItem(
                     imageUrl = blueCorner?.fighter?.imageUrl,
                     countryCode = blueCorner?.fighter?.countryCode,
                     result = blueCorner?.result?.name,
-                    record = blueCorner?.recordAfterFight?.toString() ?: blueCorner?.fighter?.record?.toString(),
+                    record = blueRecord,
                     alignment = Alignment.End,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
 
