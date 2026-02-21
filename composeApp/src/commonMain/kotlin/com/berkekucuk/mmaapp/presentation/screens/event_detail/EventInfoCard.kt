@@ -54,7 +54,7 @@ fun EventInfoCard(
                 text = date ?: stringResource(Res.string.to_be_announced),
                 color = AppColors.textPrimary,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

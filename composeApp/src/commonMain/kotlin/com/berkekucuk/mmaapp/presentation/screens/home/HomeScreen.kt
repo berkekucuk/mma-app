@@ -97,12 +97,12 @@ fun HomeScreen(
                             style = MaterialTheme.typography.titleLarge,
                             fontFamily = AppFonts.RobotoCondensed,
                             fontWeight = FontWeight.Bold,
-                            color = AppColors.textPrimary
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = AppColors.topBarBackground,
                         scrolledContainerColor = AppColors.topBarBackground,
+                        titleContentColor = AppColors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior
                 )

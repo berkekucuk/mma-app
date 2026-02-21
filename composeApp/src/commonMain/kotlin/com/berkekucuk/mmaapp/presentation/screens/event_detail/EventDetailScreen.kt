@@ -112,7 +112,6 @@ fun EventDetailScreen(
                                 overflow = TextOverflow.Ellipsis,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.SemiBold,
-                                color = AppColors.textPrimary
                             )
                             if (eventSubtitleLine != null) {
                                 Text(
@@ -120,7 +119,7 @@ fun EventDetailScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = AppColors.textSecondary
+                                    color = AppColors.textSecondary,
                                 )
                             }
                         }
@@ -130,13 +129,14 @@ fun EventDetailScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(Res.string.content_description_back),
-                                tint = AppColors.textPrimary
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = AppColors.topBarBackground,
                         scrolledContainerColor = AppColors.topBarBackground,
+                        navigationIconContentColor = AppColors.textPrimary,
+                        titleContentColor = AppColors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior
                 )
