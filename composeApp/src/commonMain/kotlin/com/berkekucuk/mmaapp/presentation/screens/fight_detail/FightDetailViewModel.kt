@@ -41,6 +41,7 @@ class FightDetailViewModel(
                     _state.update {
                         it.copy(
                             fight = fight,
+                            eventDate = event.datetimeUtc,
                             isLoading = false
                         )
                     }
