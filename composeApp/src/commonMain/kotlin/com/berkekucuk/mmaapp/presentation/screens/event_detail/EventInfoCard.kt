@@ -53,7 +53,7 @@ fun EventInfoCard(
             Text(
                 text = date ?: stringResource(Res.string.to_be_announced),
                 color = AppColors.textPrimary,
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

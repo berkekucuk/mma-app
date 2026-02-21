@@ -31,5 +31,25 @@
     <string name="tab_prelims">Prelims</string>
     <string name="empty_main_card_fights">No main card fights available</string>
     <string name="empty_prelim_fights">No prelim fights available</string>
+
+    <!-- Fight Detail Screen -->
+    <string name="fight_detail_label_name">Name</string>
+    <string name="fight_detail_label_age">Age at Fight</string>
+    <string name="fight_detail_label_hometown">Fighting out of</string>
+    <string name="fight_detail_label_height">Height</string>
+    <string name="fight_detail_label_reach">Reach</string>
+    <string name="fight_detail_height_cm">%1$s cm</string>
+    <string name="fight_detail_label_result">Result</string>
+    <string name="fight_detail_label_odds">Odds</string>
+    <string name="fight_detail_label_record">Record After Fight</string>
+    <string name="fight_detail_label_rounds_format">Rounds Format</string>
+    <string name="fight_detail_label_method">Method</string>
+    <string name="fight_detail_label_round_summary">Round Summary</string>
+
+    <!-- Fight Result Card -->
+    <string name="fight_result_defeats">%1$s defeats %2$s</string>
+    <string name="fight_result_draw">Draw</string>
+    <string name="fight_result_no_contest">No Contest</string>
+    <string name="fight_result_via">via %1$s</string>
 </resources>
 
