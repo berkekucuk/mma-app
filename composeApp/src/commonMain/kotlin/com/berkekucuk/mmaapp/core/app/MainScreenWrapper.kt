@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.foundation.layout.Box
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingsScreenRoot
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -92,9 +93,7 @@ fun MainScreenWrapper(
             }
 
             composable<Route.Rankings> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Rankings Screen", color = Color.White)
-                }
+                RankingsScreenRoot()
             }
 
             composable<Route.Profile> {
