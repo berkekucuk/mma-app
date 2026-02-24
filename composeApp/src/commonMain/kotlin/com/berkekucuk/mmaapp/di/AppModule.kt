@@ -8,13 +8,19 @@ import com.berkekucuk.mmaapp.core.utils.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.factory.ApolloClientFactory
+import com.berkekucuk.mmaapp.data.remote.factory.SupabaseClientFactory
 import com.berkekucuk.mmaapp.data.remote.api.EventGraphqlAPI
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.RankingsRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.RankingsSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.RankingsRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
+import com.berkekucuk.mmaapp.domain.repository.RankingsRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
+import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingsViewModel
 import org.koin.core.module.dsl.viewModel
 
 val appModule = module {
@@ -33,12 +39,12 @@ val appModule = module {
     }
 
     // supabase client
-    //    single {
-    //        SupabaseClientFactory.create(
-    //            url = BuildConfig.SUPABASE_URL,
-    //            key = BuildConfig.SUPABASE_KEY
-    //        )
-    //    }
+    single {
+        SupabaseClientFactory.create(
+            url = BuildConfig.SUPABASE_URL,
+            key = BuildConfig.SUPABASE_KEY
+        )
+    }
 
     // apollo client
     single {
@@ -92,5 +98,20 @@ val appModule = module {
             eventRepository = get(),
             savedStateHandle = get()
         )
+    }
+
+    // rankings remote data source
+    single<RankingsRemoteDataSource> {
+        RankingsSupabaseAPI(client = get())
+    }
+
+    // rankings repository
+    single<RankingsRepository> {
+        RankingsRepositoryImpl(remoteDataSource = get())
+    }
+
+    // rankings view model
+    viewModel {
+        RankingsViewModel(rankingsRepository = get())
     }
 }

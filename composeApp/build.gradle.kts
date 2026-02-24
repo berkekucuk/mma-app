@@ -146,10 +146,10 @@ if (localPropertiesFile.exists()) {
 buildConfig {
     packageName("com.berkekucuk.mmaapp")
 
-//    val url = localProperties.getProperty("SUPABASE_URL") ?: ""
-//    val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
-//    buildConfigField("String", "SUPABASE_URL", "\"$url\"")
-//    buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
+    val url = localProperties.getProperty("SUPABASE_URL") ?: ""
+    val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
+    buildConfigField("String", "SUPABASE_URL", "\"$url\"")
+    buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
 
     val appsyncUrl = localProperties.getProperty("APPSYNC_API_URL") ?: ""
     val appsyncKey = localProperties.getProperty("APPSYNC_API_KEY") ?: ""
