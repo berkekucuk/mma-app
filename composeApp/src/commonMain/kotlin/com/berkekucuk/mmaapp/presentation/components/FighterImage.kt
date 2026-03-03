@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
@@ -29,6 +30,9 @@ fun FighterImage(
     countryCode: String?,
     result: String?,
     alignment: Alignment.Horizontal,
+    imageSize: Dp = 55.dp,
+    flagWidth: Dp = 18.dp,
+    flagHeight: Dp = 12.dp,
 ) {
     val context = LocalPlatformContext.current
 
@@ -68,7 +72,7 @@ fun FighterImage(
             model = imageRequest,
             contentDescription = name,
             modifier = Modifier
-                .size(55.dp)
+                .size(imageSize)
                 .clip(CircleShape)
                 .background(AppColors.topBarBackground)
                 .then(borderModifier),
@@ -80,7 +84,7 @@ fun FighterImage(
                 model = flagRequest,
                 contentDescription = flagContentDescription,
                 modifier = Modifier
-                    .size(width = 18.dp, height = 12.dp)
+                    .size(width = flagWidth, height = flagHeight)
                     .clip(RoundedCornerShape(2.dp))
                     .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop,

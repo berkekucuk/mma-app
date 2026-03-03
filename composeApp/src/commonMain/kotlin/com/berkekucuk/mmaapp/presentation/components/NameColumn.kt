@@ -1,8 +1,10 @@
 package com.berkekucuk.mmaapp.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -15,9 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
@@ -35,6 +41,7 @@ fun NameColumn(
     textAlign: TextAlign,
     horizontalAlignment: Alignment.Horizontal,
     modifier: Modifier = Modifier,
+    nameFontSize: TextUnit = 12.sp,
 ) {
     val unknownFighter = stringResource(Res.string.unknown_fighter)
     val winContentDescription = stringResource(Res.string.content_description_win)
@@ -42,14 +49,9 @@ fun NameColumn(
 
     val fullName = name ?: unknownFighter
 
-    val (firstName, lastName) = remember(fullName) {
-        val parts = fullName.split(" ")
-        if (fullName.length > 14 && parts.size > 1) {
-            parts.first() to parts.drop(1).joinToString(" ")
-        } else {
-            fullName to null
-        }
-    }
+    val textMeasurer = rememberTextMeasurer()
+    val nameStyle = TextStyle(fontSize = nameFontSize)
+    val density = LocalDensity.current
 
     val resultUpper = result?.uppercase()
 
@@ -82,54 +84,68 @@ fun NameColumn(
         Arrangement.Start
     }
 
-    Column(
-        horizontalAlignment = horizontalAlignment,
-        modifier = modifier,
-    ) {
-        Text(
-            text = firstName,
-            color = nameColor,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = textAlign,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+    BoxWithConstraints(modifier = modifier) {
+        val maxWidthPx = with(density) { maxWidth.toPx() }
 
-        if (lastName != null) {
+        val (firstName, lastName) = remember(fullName, maxWidthPx) {
+            val parts = fullName.split(" ")
+            val textWidth = textMeasurer.measure(fullName, nameStyle).size.width
+            if (textWidth > maxWidthPx && parts.size > 1) {
+                parts.first() to parts.drop(1).joinToString(" ")
+            } else {
+                fullName to null
+            }
+        }
+
+        Column(
+            horizontalAlignment = horizontalAlignment,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             Text(
-                text = lastName,
+                text = firstName,
                 color = nameColor,
-                fontSize = 12.sp,
+                fontSize = nameFontSize,
                 fontWeight = FontWeight.Medium,
                 textAlign = textAlign,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-        }
 
-        if (record != null) {
-            Row(
-                horizontalArrangement = recordRowArrangement,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (recordIcon != null && recordIconContentDescription != null) {
-                    Icon(
-                        imageVector = recordIcon,
-                        contentDescription = recordIconContentDescription,
-                        tint = recordColor,
-                        modifier = Modifier.size(16.dp),
-                    )
-                }
+            if (lastName != null) {
                 Text(
-                    text = record,
-                    color = recordColor,
-                    fontSize = 12.sp,
+                    text = lastName,
+                    color = nameColor,
+                    fontSize = nameFontSize,
                     fontWeight = FontWeight.Medium,
                     textAlign = textAlign,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+            }
+
+            if (record != null) {
+                Row(
+                    horizontalArrangement = recordRowArrangement,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (recordIcon != null && recordIconContentDescription != null) {
+                        Icon(
+                            imageVector = recordIcon,
+                            contentDescription = recordIconContentDescription,
+                            tint = recordColor,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                    Text(
+                        text = record,
+                        color = recordColor,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = textAlign,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }

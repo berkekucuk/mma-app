@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun FighterPortrait(
@@ -18,7 +22,11 @@ fun FighterPortrait(
     result: String?,
     record: String?,
     alignment: Alignment.Horizontal,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageSize: Dp = 55.dp,
+    flagWidth: Dp = 18.dp,
+    flagHeight: Dp = 12.dp,
+    nameFontSize: TextUnit = 12.sp,
 ) {
     Row(
         horizontalArrangement = if (alignment == Alignment.Start) Arrangement.Start else Arrangement.End,
@@ -32,12 +40,13 @@ fun FighterPortrait(
                 record = record,
                 textAlign = TextAlign.End,
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                nameFontSize = nameFontSize,
             )
             Spacer(modifier = Modifier.width(8.dp))
-            FighterImage(imageUrl, name, countryCode, result, alignment)
+            FighterImage(imageUrl, name, countryCode, result, alignment, imageSize, flagWidth, flagHeight)
         } else {
-            FighterImage(imageUrl, name, countryCode, result, alignment)
+            FighterImage(imageUrl, name, countryCode, result, alignment, imageSize, flagWidth, flagHeight)
             Spacer(modifier = Modifier.width(8.dp))
             NameColumn(
                 name = name,
@@ -45,7 +54,8 @@ fun FighterPortrait(
                 record = record,
                 textAlign = TextAlign.Start,
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                nameFontSize = nameFontSize,
             )
         }
     }
