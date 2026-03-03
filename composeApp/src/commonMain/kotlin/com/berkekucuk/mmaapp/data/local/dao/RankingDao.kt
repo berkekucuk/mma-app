@@ -9,7 +9,7 @@ import com.berkekucuk.mmaapp.data.local.entity.RankingEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RankingsDao {
+interface RankingDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -17,13 +17,4 @@ interface RankingsDao {
 
     @Query("SELECT * FROM rankings")
     fun getAllRankings(): Flow<List<RankingEntity>>
-
-    @Query("DELETE FROM rankings")
-    suspend fun clearAllRankings()
-
-    @Transaction
-    suspend fun refreshRankings(rankings: List<RankingEntity>) {
-        clearAllRankings()
-        insertRankings(rankings)
-    }
 }
