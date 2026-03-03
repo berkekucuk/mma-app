@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- Home Screen -->
-    <string name="events_title">events</string>
+    <string name="events_title">EVENTS</string>
     <string name="tab_upcoming">Upcoming</string>
     <string name="tab_completed">Completed</string>
 
@@ -51,5 +51,15 @@
     <string name="fight_result_draw">Draw</string>
     <string name="fight_result_no_contest">No Contest</string>
     <string name="fight_result_via">via %1$s</string>
+
+    <!-- Rankings Screen -->
+    <string name="rankings_title">rankings</string>
+    <string name="tab_mens">Men's</string>
+    <string name="tab_womens">Women's</string>
+    <string name="rankings_champion">CHAMPION</string>
+    <string name="rankings_vacant">Vacant</string>
+    <string name="content_description_collapse">Collapse</string>
+    <string name="content_description_expand">Expand</string>
+    <string name="rankings_champion_rank_label">C</string>
 </resources>
 

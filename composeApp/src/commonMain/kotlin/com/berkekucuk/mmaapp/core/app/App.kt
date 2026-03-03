@@ -31,6 +31,9 @@ fun App() {
             MainScreenWrapper(
                 onNavigateToEventDetail = { eventId ->
                     rootNavController.navigate(Route.EventDetail(eventId))
+                },
+                onNavigateToFighterDetail = { fighterId ->
+                    rootNavController.navigate(Route.FighterDetail(fighterId))
                 }
             )
         }

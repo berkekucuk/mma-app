@@ -24,7 +24,8 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 
 @Composable
 fun MainScreenWrapper(
-    onNavigateToEventDetail: (String) -> Unit
+    onNavigateToEventDetail: (String) -> Unit,
+    onNavigateToFighterDetail: (String) -> Unit
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -93,7 +94,9 @@ fun MainScreenWrapper(
             }
 
             composable<Route.Rankings> {
-                RankingsScreenRoot()
+                RankingsScreenRoot(
+                    onNavigateToFighterDetail = onNavigateToFighterDetail
+                )
             }
 
             composable<Route.Profile> {

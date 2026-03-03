@@ -1,0 +1,101 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "4fbd74fcab477c00a395a37e8a59ca6c",
+    "entities": [
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`event_id` TEXT NOT NULL, `name` TEXT, `status` TEXT, `datetime_utc` INTEGER, `venue` TEXT, `location` TEXT, `event_year` INTEGER, `fights_json` TEXT, PRIMARY KEY(`event_id`))",
+        "fields": [
+          {
+            "fieldPath": "eventId",
+            "columnName": "event_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "datetimeUtc",
+            "columnName": "datetime_utc",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "venue",
+            "columnName": "venue",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "location",
+            "columnName": "location",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "eventYear",
+            "columnName": "event_year",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "fights",
+            "columnName": "fights_json",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "event_id"
+          ]
+        }
+      },
+      {
+        "tableName": "rankings",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`weight_class_id` TEXT NOT NULL, `rank_number` INTEGER NOT NULL, `fighter_json` TEXT, `weight_class_json` TEXT, PRIMARY KEY(`weight_class_id`, `rank_number`))",
+        "fields": [
+          {
+            "fieldPath": "weightClassId",
+            "columnName": "weight_class_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rankNumber",
+            "columnName": "rank_number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fighter",
+            "columnName": "fighter_json",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "weightClass",
+            "columnName": "weight_class_json",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "weight_class_id",
+            "rank_number"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4fbd74fcab477c00a395a37e8a59ca6c')"
+    ]
+  }
+}

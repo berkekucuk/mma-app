@@ -7,20 +7,19 @@ import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.core.utils.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
-import com.berkekucuk.mmaapp.data.remote.factory.ApolloClientFactory
 import com.berkekucuk.mmaapp.data.remote.factory.SupabaseClientFactory
-import com.berkekucuk.mmaapp.data.remote.api.EventGraphqlAPI
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.EventSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.RankingsRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.RankingsSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
-import com.berkekucuk.mmaapp.data.repository.RankingsRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
-import com.berkekucuk.mmaapp.domain.repository.RankingsRepository
+import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
-import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingsViewModel
+import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import org.koin.core.module.dsl.viewModel
 
 val appModule = module {
@@ -47,12 +46,12 @@ val appModule = module {
     }
 
     // apollo client
-    single {
-        ApolloClientFactory.create(
-            url = BuildConfig.APPSYNC_API_URL,
-            apiKey = BuildConfig.APPSYNC_API_KEY
-        )
-    }
+//    single {
+//        ApolloClientFactory.create(
+//            url = BuildConfig.APPSYNC_API_URL,
+//            apiKey = BuildConfig.APPSYNC_API_KEY
+//        )
+//    }
 
     // local db
     single<AppDatabase> {
@@ -63,9 +62,17 @@ val appModule = module {
         get<AppDatabase>().eventDao()
     }
 
+    single {
+        get<AppDatabase>().rankingsDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
-        EventGraphqlAPI(apolloClient = get())
+        EventSupabaseAPI(client = get())
+    }
+
+    single<RankingsRemoteDataSource> {
+        RankingsSupabaseAPI(client = get())
     }
 
     // repository
@@ -75,6 +82,14 @@ val appModule = module {
             dao = get(),
             rateLimiter = get(),
             dateTimeProvider = get()
+        )
+    }
+
+    single<RankingRepository> {
+        RankingRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get(),
+            rateLimiter = get()
         )
     }
 
@@ -100,18 +115,7 @@ val appModule = module {
         )
     }
 
-    // rankings remote data source
-    single<RankingsRemoteDataSource> {
-        RankingsSupabaseAPI(client = get())
-    }
-
-    // rankings repository
-    single<RankingsRepository> {
-        RankingsRepositoryImpl(remoteDataSource = get())
-    }
-
-    // rankings view model
     viewModel {
-        RankingsViewModel(rankingsRepository = get())
+        RankingViewModel(repository = get())
     }
 }
