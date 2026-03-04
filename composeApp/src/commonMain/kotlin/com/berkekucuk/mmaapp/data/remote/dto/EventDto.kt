@@ -1,6 +1,6 @@
 package com.berkekucuk.mmaapp.data.remote.dto
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

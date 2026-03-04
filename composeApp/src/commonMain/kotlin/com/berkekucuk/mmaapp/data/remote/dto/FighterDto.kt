@@ -17,4 +17,5 @@ data class FighterDto(
     val born: String? = null,
     @SerialName("fighting_out_of") val fightingOutOf: String? = null,
     @SerialName("country_code") val countryCode: String? = null,
+    @SerialName("fights") val fighterHistory: List<FighterHistoryDto>? = null
 )
