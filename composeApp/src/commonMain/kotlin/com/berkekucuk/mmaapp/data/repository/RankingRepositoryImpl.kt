@@ -5,7 +5,7 @@ import com.berkekucuk.mmaapp.data.local.dao.RankingDao
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.domain.model.Ranking
-import com.berkekucuk.mmaapp.data.remote.api.RankingsRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.RankingRemoteDataSource
 import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RankingRepositoryImpl(
-    private val remoteDataSource: RankingsRemoteDataSource,
+    private val remoteDataSource: RankingRemoteDataSource,
     private val dao: RankingDao,
     private val rateLimiter: RateLimiter
 ) : RankingRepository {

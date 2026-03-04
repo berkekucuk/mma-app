@@ -44,6 +44,7 @@ class EventSupabaseAPI(
                         height,
                         reach,
                         date_of_birth,
+                        fighting_out_of,
                         country_code
                     )
                 )
