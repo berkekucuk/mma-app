@@ -15,8 +15,10 @@ import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.RankingRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.RankingSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
+import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
@@ -93,6 +95,14 @@ val appModule = module {
 
     single<RankingRepository> {
         RankingRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get(),
+            rateLimiter = get()
+        )
+    }
+
+    single<FighterRepository> {
+        FighterRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
             rateLimiter = get()
