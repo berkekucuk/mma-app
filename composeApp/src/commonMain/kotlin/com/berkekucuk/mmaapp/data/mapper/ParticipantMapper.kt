@@ -24,7 +24,7 @@ fun ParticipantDto.toDomain(): Participant {
     return Participant(
         oddsValue = oddsValue,
         oddsLabel = oddsLabel ?: "",
-        result = parseResult(result),
+        result = Result.fromString(result),
         recordAfterFight = recordAfterFight?.toDomain(),
         isRedCorner = isRedCorner ?: false,
         fighter = fighter?.toDomain() ?: createUnknownFighter()
@@ -46,17 +46,4 @@ private fun createUnknownFighter(): Fighter {
         countryCode = "",
         imageUrl = ""
     )
-}
-
-private fun parseResult(result: String?): Result {
-    return when (result?.lowercase()) {
-        "win" -> Result.WIN
-        "loss" -> Result.LOSS
-        "draw" -> Result.DRAW
-        "no_contest" -> Result.NO_CONTEST
-        "pending" -> Result.PENDING
-        "cancelled" -> Result.CANCELLED
-        "fizzled" -> Result.FIZZLED
-        else -> Result.UNKNOWN
-    }
 }

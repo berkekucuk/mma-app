@@ -17,5 +17,5 @@ data class Fighter(
     val born: String,
     val fightingOutOf: String,
     val countryCode: String,
-    val fighterHistory: List<FighterHistory> = emptyList(),
+    val fights: List<Fight> = emptyList(),
 )

@@ -3,7 +3,6 @@ package com.berkekucuk.mmaapp.data.local
 import androidx.room.TypeConverter
 import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
-import com.berkekucuk.mmaapp.data.remote.dto.FighterHistoryDto
 import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
 import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
 import com.berkekucuk.mmaapp.data.remote.dto.WeightClassDto
@@ -65,12 +64,6 @@ class Converters {
 
     @TypeConverter
     fun toTimestamp(date: Instant?): Long? = date?.toEpochMilliseconds()
-
-    @TypeConverter
-    fun fromFighterHistoryList(fights: List<FighterHistoryDto>?): String = encodeList(fights)
-
-    @TypeConverter
-    fun toFighterHistoryList(value: String?): List<FighterHistoryDto> = decodeList(value)
 
     @TypeConverter
     fun fromRecord(value: RecordDto?): String? = encode(value)

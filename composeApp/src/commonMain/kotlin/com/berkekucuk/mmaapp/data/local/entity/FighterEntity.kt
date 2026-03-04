@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.berkekucuk.mmaapp.data.remote.dto.FighterHistoryDto
+import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
 import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
 
@@ -21,5 +21,5 @@ data class FighterEntity(
     val born: String? = null,
     @ColumnInfo(name = "fighting_out_of") val fightingOutOf: String? = null,
     @ColumnInfo(name = "country_code") val countryCode: String? = null,
-    @ColumnInfo(name = "fights_json") val fighterHistory: List<FighterHistoryDto>? = null,
+    @ColumnInfo(name = "fights_json") val fights: List<FightDto>? = null,
 )
