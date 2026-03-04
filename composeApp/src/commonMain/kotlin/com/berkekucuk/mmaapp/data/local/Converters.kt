@@ -3,6 +3,9 @@ package com.berkekucuk.mmaapp.data.local
 import androidx.room.TypeConverter
 import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
+import com.berkekucuk.mmaapp.data.remote.dto.FighterHistoryDto
+import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
+import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
 import com.berkekucuk.mmaapp.data.remote.dto.WeightClassDto
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
@@ -62,4 +65,22 @@ class Converters {
 
     @TypeConverter
     fun toTimestamp(date: Instant?): Long? = date?.toEpochMilliseconds()
+
+    @TypeConverter
+    fun fromFighterHistoryList(fights: List<FighterHistoryDto>?): String = encodeList(fights)
+
+    @TypeConverter
+    fun toFighterHistoryList(value: String?): List<FighterHistoryDto> = decodeList(value)
+
+    @TypeConverter
+    fun fromRecord(value: RecordDto?): String? = encode(value)
+
+    @TypeConverter
+    fun toRecord(value: String?): RecordDto? = decode(value)
+
+    @TypeConverter
+    fun fromMeasurement(value: MeasurementDto?): String? = encode(value)
+
+    @TypeConverter
+    fun toMeasurement(value: String?): MeasurementDto? = decode(value)
 }
