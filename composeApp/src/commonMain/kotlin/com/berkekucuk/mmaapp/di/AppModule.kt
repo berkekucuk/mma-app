@@ -70,6 +70,10 @@ val appModule = module {
         get<AppDatabase>().rankingsDao()
     }
 
+    single {
+        get<AppDatabase>().fighterDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventSupabaseAPI(client = get())
@@ -127,6 +131,7 @@ val appModule = module {
     viewModel {
         FightDetailViewModel(
             eventRepository = get(),
+            fighterRepository = get(),
             savedStateHandle = get()
         )
     }

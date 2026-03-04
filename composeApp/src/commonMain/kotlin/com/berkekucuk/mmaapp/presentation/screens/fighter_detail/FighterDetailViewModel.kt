@@ -1,0 +1,77 @@
+package com.berkekucuk.mmaapp.presentation.screens.fighter_detail
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class FighterDetailViewModel(
+    private val repository: FighterRepository,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val route = savedStateHandle.toRoute<Route.FighterDetail>()
+    private val fighterId: String = route.fighterId
+
+    private val _state = MutableStateFlow(FighterDetailUiState())
+    val state = _state.asStateFlow()
+
+    private val _navigation = MutableSharedFlow<FighterDetailNavigationEvent>()
+    val navigation = _navigation.asSharedFlow()
+
+    init {
+        observeFighter()
+        syncFighter()
+    }
+
+    private fun observeFighter() {
+        viewModelScope.launch {
+            repository.getFighterById(fighterId)
+                .collect { fighter ->
+                    _state.update {
+                        it.copy(
+                            fighter = fighter,
+                            isLoading = false
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun syncFighter() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            repository.syncFighter(fighterId)
+                .onSuccess {
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+        }
+    }
+
+    fun onAction(action: FighterDetailUiAction) {
+        when (action) {
+            is FighterDetailUiAction.OnFightClicked -> navigateTo(
+                FighterDetailNavigationEvent.ToFightDetail(action.eventId, action.fightId, fighterId)
+            )
+            is FighterDetailUiAction.OnBackClicked -> navigateTo(FighterDetailNavigationEvent.Back)
+            is FighterDetailUiAction.OnRefresh -> syncFighter()
+        }
+    }
+
+    private fun navigateTo(event: FighterDetailNavigationEvent) {
+        viewModelScope.launch {
+            _navigation.emit(event)
+        }
+    }
+}
