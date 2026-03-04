@@ -10,8 +10,10 @@ import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.factory.SupabaseClientFactory
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.EventSupabaseAPI
-import com.berkekucuk.mmaapp.data.remote.api.RankingsRemoteDataSource
-import com.berkekucuk.mmaapp.data.remote.api.RankingsSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.RankingRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.RankingSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
@@ -71,8 +73,12 @@ val appModule = module {
         EventSupabaseAPI(client = get())
     }
 
-    single<RankingsRemoteDataSource> {
-        RankingsSupabaseAPI(client = get())
+    single<RankingRemoteDataSource> {
+        RankingSupabaseAPI(client = get())
+    }
+
+    single<FighterRemoteDataSource>{
+        FighterSupabaseAPI(get())
     }
 
     // repository
