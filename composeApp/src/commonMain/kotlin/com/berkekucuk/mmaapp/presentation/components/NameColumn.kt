@@ -30,12 +30,11 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.content_description_loss
 import mmaapp.composeapp.generated.resources.content_description_win
-import mmaapp.composeapp.generated.resources.unknown_fighter
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun NameColumn(
-    name: String?,
+    name: String,
     result: String?,
     record: String?,
     textAlign: TextAlign,
@@ -43,11 +42,8 @@ fun NameColumn(
     modifier: Modifier = Modifier,
     nameFontSize: TextUnit = 12.sp,
 ) {
-    val unknownFighter = stringResource(Res.string.unknown_fighter)
     val winContentDescription = stringResource(Res.string.content_description_win)
     val lossContentDescription = stringResource(Res.string.content_description_loss)
-
-    val fullName = name ?: unknownFighter
 
     val textMeasurer = rememberTextMeasurer()
     val nameStyle = TextStyle(fontSize = nameFontSize)
@@ -87,13 +83,13 @@ fun NameColumn(
     BoxWithConstraints(modifier = modifier) {
         val maxWidthPx = with(density) { maxWidth.toPx() }
 
-        val (firstName, lastName) = remember(fullName, maxWidthPx) {
-            val parts = fullName.split(" ")
-            val textWidth = textMeasurer.measure(fullName, nameStyle).size.width
+        val (firstName, lastName) = remember(name, maxWidthPx) {
+            val parts = name.split(" ")
+            val textWidth = textMeasurer.measure(name, nameStyle).size.width
             if (textWidth > maxWidthPx && parts.size > 1) {
                 parts.first() to parts.drop(1).joinToString(" ")
             } else {
-                fullName to null
+                name to null
             }
         }
 

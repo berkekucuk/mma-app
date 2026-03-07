@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,13 +22,12 @@ fun AppTabRow(
     tabs: List<String>,
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
-    modifier: Modifier = Modifier
+    containerColor: Color = AppColors.topBarBackground,
 ) {
     PrimaryTabRow(
         selectedTabIndex = pagerState.currentPage,
-        containerColor = AppColors.topBarBackground,
+        containerColor = containerColor,
         contentColor = AppColors.textPrimary,
-        modifier = modifier,
         indicator = {
             TabRowDefaults.PrimaryIndicator(
                 modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
@@ -49,7 +49,7 @@ fun AppTabRow(
                 text = {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.labelLarge
                     )
                 },
                 selectedContentColor = AppColors.textPrimary,

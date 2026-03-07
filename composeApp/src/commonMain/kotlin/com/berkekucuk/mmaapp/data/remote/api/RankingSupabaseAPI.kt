@@ -5,9 +5,9 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 
-class RankingsSupabaseAPI(
+class RankingSupabaseAPI(
     private val client: SupabaseClient
-) : RankingsRemoteDataSource {
+) : RankingRemoteDataSource {
 
     private val columnsToSelect = """
             weight_class_id,

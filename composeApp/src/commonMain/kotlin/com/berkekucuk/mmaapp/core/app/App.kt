@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
 
 @Composable
 fun App() {
@@ -66,12 +67,18 @@ fun App() {
             )
         }
 
-
-        composable<Route.FighterDetail> {
-//            FighterDetailScreen(
-//                fighterId = route.fighterId,
-//                onBackClick = { rootNavController.navigateUp() }
-//            )
+        composable<Route.FighterDetail>(
+            enterTransition = NavTransitions.slideFromRight,
+            exitTransition = NavTransitions.slideOutToLeft,
+            popEnterTransition = NavTransitions.slideFromLeft,
+            popExitTransition = NavTransitions.slideOutToRight
+        ) {
+            FighterDetailScreenRoot(
+                onNavigateToFightDetail = { eventId, fightId, fighterId ->
+                    rootNavController.navigate(Route.FightDetail(eventId, fightId, fighterId))
+                },
+                onBackClick = { rootNavController.navigateUp() }
+            )
         }
     }
 }

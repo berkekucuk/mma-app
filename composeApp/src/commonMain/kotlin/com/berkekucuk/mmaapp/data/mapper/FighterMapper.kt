@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.data.mapper
 
+import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
 import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import com.berkekucuk.mmaapp.domain.model.Fighter
@@ -33,7 +34,7 @@ fun FighterDto.toDomain(): Fighter {
         record = record?.toDomain() ?: Record.EMPTY,
         height = height?.toDomain() ?: Measurement.EMPTY,
         reach = reach?.toDomain() ?: Measurement.EMPTY,
-        weightClassId = parseWeightClass(weightClassId),
+        weightClassId = WeightClass.fromId(weightClassId),
         dateOfBirth = dateOfBirth ?: "",
         born = born ?: "",
         fightingOutOf = fightingOutOf ?: "",
@@ -41,18 +42,38 @@ fun FighterDto.toDomain(): Fighter {
     )
 }
 
-private fun parseWeightClass(weightClassId: String?): WeightClass {
-    return when (weightClassId?.lowercase()) {
-        "sw" -> WeightClass.STRAWWEIGHT
-        "flw" -> WeightClass.FLYWEIGHT
-        "bw" -> WeightClass.BANTAMWEIGHT
-        "fw" -> WeightClass.FEATHERWEIGHT
-        "lw" -> WeightClass.LIGHTWEIGHT
-        "ww" -> WeightClass.WELTERWEIGHT
-        "mw" -> WeightClass.MIDDLEWEIGHT
-        "lhw" -> WeightClass.LIGHTHEAVYWEIGHT
-        "hw" -> WeightClass.HEAVYWEIGHT
-        "cw" -> WeightClass.CATCHWEIGHT
-        else -> WeightClass.UNKNOWN
-    }
+fun FighterDto.toEntity(): FighterEntity {
+    return FighterEntity(
+        fighterId = fighterId,
+        name = name,
+        nickname = nickname,
+        imageUrl = imageUrl,
+        record = record,
+        height = height,
+        reach = reach,
+        weightClassId = weightClassId,
+        dateOfBirth = dateOfBirth,
+        born = born,
+        fightingOutOf = fightingOutOf,
+        countryCode = countryCode,
+        fights = fights,
+    )
+}
+
+fun FighterEntity.toDomain(): Fighter {
+    return Fighter(
+        fighterId = fighterId,
+        name = name ?: "",
+        nickname = nickname,
+        imageUrl = imageUrl ?: "",
+        record = record?.toDomain() ?: Record.EMPTY,
+        height = height?.toDomain() ?: Measurement.EMPTY,
+        reach = reach?.toDomain() ?: Measurement.EMPTY,
+        weightClassId = WeightClass.fromId(weightClassId),
+        dateOfBirth = dateOfBirth ?: "",
+        born = born,
+        fightingOutOf = fightingOutOf,
+        countryCode = countryCode ?: "",
+        fights = fights?.map { it.toDomain() } ?: emptyList(),
+    )
 }

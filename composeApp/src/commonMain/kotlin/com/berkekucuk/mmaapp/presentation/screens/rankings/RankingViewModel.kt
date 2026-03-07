@@ -71,7 +71,7 @@ class RankingViewModel(
         when (action) {
             is RankingUiAction.OnToggleExpand -> toggleExpand(action.weightClassId)
             is RankingUiAction.OnFighterClicked -> navigateTo(RankingNavigationEvent.ToFighterDetail(action.fighterId))
-            is RankingUiAction.OnRefresh -> syncRankings()
+            is RankingUiAction.OnRefresh -> syncRankings(isRefreshing = true)
         }
     }
 
@@ -84,9 +84,9 @@ class RankingViewModel(
         }
     }
 
-    private fun syncRankings() {
+    private fun syncRankings(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true) }
+            _state.update { it.copy(isRefreshing = isRefreshing) }
             repository.syncRankings()
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }

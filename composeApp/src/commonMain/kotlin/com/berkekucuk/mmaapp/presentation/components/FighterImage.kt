@@ -3,14 +3,19 @@ package com.berkekucuk.mmaapp.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,10 +30,10 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FighterImage(
-    imageUrl: String?,
-    name: String?,
-    countryCode: String?,
-    result: String?,
+    imageUrl: String,
+    name: String,
+    countryCode: String,
+    result: String? = null,
     alignment: Alignment.Horizontal,
     imageSize: Dp = 55.dp,
     flagWidth: Dp = 18.dp,
@@ -37,6 +42,7 @@ fun FighterImage(
     val context = LocalPlatformContext.current
 
     val boxAlignment = if (alignment == Alignment.Start) Alignment.BottomStart else Alignment.BottomEnd
+    val badgeAlignment = if (alignment == Alignment.Start) Alignment.BottomEnd else Alignment.BottomStart
 
     val isWinner = result?.equals("WIN", ignoreCase = true) == true
     val borderModifier = if (isWinner) Modifier.border(2.dp, AppColors.winnerFrame, CircleShape) else Modifier
@@ -51,7 +57,9 @@ fun FighterImage(
     }
 
     val flagUrl = remember(countryCode) {
-        countryCode?.let { "https://flags-v1.s3.eu-central-1.amazonaws.com/${it.lowercase()}.png" }
+        if (countryCode.isNotBlank()) {
+            "https://flags-v1.s3.eu-central-1.amazonaws.com/${countryCode.lowercase()}.png"
+        } else null
     }
 
     val flagRequest = remember(flagUrl) {
@@ -67,7 +75,7 @@ fun FighterImage(
 
     val flagContentDescription = stringResource(Res.string.content_description_flag)
 
-    Box(contentAlignment = boxAlignment) {
+    Box {
         AsyncImage(
             model = imageRequest,
             contentDescription = name,
@@ -84,11 +92,33 @@ fun FighterImage(
                 model = flagRequest,
                 contentDescription = flagContentDescription,
                 modifier = Modifier
+                    .align(boxAlignment)
                     .size(width = flagWidth, height = flagHeight)
                     .clip(RoundedCornerShape(2.dp))
                     .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop,
             )
+        }
+
+        if (isWinner) {
+            val badgeSize = 15.dp
+            val badgeOffset = (badgeSize - flagHeight) / 2
+            Box(
+                modifier = Modifier
+                    .align(badgeAlignment)
+                    .offset(y = badgeOffset)
+                    .size(badgeSize)
+                    .background(AppColors.winnerFrame, CircleShape)
+                    .border(1.dp, AppColors.topBarBackground, CircleShape),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(10.dp),
+                )
+            }
         }
     }
 }

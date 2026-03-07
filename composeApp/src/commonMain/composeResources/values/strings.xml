@@ -61,5 +61,29 @@
     <string name="content_description_collapse">Collapse</string>
     <string name="content_description_expand">Expand</string>
     <string name="rankings_champion_rank_label">C</string>
+
+    <!-- Fighter Detail Screen -->
+    <string name="tab_details">Details</string>
+    <string name="tab_fights">Fights</string>
+    <string name="fighter_detail_label_record">Record</string>
+    <string name="fighter_detail_label_weight_class">Weight Class</string>
+    <string name="fighter_detail_label_height">Height</string>
+    <string name="fighter_detail_label_reach">Reach</string>
+    <string name="fighter_detail_label_age">Age</string>
+    <string name="fighter_detail_label_date_of_birth">Date of Birth</string>
+    <string name="fighter_detail_label_born">Born</string>
+    <string name="fighter_detail_label_fighting_out_of">Fighting Out Of</string>
+    <string name="fighter_detail_height_cm">%1$s cm</string>
+    <string name="fighter_detail_age_years">%1$s (%2$s yrs)</string>
+    <string name="fighter_detail_record_wins">Wins</string>
+    <string name="fighter_detail_record_losses">Losses</string>
+    <string name="fighter_detail_record_draws">Draws</string>
+    <string name="fighter_detail_result_win">W</string>
+    <string name="fighter_detail_result_loss">L</string>
+    <string name="fighter_detail_result_draw">D</string>
+    <string name="fighter_detail_result_no_contest">NC</string>
+    <string name="fighter_detail_result_pending">–</string>
+    <string name="fighter_detail_value_unavailable">—</string>
+
 </resources>
 

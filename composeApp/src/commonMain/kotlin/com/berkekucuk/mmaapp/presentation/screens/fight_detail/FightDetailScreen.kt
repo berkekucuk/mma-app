@@ -88,34 +88,38 @@ fun FightDetailScreen(
                             .padding(bottom = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            FighterImage(
-                                imageUrl = state.fight?.redCorner?.fighter?.imageUrl,
-                                name = state.fight?.redCorner?.fighter?.name,
-                                countryCode = state.fight?.redCorner?.fighter?.countryCode,
-                                result = state.fight?.redCorner?.result?.name,
-                                alignment = Alignment.Start,
-                            )
+                        state.fight?.let { fight ->
+                            val redCorner = fight.redCorner?.fighter
+                            val blueCorner = fight.blueCorner?.fighter
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                FighterImage(
+                                    imageUrl = redCorner?.imageUrl ?: "",
+                                    name = redCorner?.name ?: "",
+                                    countryCode = redCorner?.countryCode ?: "",
+                                    result = fight.redCorner?.result?.name,
+                                    alignment = Alignment.Start,
+                                )
 
-                            Text(
-                                text = "VS",
-                                color = AppColors.textSecondary,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 50.dp),
-                            )
+                                Text(
+                                    text = "VS",
+                                    color = AppColors.textSecondary,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 50.dp),
+                                )
 
-                            FighterImage(
-                                imageUrl = state.fight?.blueCorner?.fighter?.imageUrl,
-                                name = state.fight?.blueCorner?.fighter?.name,
-                                countryCode = state.fight?.blueCorner?.fighter?.countryCode,
-                                result = state.fight?.blueCorner?.result?.name,
-                                alignment = Alignment.End,
-                            )
+                                FighterImage(
+                                    imageUrl = blueCorner?.imageUrl ?: "",
+                                    name = blueCorner?.name ?: "",
+                                    countryCode = blueCorner?.countryCode ?: "",
+                                    result = fight.blueCorner?.result?.name,
+                                    alignment = Alignment.End,
+                                )
+                            }
                         }
                     }
                 },

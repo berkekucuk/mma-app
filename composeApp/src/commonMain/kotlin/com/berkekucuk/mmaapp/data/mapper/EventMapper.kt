@@ -37,21 +37,11 @@ fun EventEntity.toDomain(): Event {
     return Event(
         eventId = this.eventId,
         name = this.name ?: "Unannounced Event",
-        status = parseEventStatus(this.status),
+        status = EventStatus.fromString(this.status),
         datetimeUtc = this.datetimeUtc ,
         venue = this.venue ?: "N/A",
         location = this.location ?: "N/A",
         eventYear = this.eventYear,
         fights = fights?.map { it.toDomain() }?.sortedByDescending { it.fightOrder } ?: emptyList()
     )
-}
-
-private fun parseEventStatus(status: String?): EventStatus {
-    return when (status?.lowercase()) {
-        "upcoming" -> EventStatus.UPCOMING
-        "live" -> EventStatus.LIVE
-        "completed" -> EventStatus.COMPLETED
-        "cancelled" -> EventStatus.CANCELLED
-        else -> EventStatus.UNKNOWN
-    }
 }

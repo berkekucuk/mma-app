@@ -10,5 +10,5 @@ data class RankingEntity(
     @ColumnInfo(name = "weight_class_id") val weightClassId: String,
     @ColumnInfo(name = "rank_number") val rankNumber: Int,
     @ColumnInfo(name = "fighter_json") val fighter: FighterDto? = null,
-    @ColumnInfo(name = "weight_class_json") val weightClass: WeightClassDto?
+    @ColumnInfo(name = "weight_class_json") val weightClass: WeightClassDto? = null
 )
