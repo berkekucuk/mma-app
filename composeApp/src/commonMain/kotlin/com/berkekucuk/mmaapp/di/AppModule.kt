@@ -21,10 +21,12 @@ import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
+import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.qualifier.named
 
 val appModule = module {
 
@@ -38,6 +40,13 @@ val appModule = module {
         RateLimiter(
             dateTimeProvider = get(),
             timeoutMs = 10_000L
+        )
+    }
+
+    single(named("fighter")) {
+        RateLimiter(
+            dateTimeProvider = get(),
+            timeoutMs = 60_000L
         )
     }
 
@@ -109,7 +118,7 @@ val appModule = module {
         FighterRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
-            rateLimiter = get()
+            rateLimiter = get(named("fighter"))
         )
     }
 
@@ -138,5 +147,12 @@ val appModule = module {
 
     viewModel {
         RankingViewModel(repository = get())
+    }
+
+    viewModel {
+        FighterDetailViewModel(
+            repository = get(),
+            savedStateHandle = get()
+        )
     }
 }
