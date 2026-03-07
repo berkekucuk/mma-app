@@ -14,5 +14,5 @@ interface FighterDao {
     suspend fun insertFighter(fighter: FighterEntity)
 
     @Query("SELECT * FROM fighters WHERE fighter_id = :fighterId")
-    fun getFighterById(fighterId: String): Flow<FighterEntity>
+    fun getFighterById(fighterId: String): Flow<FighterEntity?>
 }

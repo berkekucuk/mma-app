@@ -36,9 +36,11 @@ class FighterDetailViewModel(
         viewModelScope.launch {
             repository.getFighterById(fighterId)
                 .collect { fighter ->
-                    _state.update {
+                    _state.update { it ->
                         it.copy(
-                            fighter = fighter,
+                            fighter = fighter.copy(
+                                fights = fighter.fights.filter { it.boutType != "cancelled" && it.boutType != "fizzled" }
+                            ),
                             isLoading = false
                         )
                     }
@@ -46,9 +48,9 @@ class FighterDetailViewModel(
         }
     }
 
-    private fun syncFighter() {
+    private fun syncFighter(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true) }
+            _state.update { it.copy(isRefreshing = isRefreshing) }
             repository.syncFighter(fighterId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
@@ -65,7 +67,7 @@ class FighterDetailViewModel(
                 FighterDetailNavigationEvent.ToFightDetail(action.eventId, action.fightId, fighterId)
             )
             is FighterDetailUiAction.OnBackClicked -> navigateTo(FighterDetailNavigationEvent.Back)
-            is FighterDetailUiAction.OnRefresh -> syncFighter()
+            is FighterDetailUiAction.OnRefresh -> syncFighter(isRefreshing = true)
         }
     }
 

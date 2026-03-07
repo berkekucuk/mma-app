@@ -64,15 +64,15 @@ fun FighterEntity.toDomain(): Fighter {
     return Fighter(
         fighterId = fighterId,
         name = name ?: "",
-        nickname = nickname ?: "",
+        nickname = nickname,
         imageUrl = imageUrl ?: "",
         record = record?.toDomain() ?: Record.EMPTY,
         height = height?.toDomain() ?: Measurement.EMPTY,
         reach = reach?.toDomain() ?: Measurement.EMPTY,
         weightClassId = WeightClass.fromId(weightClassId),
         dateOfBirth = dateOfBirth ?: "",
-        born = born ?: "",
-        fightingOutOf = fightingOutOf ?: "",
+        born = born,
+        fightingOutOf = fightingOutOf,
         countryCode = countryCode ?: "",
         fights = fights?.map { it.toDomain() } ?: emptyList(),
     )

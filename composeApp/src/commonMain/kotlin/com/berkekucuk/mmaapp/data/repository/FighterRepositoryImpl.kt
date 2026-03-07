@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -26,6 +27,7 @@ class FighterRepositoryImpl(
 
     override fun getFighterById(fighterId: String): Flow<Fighter> {
         return dao.getFighterById(fighterId)
+            .filterNotNull()
             .map { entity -> entity.toDomain() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
