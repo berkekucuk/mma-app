@@ -49,7 +49,7 @@ fun AppTabRow(
                 text = {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.labelLarge
                     )
                 },
                 selectedContentColor = AppColors.textPrimary,

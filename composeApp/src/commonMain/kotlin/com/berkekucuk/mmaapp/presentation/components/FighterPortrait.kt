@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -19,11 +18,11 @@ fun FighterPortrait(
     name: String?,
     imageUrl: String?,
     countryCode: String?,
-    result: String?,
+    result: String? = null,
     record: String?,
     alignment: Alignment.Horizontal,
     modifier: Modifier = Modifier,
-    imageSize: Dp = 55.dp,
+    imageSize: Dp = 50.dp,
     flagWidth: Dp = 18.dp,
     flagHeight: Dp = 12.dp,
     nameFontSize: TextUnit = 12.sp,
@@ -35,7 +34,7 @@ fun FighterPortrait(
     ) {
         if (alignment == Alignment.End) {
             NameColumn(
-                name = name,
+                name = name ?: "",
                 result = result,
                 record = record,
                 textAlign = TextAlign.End,
@@ -44,12 +43,12 @@ fun FighterPortrait(
                 nameFontSize = nameFontSize,
             )
             Spacer(modifier = Modifier.width(8.dp))
-            FighterImage(imageUrl, name, countryCode, result, alignment, imageSize, flagWidth, flagHeight)
+            FighterImage(imageUrl ?: "", name ?: "", countryCode ?: "", result, alignment, imageSize, flagWidth, flagHeight)
         } else {
-            FighterImage(imageUrl, name, countryCode, result, alignment, imageSize, flagWidth, flagHeight)
+            FighterImage(imageUrl ?: "", name ?: "", countryCode ?: "", result, alignment, imageSize, flagWidth, flagHeight)
             Spacer(modifier = Modifier.width(8.dp))
             NameColumn(
-                name = name,
+                name = name ?: "",
                 result = result,
                 record = record,
                 textAlign = TextAlign.Start,
