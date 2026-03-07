@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -82,7 +82,7 @@ fun FighterDetailScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets(0),
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.fighterBarBackground)
@@ -128,6 +128,7 @@ fun FighterDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .navigationBarsPadding()
         ) {
             HorizontalPager(
                 state = pagerState,
@@ -137,17 +138,21 @@ fun FighterDetailScreen(
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {
-                    0 -> DetailsContainer(
-                        fighter = state.fighter,
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                    )
-                    1 -> FighterHistoryContainer(
-                        fighter = state.fighter,
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                        onAction = onAction,
-                    )
+                    0 -> state.fighter?.let { fighter ->
+                        FighterDetailContainer(
+                            fighter = fighter,
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                        )
+                    }
+                    1 -> state.fighter?.let { fighter ->
+                        FighterHistoryContainer(
+                            fighter = fighter,
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            onAction = onAction,
+                        )
+                    }
                 }
             }
         }
