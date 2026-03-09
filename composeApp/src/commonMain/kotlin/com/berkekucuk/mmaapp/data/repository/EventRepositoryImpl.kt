@@ -32,8 +32,15 @@ class EventRepositoryImpl(
         fun getRefreshEventKey(eventId: String) = "refresh_event_$eventId"
     }
 
-    override fun getEvents(): Flow<List<Event>> {
-        return dao.getAllEvents()
+    override fun getUpcomingEvents(): Flow<List<Event>> {
+        return dao.getUpcomingEvents()
+            .map { entities -> entities.map { it.toDomain() } }
+            .flowOn(Dispatchers.IO)
+            .distinctUntilChanged()
+    }
+
+    override fun getCompletedEventsByYear(year: Int): Flow<List<Event>> {
+        return dao.getCompletedEventsByYear(year)
             .map { entities -> entities.map { it.toDomain() } }
             .flowOn(Dispatchers.IO)
             .distinctUntilChanged()
