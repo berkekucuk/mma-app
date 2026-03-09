@@ -19,8 +19,11 @@ interface EventDao {
     @Query("SELECT * FROM events WHERE event_id = :eventId")
     fun getEventById(eventId: String): Flow<EventEntity>
 
-    @Query("SELECT * FROM events ORDER BY datetime_utc ASC")
-    fun getAllEvents(): Flow<List<EventEntity>>
+    @Query("SELECT * FROM events WHERE LOWER(status) IN ('upcoming', 'live') ORDER BY datetime_utc ASC")
+    fun getUpcomingEvents(): Flow<List<EventEntity>>
+
+    @Query("SELECT * FROM events WHERE LOWER(status) = 'completed' AND event_year = :year ORDER BY datetime_utc DESC")
+    fun getCompletedEventsByYear(year: Int): Flow<List<EventEntity>>
 
     @Query("SELECT MIN(datetime_utc) FROM events WHERE LOWER(status) NOT IN ('completed', 'cancelled')")
     suspend fun getOldestPendingEventDate(): Instant?

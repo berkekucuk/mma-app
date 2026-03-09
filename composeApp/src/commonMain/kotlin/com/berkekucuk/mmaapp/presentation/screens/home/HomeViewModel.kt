@@ -3,18 +3,17 @@ package com.berkekucuk.mmaapp.presentation.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
-import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.hours
 
 class HomeViewModel(
     private val eventRepository: EventRepository,
@@ -27,9 +26,11 @@ class HomeViewModel(
     val navigation = _navigation.asSharedFlow()
     private var isMinSplashTimePassed = false
     private var isDataReady = false
+    private val selectedYearFlow = MutableStateFlow(0)
 
     init {
         val currentYear = dateTimeProvider.currentYear
+        selectedYearFlow.value = currentYear
         _state.update {
             it.copy(
                 selectedYear = currentYear,
@@ -43,7 +44,8 @@ class HomeViewModel(
             checkLoadingState()
         }
 
-        observeEvents()
+        observeUpcomingEvents()
+        observeCompletedEvents()
         syncEvents()
     }
 
@@ -53,17 +55,40 @@ class HomeViewModel(
         }
     }
 
-    private fun observeEvents() {
+    private fun observeUpcomingEvents() {
         viewModelScope.launch {
-            eventRepository.getEvents()
+            eventRepository.getUpcomingEvents()
                 .catch { error ->
-                    println("Error observing events: $error")
+                    println("Error observing upcoming events: $error")
                     isDataReady = true
                     checkLoadingState()
                 }
                 .collect { events ->
-                    _state.update { it.copy(allEvents = events) }
-                    recalculateLists()
+                    _state.update { it.copy(upcomingEvents = events) }
+                    isDataReady = true
+                    checkLoadingState()
+                }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeCompletedEvents() {
+        viewModelScope.launch {
+            selectedYearFlow
+                .flatMapLatest { year ->
+                    eventRepository.getCompletedEventsByYear(year)
+                }
+                .catch { error ->
+                    println("Error observing completed events: $error")
+                }
+                .collect { events ->
+                    _state.update { state ->
+                        state.copy(
+                            completedEvents = events,
+                            isYearLoading = if (state.isYearLoading && events.isNotEmpty()) false
+                                            else state.isYearLoading,
+                        )
+                    }
                 }
         }
     }
@@ -71,51 +96,6 @@ class HomeViewModel(
     private fun syncEvents() {
         viewModelScope.launch {
             eventRepository.syncEvents()
-        }
-    }
-
-    private fun recalculateLists() {
-        viewModelScope.launch(Dispatchers.Default) {
-            val currentYear = dateTimeProvider.currentYear
-            val now = dateTimeProvider.now
-            val selectedYear = _state.value.selectedYear ?: currentYear
-            val allEvents = _state.value.allEvents
-
-            val thresholdDate = now.minus(24.hours)
-            val featuredEvent = allEvents
-                .filter { it.datetimeUtc != null && it.datetimeUtc >= thresholdDate }
-                .sortedBy { it.datetimeUtc }
-                .firstOrNull()
-
-            val featuredEventId = featuredEvent?.eventId
-
-            val upcomingAndLiveEvents = allEvents
-                .filter { it.status == EventStatus.UPCOMING || it.status == EventStatus.LIVE }
-                .filter { it.eventId != featuredEventId }
-                .sortedBy { it.datetimeUtc }
-
-            val upcomingEvents = if (featuredEvent != null) {
-                listOf(featuredEvent) + upcomingAndLiveEvents
-            } else {
-                upcomingAndLiveEvents
-            }
-
-            val completedEvents = allEvents
-                .filter { it.status == EventStatus.COMPLETED }
-                .filter { it.eventId != featuredEventId }
-                .filter { it.eventYear == selectedYear }
-                .sortedByDescending { it.datetimeUtc }
-
-            _state.update {
-                it.copy(
-                    upcomingEvents = upcomingEvents,
-                    completedEvents = completedEvents,
-                    selectedYear = selectedYear,
-                )
-            }
-
-            isDataReady = true
-            checkLoadingState()
         }
     }
 
@@ -131,27 +111,10 @@ class HomeViewModel(
     private fun onYearSelected(year: Int) {
         if (_state.value.selectedYear == year) return
 
-        _state.update {
-            it.copy(
-                selectedYear = year,
-                isYearLoading = true
-            )
-        }
+        _state.update { it.copy(selectedYear = year, isYearLoading = true) }
+        selectedYearFlow.value = year
 
-        viewModelScope.launch(Dispatchers.Default) {
-            val allEvents = _state.value.allEvents
-            val newCompletedList = allEvents
-                .filter { it.status == EventStatus.COMPLETED }
-                .filter { it.eventYear == year }
-                .sortedByDescending { it.datetimeUtc }
-
-            _state.update {
-                it.copy(
-                    completedEvents = newCompletedList,
-                    isYearLoading = newCompletedList.isEmpty()
-                )
-            }
-
+        viewModelScope.launch {
             eventRepository.getEventsByYear(year)
                 .onSuccess {
                     _state.update { it.copy(isYearLoading = false) }
