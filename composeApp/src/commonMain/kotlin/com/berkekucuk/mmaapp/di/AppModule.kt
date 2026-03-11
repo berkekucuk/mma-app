@@ -54,7 +54,8 @@ val appModule = module {
     single {
         SupabaseClientFactory.create(
             url = BuildConfig.SUPABASE_URL,
-            key = BuildConfig.SUPABASE_KEY
+            key = BuildConfig.SUPABASE_KEY,
+            googleClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID
         )
     }
 
