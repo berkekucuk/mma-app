@@ -17,12 +17,15 @@ import com.berkekucuk.mmaapp.data.remote.api.RankingSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.AuthRepositoryImpl
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
+import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import org.koin.core.module.dsl.viewModel
@@ -123,6 +126,10 @@ val appModule = module {
         )
     }
 
+    single<AuthRepository> {
+        AuthRepositoryImpl(supabaseClient = get())
+    }
+
     // view model
     viewModel {
         HomeViewModel(
@@ -155,5 +162,9 @@ val appModule = module {
             repository = get(),
             savedStateHandle = get()
         )
+    }
+
+    viewModel {
+        ProfileViewModel(authRepository = get())
     }
 }
