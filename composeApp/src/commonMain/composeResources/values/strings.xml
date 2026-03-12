@@ -85,5 +85,13 @@
     <string name="fighter_detail_result_pending">–</string>
     <string name="fighter_detail_value_unavailable">—</string>
 
+    <!-- Login Screen -->
+    <string name="login_title_mma">MMA</string>
+    <string name="login_title_app">APP</string>
+    <string name="login_subtitle">Fights · Events · Rankings</string>
+    <string name="login_sign_in_google">Sign in with Google</string>
+    <string name="login_secure_sign_in">secure sign in</string>
+    <string name="content_description_google">Google</string>
+
 </resources>
 
