@@ -30,6 +30,15 @@ class EventDetailViewModel(
 
     init {
         observeEvent()
+        fetchEventIfNotExists()
+    }
+
+    private fun fetchEventIfNotExists() {
+        viewModelScope.launch {
+            eventRepository.refreshEventById(eventId = eventId)
+            // Ensure loading stops after fetch completes, in case event is still null
+            _state.update { it.copy(isLoading = false) }
+        }
     }
 
     private fun observeEvent() {
@@ -39,10 +48,12 @@ class EventDetailViewModel(
                 _state.update {
                     it.copy(
                         event = event,
-                        isLoading = false
+                        // Only set isLoading to false immediately if we have the event.
+                        // Otherwise, let fetchEventIfNotExists finish and turn off the loading state.
+                        isLoading = if (event != null) false else it.isLoading
                     )
                 }
-                processAndSetFights(event.fights)
+                if (event != null) processAndSetFights(event.fights)
             }
         }
     }

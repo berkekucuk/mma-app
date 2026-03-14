@@ -12,6 +12,7 @@ import com.berkekucuk.mmaapp.data.local.dao.RankingDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.RankingEntity
+import com.berkekucuk.mmaapp.data.local.entity.RankingSnapshotEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
@@ -19,9 +20,10 @@ import kotlinx.coroutines.IO
     entities = [
         EventEntity::class,
         RankingEntity::class,
-        FighterEntity::class
+        FighterEntity::class,
+        RankingSnapshotEntity::class
     ],
-    version = 3
+    version = 4
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

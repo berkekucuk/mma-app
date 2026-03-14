@@ -94,22 +94,16 @@ fun FightDetailContainer(
             Triple(
                 redCorner?.oddsValue?.let {
                     val sign = if (it >= 0) "+" else ""
-                    "$sign$it\n(${redCorner.oddsLabel})"
+                    "$sign$it"
                 },
                 stringResource(Res.string.fight_detail_label_odds),
                 blueCorner?.oddsValue?.let {
                     val sign = if (it >= 0) "+" else ""
-                    "$sign$it\n(${blueCorner.oddsLabel})"
+                    "$sign$it"
                 },
             )
         )
-        add(
-            Triple(
-                redCorner?.result?.name?.lowercase()?.replaceFirstChar { it.uppercase() },
-                stringResource(Res.string.fight_detail_label_result),
-                blueCorner?.result?.name?.lowercase()?.replaceFirstChar { it.uppercase() },
-            )
-        )
+
         if (showRecord) {
             add(
                 Triple(
