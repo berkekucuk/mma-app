@@ -13,11 +13,12 @@ fun RankingDto.toEntity(): RankingEntity {
     )
 }
 
-fun RankingEntity.toDomain(): Ranking {
+fun RankingEntity.toDomain(rankChange: Int? = null): Ranking {
     return Ranking(
         weightClassId = this.weightClassId,
         rankNumber = this.rankNumber,
         fighter = this.fighter?.toDomain(),
         weightClass = this.weightClass?.toDomain(),
+        rankChange = rankChange
     )
 }

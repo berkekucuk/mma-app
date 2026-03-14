@@ -157,6 +157,7 @@ fun WeightClassCard(
                             record = championFighter.record.toString(),
                             imageUrl = championFighter.imageUrl,
                             countryCode = championFighter.countryCode,
+                            rankChange = champion?.rankChange,
                             onFighterClicked = { onFighterClicked(championFighter.fighterId) }
                         )
 
@@ -176,6 +177,7 @@ fun WeightClassCard(
                                 record = fighter.record.toString(),
                                 imageUrl = fighter.imageUrl,
                                 countryCode = fighter.countryCode,
+                                rankChange = ranking.rankChange,
                                 onFighterClicked = { onFighterClicked(fighter.fighterId) }
                             )
 

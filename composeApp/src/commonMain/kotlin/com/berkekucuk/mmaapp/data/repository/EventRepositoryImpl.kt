@@ -46,9 +46,9 @@ class EventRepositoryImpl(
             .distinctUntilChanged()
     }
 
-    override fun getEventById(eventId: String): Flow<Event> {
+    override fun getEventById(eventId: String): Flow<Event?> {
         return dao.getEventById(eventId)
-            .map { it.toDomain() }
+            .map { it?.toDomain() }
             .flowOn(Dispatchers.IO)
             .distinctUntilChanged()
     }

@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -38,6 +39,7 @@ fun FighterImage(
     imageSize: Dp = 55.dp,
     flagWidth: Dp = 18.dp,
     flagHeight: Dp = 12.dp,
+    onClick: (() -> Unit)? = null,
 ) {
     val context = LocalPlatformContext.current
 
@@ -83,7 +85,8 @@ fun FighterImage(
                 .size(imageSize)
                 .clip(CircleShape)
                 .background(AppColors.topBarBackground)
-                .then(borderModifier),
+                .then(borderModifier)
+                .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
             contentScale = ContentScale.Crop,
         )
 

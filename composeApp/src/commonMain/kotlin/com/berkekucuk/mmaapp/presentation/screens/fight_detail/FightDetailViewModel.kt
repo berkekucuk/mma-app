@@ -42,14 +42,17 @@ class FightDetailViewModel(
         viewModelScope.launch {
             eventRepository.getEventById(eventId)
                 .collect { event ->
-                    val fight = event.fights.find { it.fightId == fightId }
+                    if (event != null) {
+                        val fight = event.fights.find { it.fightId == fightId }
 
                     _state.update {
                         it.copy(
                             fight = fight,
                             eventDate = event.datetimeUtc,
+                            eventName = event.name,
                             isLoading = false
                         )
+                    }
                     }
                 }
         }
@@ -65,6 +68,7 @@ class FightDetailViewModel(
                         it.copy(
                             fight = fight,
                             eventDate = fight?.eventDate,
+                            eventName = fight?.eventName,
                             isLoading = false
                         )
                     }
@@ -76,6 +80,7 @@ class FightDetailViewModel(
         when (action) {
             is FightDetailUiAction.OnFighterClicked -> navigateTo(FightDetailNavigationEvent.ToFighterDetail(action.fighterId))
             is FightDetailUiAction.OnBackClicked -> navigateTo(FightDetailNavigationEvent.Back)
+            is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEvent(eventId))
             is FightDetailUiAction.OnRefresh -> onRefresh()
         }
     }
