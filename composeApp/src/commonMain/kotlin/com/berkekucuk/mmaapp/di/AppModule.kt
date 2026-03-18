@@ -14,16 +14,24 @@ import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.RankingRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.RankingSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.ProfileRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.ProfileSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.AuthRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.ProfileRepositoryImpl
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.RankingRepository
+import com.berkekucuk.mmaapp.domain.repository.ProfileRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
+import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
+import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditViewModel
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import org.koin.core.module.dsl.viewModel
@@ -55,7 +63,8 @@ val appModule = module {
     single {
         SupabaseClientFactory.create(
             url = BuildConfig.SUPABASE_URL,
-            key = BuildConfig.SUPABASE_KEY
+            key = BuildConfig.SUPABASE_KEY,
+            googleClientId = BuildConfig.GOOGLE_WEB_CLIENT_ID
         )
     }
 
@@ -84,6 +93,10 @@ val appModule = module {
         get<AppDatabase>().fighterDao()
     }
 
+    single {
+        get<AppDatabase>().profileDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventSupabaseAPI(client = get())
@@ -95,6 +108,10 @@ val appModule = module {
 
     single<FighterRemoteDataSource>{
         FighterSupabaseAPI(get())
+    }
+
+    single<ProfileRemoteDataSource> {
+        ProfileSupabaseAPI(client = get())
     }
 
     // repository
@@ -120,6 +137,17 @@ val appModule = module {
             remoteDataSource = get(),
             dao = get(),
             rateLimiter = get(named("fighter"))
+        )
+    }
+
+    single<AuthRepository> {
+        AuthRepositoryImpl(supabaseClient = get())
+    }
+
+    single<ProfileRepository> {
+        ProfileRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get()
         )
     }
 
@@ -161,6 +189,20 @@ val appModule = module {
         FighterDetailViewModel(
             repository = get(),
             savedStateHandle = get()
+        )
+    }
+
+    viewModel {
+        ProfileViewModel(
+            authRepository = get(),
+            profileRepository = get()
+        )
+    }
+
+    viewModel {
+        ProfileEditViewModel(
+            authRepository = get(),
+            profileRepository = get()
         )
     }
 }

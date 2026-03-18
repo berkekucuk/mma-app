@@ -1,6 +1,5 @@
 package com.berkekucuk.mmaapp.core.app
 
-import androidx.compose.foundation.layout.Box
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingsScreenRoot
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,15 +15,19 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.*
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 
 @Composable
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
+    onNavigateToFighterDetail: (String) -> Unit,
+    onNavigateToProfileEdit: () -> Unit
     onNavigateToRankingDetail: (String, String) -> Unit
 ) {
     val bottomNavController = rememberNavController()
@@ -85,7 +88,11 @@ fun MainScreenWrapper(
             startDestination = Route.Home,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = innerPadding.calculateBottomPadding())
+                .padding(bottom = innerPadding.calculateBottomPadding()),
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None }
         ) {
             composable<Route.Home> {
                 HomeScreenRoot(
@@ -100,9 +107,9 @@ fun MainScreenWrapper(
             }
 
             composable<Route.Profile> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Profile Screen", color = Color.White)
-                }
+                ProfileScreenRoot(
+                    onNavigateToEdit = onNavigateToProfileEdit
+                )
             }
         }
     }

@@ -44,6 +44,7 @@ kotlin {
 
                 implementation(libs.supabase.postgrest)
                 implementation(libs.supabase.auth)
+                implementation(libs.supabase.compose.auth)
 
                 implementation(libs.ktor.client.core)
 
@@ -151,10 +152,13 @@ buildConfig {
     buildConfigField("String", "SUPABASE_URL", "\"$url\"")
     buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
 
-    val appsyncUrl = localProperties.getProperty("APPSYNC_API_URL") ?: ""
-    val appsyncKey = localProperties.getProperty("APPSYNC_API_KEY") ?: ""
-    buildConfigField("String", "APPSYNC_API_URL", "\"$appsyncUrl\"")
-    buildConfigField("String", "APPSYNC_API_KEY", "\"$appsyncKey\"")
+//    val appsyncUrl = localProperties.getProperty("APPSYNC_API_URL") ?: ""
+//    val appsyncKey = localProperties.getProperty("APPSYNC_API_KEY") ?: ""
+//    buildConfigField("String", "APPSYNC_API_URL", "\"$appsyncUrl\"")
+//    buildConfigField("String", "APPSYNC_API_KEY", "\"$appsyncKey\"")
+
+    val googleClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
+    buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
 }
 
 dependencies {
