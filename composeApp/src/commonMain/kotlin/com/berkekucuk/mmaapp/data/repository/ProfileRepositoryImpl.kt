@@ -38,11 +38,11 @@ class ProfileRepositoryImpl(
         }
     }
 
-    override suspend fun updateUsername(userId: String, username: String): Result<Unit> {
+    override suspend fun updateProfile(userId: String, fullName: String, username: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val updatedDto = remoteDataSource.updateUsername(userId, username)
-                dao.insertProfile(updatedDto.toEntity())
+                remoteDataSource.updateProfile(userId, fullName, username)
+                dao.updateProfile(userId, fullName, username)
             }.onFailure {
                 if (it is CancellationException) throw it
             }

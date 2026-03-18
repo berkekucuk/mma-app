@@ -6,5 +6,5 @@ interface ProfileRemoteDataSource {
 
     suspend fun fetchProfile(userId: String): ProfileDto
 
-    suspend fun updateUsername(userId: String, username: String): ProfileDto
+    suspend fun updateProfile(userId: String, fullName: String, username: String)
 }

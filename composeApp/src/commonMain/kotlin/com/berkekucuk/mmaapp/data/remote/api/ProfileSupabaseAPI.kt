@@ -16,13 +16,14 @@ class ProfileSupabaseAPI(
         }.decodeSingle<ProfileDto>()
     }
 
-    override suspend fun updateUsername(userId: String, username: String): ProfileDto {
-        return client.from("profiles").update({
+    override suspend fun updateProfile(userId: String, fullName: String, username: String){
+        client.from("profiles").update({
             set("username", username)
+            set("full_name", fullName)
         }) {
             filter {
                 eq("id", userId)
             }
-        }.decodeSingle<ProfileDto>()
+        }
     }
 }
