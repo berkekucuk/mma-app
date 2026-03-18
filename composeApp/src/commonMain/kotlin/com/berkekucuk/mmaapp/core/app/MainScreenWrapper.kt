@@ -26,9 +26,8 @@ import androidx.compose.animation.ExitTransition
 @Composable
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
-    onNavigateToFighterDetail: (String) -> Unit,
+    onNavigateToRankingDetail: (String, String) -> Unit,
     onNavigateToProfileEdit: () -> Unit
-    onNavigateToRankingDetail: (String, String) -> Unit
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()

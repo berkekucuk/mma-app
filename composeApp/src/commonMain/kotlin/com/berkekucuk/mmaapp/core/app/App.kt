@@ -35,13 +35,11 @@ fun App() {
                 onNavigateToEventDetail = { eventId ->
                     rootNavController.navigate(Route.EventDetail(eventId))
                 },
-                onNavigateToFighterDetail = { fighterId ->
-                    rootNavController.navigate(Route.FighterDetail(fighterId))
+                onNavigateToRankingDetail = { weightClassId, weightClassName ->
+                    rootNavController.navigate(Route.RankingDetail(weightClassId, weightClassName))
                 },
                 onNavigateToProfileEdit = {
                     rootNavController.navigate(Route.ProfileEdit)
-                onNavigateToRankingDetail = { weightClassId, weightClassName ->
-                    rootNavController.navigate(Route.RankingDetail(weightClassId, weightClassName))
                 }
             )
         }
