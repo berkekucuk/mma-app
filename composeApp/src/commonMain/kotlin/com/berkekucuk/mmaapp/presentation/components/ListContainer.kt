@@ -35,8 +35,8 @@ fun ListContainer(
             state = listState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                start = 10.dp,
-                end = 10.dp,
+                start = 8.dp,
+                end = 8.dp,
                 top = contentPadding.calculateTopPadding(),
                 bottom = 16.dp
             ),

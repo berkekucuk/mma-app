@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface RankingRepository {
     fun getRankings(): Flow<List<Ranking>>
+    fun getRankingsByWeightClass(weightClassId: String): Flow<List<Ranking>>
     suspend fun syncRankings(): Result<Unit>
 }

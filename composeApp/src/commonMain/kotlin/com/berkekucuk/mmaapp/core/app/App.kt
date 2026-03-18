@@ -11,6 +11,7 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 
 @Composable
 fun App() {
@@ -33,8 +34,8 @@ fun App() {
                 onNavigateToEventDetail = { eventId ->
                     rootNavController.navigate(Route.EventDetail(eventId))
                 },
-                onNavigateToFighterDetail = { fighterId ->
-                    rootNavController.navigate(Route.FighterDetail(fighterId))
+                onNavigateToRankingDetail = { weightClassId, weightClassName ->
+                    rootNavController.navigate(Route.RankingDetail(weightClassId, weightClassName))
                 }
             )
         }
@@ -78,6 +79,20 @@ fun App() {
                     rootNavController.navigate(Route.FightDetail(eventId, fightId, fighterId))
                 },
                 onBackClick = { rootNavController.navigateUp() }
+            )
+        }
+
+        composable<Route.RankingDetail>(
+            enterTransition = NavTransitions.slideFromRight,
+            exitTransition = NavTransitions.slideOutToLeft,
+            popEnterTransition = NavTransitions.slideFromLeft,
+            popExitTransition = NavTransitions.slideOutToRight
+        ) {
+            RankingDetailScreenRoot(
+                onNavigateBack = { rootNavController.navigateUp() },
+                onNavigateToFighterDetail = { fighterId ->
+                    rootNavController.navigate(Route.FighterDetail(fighterId))
+                }
             )
         }
     }
