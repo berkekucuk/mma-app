@@ -35,6 +35,15 @@ class RankingRepositoryImpl(
             .flowOn(Dispatchers.IO)
     }
 
+    override fun getRankingsByWeightClass(weightClassId: String): Flow<List<Ranking>> {
+        return dao.getRankingsByWeightClass(weightClassId)
+            .map { entities ->
+                entities.map { it.toDomain() }
+            }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
     override suspend fun syncRankings(): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {

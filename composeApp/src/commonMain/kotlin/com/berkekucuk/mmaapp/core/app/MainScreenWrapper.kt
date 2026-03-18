@@ -28,6 +28,7 @@ fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToFighterDetail: (String) -> Unit,
     onNavigateToProfileEdit: () -> Unit
+    onNavigateToRankingDetail: (String, String) -> Unit
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -101,7 +102,7 @@ fun MainScreenWrapper(
 
             composable<Route.Rankings> {
                 RankingsScreenRoot(
-                    onNavigateToFighterDetail = onNavigateToFighterDetail
+                    onNavigateToRankingDetail = onNavigateToRankingDetail
                 )
             }
 

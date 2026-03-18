@@ -50,18 +50,15 @@ class RankingViewModel(
     private fun categorizeAndSort(rankings: List<Ranking>): Pair<Map<WeightClass, List<Ranking>>, Map<WeightClass, List<Ranking>>> {
         val mensList = rankings.filter { it.weightClassId !in womensWeightClassIds }
         val womensList = rankings.filter { it.weightClassId in womensWeightClassIds }
-        val mensMap = processListToSortedMap(mensList)
-        val womensMap = processListToSortedMap(womensList)
+        val mensMap = processListToMap(mensList)
+        val womensMap = processListToMap(womensList)
         return Pair(mensMap, womensMap)
     }
 
-    private fun processListToSortedMap(list: List<Ranking>): Map<WeightClass, List<Ranking>> {
+    private fun processListToMap(list: List<Ranking>): Map<WeightClass, List<Ranking>> {
         return list
             .filter { it.weightClass != null }
             .groupBy { it.weightClass!! }
-            .mapValues { entry ->
-                entry.value.sortedBy { it.rankNumber }
-            }
             .toList()
             .sortedBy { it.first.sortOrder }
             .toMap()
@@ -69,18 +66,8 @@ class RankingViewModel(
 
     fun onAction(action: RankingUiAction) {
         when (action) {
-            is RankingUiAction.OnToggleExpand -> toggleExpand(action.weightClassId)
-            is RankingUiAction.OnFighterClicked -> navigateTo(RankingNavigationEvent.ToFighterDetail(action.fighterId))
+            is RankingUiAction.OnWeightClassClicked -> navigateTo(RankingNavigationEvent.ToRankingDetail(action.weightClassId, action.weightClassName))
             is RankingUiAction.OnRefresh -> syncRankings(isRefreshing = true)
-        }
-    }
-
-    private fun toggleExpand(weightClassId: String) {
-        _state.update { state ->
-            val expanded = state.expandedWeightClasses.toMutableSet()
-            if (expanded.contains(weightClassId)) expanded.remove(weightClassId)
-            else expanded.add(weightClassId)
-            state.copy(expandedWeightClasses = expanded)
         }
     }
 

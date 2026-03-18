@@ -32,6 +32,7 @@ import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewMo
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditViewModel
+import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -175,6 +176,13 @@ val appModule = module {
 
     viewModel {
         RankingViewModel(repository = get())
+    }
+
+    viewModel {
+        RankingDetailViewModel(
+            repository = get(),
+            savedStateHandle = get()
+        )
     }
 
     viewModel {

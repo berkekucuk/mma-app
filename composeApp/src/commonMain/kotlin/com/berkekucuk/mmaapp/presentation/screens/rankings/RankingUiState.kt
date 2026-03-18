@@ -7,6 +7,5 @@ data class RankingUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val mensRankings: Map<WeightClass, List<Ranking>> = emptyMap(),
-    val womensRankings: Map<WeightClass, List<Ranking>> = emptyMap(),
-    val expandedWeightClasses: Set<String> = emptySet(),
+    val womensRankings: Map<WeightClass, List<Ranking>> = emptyMap()
 )

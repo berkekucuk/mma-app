@@ -11,34 +11,27 @@ import com.berkekucuk.mmaapp.presentation.components.ListContainer
 @Composable
 fun RankingContainer(
     rankings: Map<WeightClass, List<Ranking>>,
-    expandedWeightClasses: Set<String>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onToggleExpand: (String) -> Unit,
-    onFighterClicked: (String) -> Unit,
+    onWeightClassClicked: (String, String) -> Unit,
     listState: LazyListState
 ) {
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = PaddingValues(top = 10.dp),
-        verticalSpacing = 10.dp
+        contentPadding = PaddingValues(top = 8.dp),
+        verticalSpacing = 8.dp
     ) {
         rankings.forEach { (weightClass, rankingsList) ->
             val weightClassId = rankingsList.firstOrNull()?.weightClassId ?: ""
-            val champion = rankingsList.firstOrNull { it.rankNumber == 0 }
-            val rankedFighters = rankingsList.filter { it.rankNumber > 0 }
+            val champion = rankingsList.minByOrNull { it.rankNumber }
 
             item(key = "header_${weightClass.name}") {
                 WeightClassCard(
                     weightClassName = weightClass.name,
-                    weightClassId = weightClassId,
                     champion = champion,
-                    rankedFighters = rankedFighters,
-                    isExpanded = expandedWeightClasses.contains(weightClassId),
-                    onToggleExpand = { onToggleExpand(weightClassId) },
-                    onFighterClicked = onFighterClicked
+                    onWeightClassClicked = { onWeightClassClicked(weightClassId, weightClass.name) }
                 )
             }
         }
