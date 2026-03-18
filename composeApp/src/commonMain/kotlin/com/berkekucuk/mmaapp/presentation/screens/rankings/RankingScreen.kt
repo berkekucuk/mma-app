@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
+import com.berkekucuk.mmaapp.core.presentation.AppTypography
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import mmaapp.composeapp.generated.resources.Res
@@ -38,19 +38,19 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun RankingsScreenRoot(
     viewModel: RankingViewModel = koinViewModel(),
-    onNavigateToFighterDetail: (String) -> Unit
+    onNavigateToRankingDetail: (String, String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is RankingNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
+                is RankingNavigationEvent.ToRankingDetail -> onNavigateToRankingDetail(event.weightClassId, event.weightClassName)
             }
         }
     }
 
-    RankingsScreen(
+    RankingScreen(
         state = state,
         onAction = viewModel::onAction
     )
@@ -58,7 +58,7 @@ fun RankingsScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RankingsScreen(
+fun RankingScreen(
     state: RankingUiState,
     onAction: (RankingUiAction) -> Unit
 ) {
@@ -69,8 +69,7 @@ fun RankingsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val onRefresh = remember(onAction) { { onAction(RankingUiAction.OnRefresh) } }
-    val onToggleExpand = remember(onAction) { { weightClassId: String -> onAction(RankingUiAction.OnToggleExpand(weightClassId)) } }
-    val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(RankingUiAction.OnFighterClicked(fighterId)) } }
+    val onWeightClassClicked = remember(onAction) { { weightClassId: String, weightClassName: String -> onAction(RankingUiAction.OnWeightClassClicked(weightClassId, weightClassName)) } }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -88,7 +87,7 @@ fun RankingsScreen(
                     title = {
                         Text(
                             text = stringResource(Res.string.rankings_title).uppercase(),
-                            style = MaterialTheme.typography.titleLarge,
+                            style = AppTypography.titleLarge,
                             fontFamily = AppFonts.RobotoCondensed,
                             fontWeight = FontWeight.Bold
                         )
@@ -125,20 +124,16 @@ fun RankingsScreen(
                 when (page) {
                     0 -> RankingContainer(
                         rankings = state.mensRankings,
-                        expandedWeightClasses = state.expandedWeightClasses,
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
-                        onToggleExpand = onToggleExpand,
-                        onFighterClicked = onFighterClicked,
+                        onWeightClassClicked = onWeightClassClicked,
                         listState = mensListState
                     )
                     1 -> RankingContainer(
                         rankings = state.womensRankings,
-                        expandedWeightClasses = state.expandedWeightClasses,
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
-                        onToggleExpand = onToggleExpand,
-                        onFighterClicked = onFighterClicked,
+                        onWeightClassClicked = onWeightClassClicked,
                         listState = womensListState
                     )
                 }
