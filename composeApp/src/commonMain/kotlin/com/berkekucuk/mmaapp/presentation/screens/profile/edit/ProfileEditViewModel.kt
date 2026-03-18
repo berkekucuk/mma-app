@@ -29,6 +29,7 @@ class ProfileEditViewModel(
     val navigation = _navigation.asSharedFlow()
 
     private val usernameRegex = "^[a-z0-9_.]+$".toRegex()
+    private val knownTakenUsernames = mutableSetOf<String>()
 
     init {
         observeProfile()
@@ -36,7 +37,7 @@ class ProfileEditViewModel(
 
     private fun observeProfile() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isInitializing = true) }
 
             val authState = authRepository.authState.filterIsInstance<AuthState.Authenticated>().first()
             val profile = profileRepository.getProfile(authState.userId).filterNotNull().first()
@@ -45,7 +46,9 @@ class ProfileEditViewModel(
                 it.copy(
                     fullName = profile.fullName ?: "",
                     username = profile.username ?: "",
-                    isLoading = false
+                    originalFullName = profile.fullName ?: "",
+                    originalUsername = profile.username ?: "",
+                    isInitializing = false
                 )
             }
         }
@@ -89,18 +92,29 @@ class ProfileEditViewModel(
 
     private fun validateAndSave() {
         val currentState = _state.value
+
+        if (currentState.isSaving) return
+
         val username = currentState.username.trim()
         val fullName = currentState.fullName.trim()
-
         val finalError = getUsernameError(username) ?: getFullNameError(fullName)
-
         if (finalError != null) {
             _state.update { it.copy(error = finalError) }
             return
         }
 
+        if (username == currentState.originalUsername && fullName == currentState.originalFullName) {
+            navigateTo(ProfileEditNavigationEvent.Back)
+            return
+        }
+
+        if (knownTakenUsernames.contains(username)) {
+            _state.update { it.copy(error = ProfileEditError.USERNAME_TAKEN) }
+            return
+        }
+
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isSaving = true) }
 
             val authState = authRepository.authState.first { it !is AuthState.Loading }
 
@@ -112,18 +126,23 @@ class ProfileEditViewModel(
                 )
 
                 result.onSuccess {
-                    _state.update { it.copy(isLoading = false) }
+                    _state.update { it.copy(isSaving = false) }
                     navigateTo(ProfileEditNavigationEvent.Back)
                 }.onFailure { e ->
                     val errorType = when (e) {
                         is PostgrestRestException -> {
-                            if (e.code == "23505") ProfileEditError.USERNAME_TAKEN
+                            if (e.code == "23505") {
+                                knownTakenUsernames.add(username)
+                                ProfileEditError.USERNAME_TAKEN
+                            }
                             else ProfileEditError.UNKNOWN_ERROR
                         }
                         else -> ProfileEditError.NETWORK_ERROR
                     }
-                    _state.update { it.copy(isLoading = false, error = errorType) }
+                    _state.update { it.copy(isSaving = false, error = errorType) }
                 }
+            }else {
+                _state.update { it.copy(isSaving = false, error = ProfileEditError.UNKNOWN_ERROR) }
             }
         }
     }

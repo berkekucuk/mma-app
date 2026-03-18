@@ -104,5 +104,22 @@
     <string name="profile_tab_overview">Overview</string>
     <string name="profile_tab_predictions">Predictions</string>
 
+    <!-- Profile Edit Screen -->
+    <string name="profile_edit_title">Edit Profile</string>
+    <string name="profile_edit_personal_info">Personal Information</string>
+    <string name="profile_edit_full_name">Full Name</string>
+    <string name="profile_edit_username_label">Username</string>
+    <string name="profile_edit_save_changes">Save Changes</string>
+    <string name="profile_edit_error_username_taken">This username is already taken.</string>
+    <string name="profile_edit_error_empty_username">Username cannot be empty.</string>
+    <string name="profile_edit_error_invalid_username">Username can only contain a-z, 0-9, _, and dots.</string>
+    <string name="profile_edit_error_network">Please check your connection and try again.</string>
+    <string name="profile_edit_error_unknown">An unknown error occurred.</string>
+    <string name="profile_edit_error_username_short">Username must be at least 3 characters.</string>
+    <string name="profile_edit_error_username_long">Username must be at most 20 characters.</string>
+    <string name="profile_edit_error_fullname_short">Full name must be at least 3 characters.</string>
+    <string name="profile_edit_error_fullname_long">Full name must be at most 50 characters.</string>
+    <string name="profile_edit_error_empty_fullname">Full name cannot be empty.</string>
+
 </resources>
 

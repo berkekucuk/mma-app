@@ -3,7 +3,10 @@ package com.berkekucuk.mmaapp.presentation.screens.profile.edit
 data class ProfileEditUiState(
     val fullName: String = "",
     val username: String = "",
-    val isLoading: Boolean = false,
+    val originalFullName: String = "",
+    val originalUsername: String = "",
+    val isInitializing: Boolean = false,
+    val isSaving: Boolean = false,
     val error: ProfileEditError? = null
 )
 
