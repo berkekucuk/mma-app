@@ -18,6 +18,7 @@ fun FighterTopBarTitle(
     name: String,
     countryCode: String,
     nickname: String?,
+    showQuotes: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +39,7 @@ fun FighterTopBarTitle(
                 color = AppColors.textPrimary,
             )
             Text(
-                text = "\"$nickname\"",
+                text = if (showQuotes) "\"$nickname\"" else nickname.orEmpty(),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium,

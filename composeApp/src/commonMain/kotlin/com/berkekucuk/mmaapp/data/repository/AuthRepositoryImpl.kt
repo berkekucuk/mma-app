@@ -26,12 +26,8 @@ class AuthRepositoryImpl(
 
     override suspend fun signOut() {
         try {
-            // Sunucu üzerinden güvenli çıkış yapmayı dener (internet gerektirir)
             supabaseClient.auth.signOut()
         } catch (e: Exception) {
-            // Eğer internet yoksa network çağrısı Exception fırlatır ve uygulamayı çökertir.
-            // Bu hatayı yakalayıp, sadece cihazdaki (lokal) oturum verilerini siliyoruz.
-            // Böylece kullanıcı internetsiz kalsa bile takılmadan çıkış yapabilir.
             supabaseClient.auth.clearSession()
         }
     }

@@ -93,5 +93,16 @@
     <string name="login_secure_sign_in">secure sign in</string>
     <string name="content_description_google">Google</string>
 
+    <!-- Profile Screen -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_username_label">Username</string>
+    <string name="profile_username_placeholder">Choose a username</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_edit">Edit</string>
+    <string name="profile_sign_out">Sign Out</string>
+    <string name="profile_member_since">Member since %1$s</string>
+    <string name="profile_tab_overview">Overview</string>
+    <string name="profile_tab_predictions">Predictions</string>
+
 </resources>
 

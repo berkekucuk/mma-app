@@ -39,4 +39,14 @@ object AppColors {
     val loginSubtitle = Color(0xFF6B6B6B)
     val loginButtonBackground = Color.White
     val loginButtonContent = Color(0xFF1A1A1A)
+
+    // Profile Screen
+    val profileCardBackground = Color(0xFF141414)
+    val profileCardBorder = Color(0xFF2A2A2A)
+    val profileInputBackground = Color(0xFF1C1C1C)
+    val profileInputBorder = Color(0xFF333333)
+    val profileInputBorderFocused = Color(0xFFD30102)
+    val profileAvatarBackground = Color(0xFF222222)
+    val profileSignOutBackground = Color(0xFF1A1010)
+    val profileSignOutBorder = Color(0xFF3A1A1A)
 }

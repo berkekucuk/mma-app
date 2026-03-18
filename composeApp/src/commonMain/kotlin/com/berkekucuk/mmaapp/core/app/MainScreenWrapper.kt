@@ -105,7 +105,9 @@ fun MainScreenWrapper(
             }
 
             composable<Route.Profile> {
-                ProfileScreenRoot()
+                ProfileScreenRoot(
+                    onNavigateToEdit = { /* TODO: navigate to edit */ }
+                )
             }
         }
     }
