@@ -26,7 +26,8 @@ import androidx.compose.animation.ExitTransition
 @Composable
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
-    onNavigateToFighterDetail: (String) -> Unit
+    onNavigateToFighterDetail: (String) -> Unit,
+    onNavigateToProfileEdit: () -> Unit
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -106,7 +107,7 @@ fun MainScreenWrapper(
 
             composable<Route.Profile> {
                 ProfileScreenRoot(
-                    onNavigateToEdit = { /* TODO: navigate to edit */ }
+                    onNavigateToEdit = onNavigateToProfileEdit
                 )
             }
         }
