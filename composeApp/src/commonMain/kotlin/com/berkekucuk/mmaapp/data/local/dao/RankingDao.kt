@@ -17,4 +17,7 @@ interface RankingDao {
 
     @Query("SELECT * FROM rankings")
     fun getAllRankings(): Flow<List<RankingEntity>>
+
+    @Query("SELECT * FROM rankings WHERE weight_class_id = :weightClassId")
+    fun getRankingsByWeightClass(weightClassId: String): Flow<List<RankingEntity>>
 }
