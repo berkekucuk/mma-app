@@ -2,7 +2,6 @@ package com.berkekucuk.mmaapp.data.mapper
 
 import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDto
 import com.berkekucuk.mmaapp.domain.enums.Result
-import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.Measurement
 import com.berkekucuk.mmaapp.domain.model.Participant
@@ -40,7 +39,7 @@ private fun createUnknownFighter(): Fighter {
         dateOfBirth = "",
         height = Measurement.EMPTY,
         reach = Measurement.EMPTY,
-        weightClassId = WeightClass.UNKNOWN,
+        weightClassId = "",
         born = "",
         fightingOutOf = "",
         countryCode = "",

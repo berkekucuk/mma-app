@@ -27,13 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.rankings_title
-import mmaapp.composeapp.generated.resources.tab_mens
-import mmaapp.composeapp.generated.resources.tab_womens
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -63,7 +59,8 @@ fun RankingScreen(
     state: RankingUiState,
     onAction: (RankingUiAction) -> Unit
 ) {
-    val tabs = listOf(stringResource(Res.string.tab_mens), stringResource(Res.string.tab_womens))
+    val strings = LocalAppStrings.current
+    val tabs = listOf(strings.tabMens, strings.tabWomens)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val mensListState = rememberLazyListState()
     val womensListState = rememberLazyListState()
@@ -87,7 +84,7 @@ fun RankingScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = stringResource(Res.string.rankings_title).uppercase(),
+                            text = strings.rankingsTitle.uppercase(),
                             fontSize = 22.sp,
                             fontFamily = AppFonts.RobotoCondensed,
                             fontWeight = FontWeight.Bold

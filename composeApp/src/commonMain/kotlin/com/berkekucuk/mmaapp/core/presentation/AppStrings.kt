@@ -112,5 +112,6 @@ data class AppStrings(
     // Enum display names
     val weightClassDisplayName: (String) -> String,
     val resultDisplayName: (String) -> String,
+    val toUpperCase: (String) -> String,
 )
 

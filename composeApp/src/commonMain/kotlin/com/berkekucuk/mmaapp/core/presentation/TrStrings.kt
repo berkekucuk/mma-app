@@ -93,22 +93,24 @@ val TrStrings = AppStrings(
     navFights = "Dövüşler",
     navRankings = "Sıralamalar",
     navProfile = "Profil",
-    weightClassDisplayName = { name ->
-        when (name) {
-            "STRAWWEIGHT" -> "Saman Siklet"
-            "FLYWEIGHT" -> "Sinek Siklet"
-            "WOMENS_FLYWEIGHT" -> "Kadınlar Sinek Siklet"
-            "BANTAMWEIGHT" -> "Horoz Siklet"
-            "WOMENS_BANTAMWEIGHT" -> "Kadınlar Horoz Siklet"
-            "FEATHERWEIGHT" -> "Tüy Siklet"
-            "WOMENS_FEATHERWEIGHT" -> "Kadınlar Tüy Siklet"
-            "LIGHTWEIGHT" -> "Hafif Siklet"
-            "WELTERWEIGHT" -> "Welter Siklet"
-            "MIDDLEWEIGHT" -> "Orta Siklet"
-            "LIGHTHEAVYWEIGHT" -> "Hafif Ağır Siklet"
-            "HEAVYWEIGHT" -> "Ağır Siklet"
-            "CATCHWEIGHT" -> "Ara Siklet"
-            else -> name.replace("_", " ").lowercase().split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+    weightClassDisplayName = { id ->
+        when (id.uppercase()) {
+            "SW" -> "Kadınlar Saman Siklet"
+            "FLW" -> "Sinek Siklet"
+            "W_FLW" -> "Kadınlar Sinek Siklet"
+            "BW" -> "Horoz Siklet"
+            "W_BW" -> "Kadınlar Horoz Siklet"
+            "FW" -> "Tüy Siklet"
+            "W_FW" -> "Kadınlar Tüy Siklet"
+            "LW" -> "Hafif Siklet"
+            "WW" -> "Welter Siklet"
+            "MW" -> "Orta Siklet"
+            "LHW" -> "Hafif Ağır Siklet"
+            "HW" -> "Ağır Siklet"
+            "CW" -> "Ara Siklet"
+            "MENS_P4P" -> "Erkekler Pound-for-Pound"
+            "WOMENS_P4P" -> "Kadınlar Pound-for-Pound"
+            else -> id
         }
     },
     resultDisplayName = { name ->
@@ -122,5 +124,14 @@ val TrStrings = AppStrings(
             "FIZZLED" -> "Gerçekleşmedi"
             else -> name.lowercase().replaceFirstChar { it.uppercase() }
         }
+    },
+    toUpperCase = { str ->
+        str.map { char ->
+            when (char) {
+                'i' -> 'İ'
+                'ı' -> 'I'
+                else -> char.uppercaseChar()
+            }
+        }.joinToString("")
     },
 )

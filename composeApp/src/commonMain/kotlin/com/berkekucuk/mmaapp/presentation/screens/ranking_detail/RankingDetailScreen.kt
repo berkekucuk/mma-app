@@ -4,7 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,11 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_back
-import mmaapp.composeapp.generated.resources.rankings_champion_rank_label
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -69,11 +70,14 @@ fun RankingDetailScreen(
     val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(RankingDetailUiAction.OnFighterClicked(fighterId)) } }
     val onRefresh = remember(onAction) { { onAction(RankingDetailUiAction.OnRefresh) } }
 
-    val championRankLabel = stringResource(Res.string.rankings_champion_rank_label)
+    val strings = LocalAppStrings.current
+    val championRankLabel = strings.rankingsChampionRankLabel
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = AppColors.pagerBackground,
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.rankingTopBarGradient)
@@ -81,7 +85,7 @@ fun RankingDetailScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = state.weightClassName.uppercase(),
+                            text = strings.toUpperCase(strings.weightClassDisplayName(state.weightClassId)),
                             fontSize = 20.sp,
                         )
                     },
@@ -89,7 +93,7 @@ fun RankingDetailScreen(
                         IconButton(onClick = onBackClicked) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(Res.string.content_description_back)
+                                contentDescription = strings.contentDescriptionBack
                             )
                         }
                     },
@@ -114,6 +118,7 @@ fun RankingDetailScreen(
                 onRefresh = onRefresh,
                 contentPadding = PaddingValues(top = 8.dp),
                 verticalSpacing = 0.dp,
+                extraBottomPadding = navBarBottomPadding,
             ) {
                 item {
                     val displayedFighters = if (state.isPoundForPound) {

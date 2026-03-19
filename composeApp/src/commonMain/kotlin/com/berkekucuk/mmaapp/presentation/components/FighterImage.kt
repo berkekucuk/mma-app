@@ -24,9 +24,7 @@ import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_flag
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
 fun FighterImage(
@@ -73,7 +71,7 @@ fun FighterImage(
         }
     }
 
-    val flagContentDescription = stringResource(Res.string.content_description_flag)
+    val flagContentDescription = LocalAppStrings.current.contentDescriptionFlag
 
     Box {
         AsyncImage(

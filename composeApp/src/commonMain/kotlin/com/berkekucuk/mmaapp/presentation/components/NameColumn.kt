@@ -27,10 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_loss
-import mmaapp.composeapp.generated.resources.content_description_win
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
 fun NameColumn(
@@ -43,8 +40,9 @@ fun NameColumn(
     nameFontSize: TextUnit = 12.sp,
     nameTrailingContent: @Composable (() -> Unit)? = null,
 ) {
-    val winContentDescription = stringResource(Res.string.content_description_win)
-    val lossContentDescription = stringResource(Res.string.content_description_loss)
+    val strings = LocalAppStrings.current
+    val winContentDescription = strings.contentDescriptionWin
+    val lossContentDescription = strings.contentDescriptionLoss
 
     val textMeasurer = rememberTextMeasurer()
     val nameStyle = TextStyle(fontSize = nameFontSize)

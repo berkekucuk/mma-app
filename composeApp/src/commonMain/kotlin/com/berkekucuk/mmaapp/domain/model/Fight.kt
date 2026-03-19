@@ -1,7 +1,6 @@
 package com.berkekucuk.mmaapp.domain.model
 
 import androidx.compose.runtime.Immutable
-import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import kotlin.time.Instant
 
 @Immutable
@@ -15,7 +14,7 @@ data class Fight(
     val roundSummary: String,
     val boutType: String,
     val weightClassLbs: Int?,
-    val weightClass: WeightClass,
+    val weightClassId: String,
     val roundsFormat: String,
     val fightOrder: Int,
     val participants: List<Participant>
