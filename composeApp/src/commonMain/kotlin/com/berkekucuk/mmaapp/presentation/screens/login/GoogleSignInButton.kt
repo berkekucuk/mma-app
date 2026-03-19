@@ -23,19 +23,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_google
 import mmaapp.composeapp.generated.resources.ic_google
-import mmaapp.composeapp.generated.resources.login_secure_sign_in
-import mmaapp.composeapp.generated.resources.login_sign_in_google
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GoogleSignInButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val strings = LocalAppStrings.current
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -61,14 +59,14 @@ fun GoogleSignInButton(
             ) {
                 Image(
                     painter = painterResource(Res.drawable.ic_google),
-                    contentDescription = stringResource(Res.string.content_description_google),
+                    contentDescription = strings.contentDescriptionGoogle,
                     modifier = Modifier.size(22.dp)
                 )
 
                 Spacer(modifier = Modifier.width(14.dp))
 
                 Text(
-                    text = stringResource(Res.string.login_sign_in_google),
+                    text = strings.loginSignInGoogle,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp,
                     letterSpacing = 0.3.sp
@@ -89,7 +87,7 @@ fun GoogleSignInButton(
                     .background(AppColors.loginDivider)
             )
             Text(
-                text = stringResource(Res.string.login_secure_sign_in),
+                text = strings.loginSecureSignIn,
                 color = AppColors.loginDividerText,
                 fontSize = 11.sp,
                 letterSpacing = 1.5.sp,

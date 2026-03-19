@@ -19,14 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.login_subtitle
-import mmaapp.composeapp.generated.resources.login_title_app
-import mmaapp.composeapp.generated.resources.login_title_mma
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
 fun LoginHeader(modifier: Modifier = Modifier) {
+    val strings = LocalAppStrings.current
     val oswald = AppFonts.Oswald
 
     Column(
@@ -44,7 +41,7 @@ fun LoginHeader(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(28.dp))
 
         Text(
-            text = stringResource(Res.string.login_title_mma),
+            text = strings.loginTitleMma,
             fontFamily = oswald,
             fontWeight = FontWeight.Bold,
             fontSize = 56.sp,
@@ -54,7 +51,7 @@ fun LoginHeader(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = stringResource(Res.string.login_title_app),
+            text = strings.loginTitleApp,
             fontFamily = oswald,
             fontWeight = FontWeight.Bold,
             fontSize = 56.sp,
@@ -66,7 +63,7 @@ fun LoginHeader(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = stringResource(Res.string.login_subtitle),
+            text = strings.loginSubtitle,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal,
             color = AppColors.loginSubtitle,

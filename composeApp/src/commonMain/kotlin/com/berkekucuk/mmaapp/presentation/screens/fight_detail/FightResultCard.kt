@@ -18,12 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.enums.Result
 import com.berkekucuk.mmaapp.domain.model.Fight
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.fight_result_defeats
-import mmaapp.composeapp.generated.resources.fight_result_draw
-import mmaapp.composeapp.generated.resources.fight_result_no_contest
-import mmaapp.composeapp.generated.resources.fight_result_via
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
 fun FightResultCard(
@@ -33,8 +28,9 @@ fun FightResultCard(
     val redCorner = fight.redCorner
     val blueCorner = fight.blueCorner
 
-    val drawLabel = stringResource(Res.string.fight_result_draw)
-    val noContestLabel = stringResource(Res.string.fight_result_no_contest)
+    val strings = LocalAppStrings.current
+    val drawLabel = strings.fightResultDraw
+    val noContestLabel = strings.fightResultNoContest
 
     val winner = remember(fight) {
         when {
@@ -49,11 +45,7 @@ fun FightResultCard(
     }
 
     val resultLine = when {
-        winner != null -> stringResource(
-            Res.string.fight_result_defeats,
-            winner.fighter.name,
-            loser?.fighter?.name ?: "",
-        )
+        winner != null -> strings.fightResultDefeats(winner.fighter.name, loser?.fighter?.name ?: "")
         redCorner?.result == Result.DRAW -> drawLabel
         redCorner?.result == Result.NO_CONTEST -> noContestLabel
         else -> null
@@ -74,7 +66,7 @@ fun FightResultCard(
         }.ifBlank { null }
     }
 
-    val methodLine = methodRaw?.let { stringResource(Res.string.fight_result_via, it) }
+    val methodLine = methodRaw?.let { strings.fightResultVia(it) }
 
     Column(
         modifier = modifier

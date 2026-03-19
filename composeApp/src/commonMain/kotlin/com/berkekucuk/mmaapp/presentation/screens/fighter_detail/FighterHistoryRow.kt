@@ -20,18 +20,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toShortDate
 import com.berkekucuk.mmaapp.core.utils.toYear
 import com.berkekucuk.mmaapp.domain.enums.Result
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.fighter_detail_result_draw
-import mmaapp.composeapp.generated.resources.fighter_detail_result_loss
-import mmaapp.composeapp.generated.resources.fighter_detail_result_no_contest
-import mmaapp.composeapp.generated.resources.fighter_detail_result_pending
-import mmaapp.composeapp.generated.resources.fighter_detail_result_win
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
 
 @Composable
 fun FightHistoryRow(
@@ -63,17 +58,19 @@ fun FightHistoryRow(
         else -> AppColors.cardBorder
     }
 
+    val strings = LocalAppStrings.current
+    val dateStrings = rememberLocalizedDateStrings()
     val resultLetter = when (result) {
-        Result.WIN -> stringResource(Res.string.fighter_detail_result_win)
-        Result.LOSS -> stringResource(Res.string.fighter_detail_result_loss)
-        Result.DRAW -> stringResource(Res.string.fighter_detail_result_draw)
-        Result.NO_CONTEST -> stringResource(Res.string.fighter_detail_result_no_contest)
-        else -> stringResource(Res.string.fighter_detail_result_pending)
+        Result.WIN -> strings.fighterDetailResultWin
+        Result.LOSS -> strings.fighterDetailResultLoss
+        Result.DRAW -> strings.fighterDetailResultDraw
+        Result.NO_CONTEST -> strings.fighterDetailResultNoContest
+        else -> strings.fighterDetailResultPending
     }
 
     val methodAbbr = abbreviateMethod(fight.methodType)
     val year = fight.eventDate?.toYear()
-    val shortDate = fight.eventDate?.toShortDate()
+    val shortDate = fight.eventDate?.toShortDate(dateStrings.months)
 
     Row(
         modifier = Modifier

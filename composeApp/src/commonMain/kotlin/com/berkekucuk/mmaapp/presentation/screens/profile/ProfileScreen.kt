@@ -35,19 +35,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextAlign
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
 import com.berkekucuk.mmaapp.presentation.screens.login.LoginScreen
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.profile_edit
-import mmaapp.composeapp.generated.resources.profile_sign_out
-import mmaapp.composeapp.generated.resources.profile_tab_overview
-import mmaapp.composeapp.generated.resources.profile_tab_predictions
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -94,10 +88,8 @@ fun ProfileScreen(
     state: ProfileUiState,
     onAction: (ProfileUiAction) -> Unit,
 ) {
-    val tabs = listOf(
-        stringResource(Res.string.profile_tab_overview),
-        stringResource(Res.string.profile_tab_predictions)
-    )
+    val strings = LocalAppStrings.current
+    val tabs = listOf(strings.profileTabOverview, strings.profileTabPredictions)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -141,7 +133,7 @@ fun ProfileScreen(
                                 DropdownMenuItem(
                                     text = {
                                         Text(
-                                            text = stringResource(Res.string.profile_edit),
+                                            text = strings.profileEdit,
                                             color = AppColors.textPrimary,
                                         )
                                     },
@@ -160,7 +152,7 @@ fun ProfileScreen(
                                 DropdownMenuItem(
                                     text = {
                                         Text(
-                                            text = stringResource(Res.string.profile_sign_out),
+                                            text = strings.profileSignOut,
                                             color = AppColors.ufcRed,
                                         )
                                     },
