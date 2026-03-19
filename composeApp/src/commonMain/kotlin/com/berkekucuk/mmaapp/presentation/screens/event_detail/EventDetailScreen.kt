@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -15,7 +16,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -27,22 +27,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_back
-import mmaapp.composeapp.generated.resources.empty_main_card_fights
-import mmaapp.composeapp.generated.resources.empty_prelim_fights
-import mmaapp.composeapp.generated.resources.event_details_fallback
-import mmaapp.composeapp.generated.resources.tab_main_card
-import mmaapp.composeapp.generated.resources.tab_prelims
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -74,7 +71,8 @@ fun EventDetailScreen(
     state: EventDetailUiState,
     onAction: (EventDetailUiAction) -> Unit,
 ) {
-    val tabs = listOf(stringResource(Res.string.tab_main_card), stringResource(Res.string.tab_prelims))
+    val strings = LocalAppStrings.current
+    val tabs = listOf(strings.tabMainCard, strings.tabPrelims)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val mainCardListState = rememberLazyListState()
     val prelimsListState = rememberLazyListState()
@@ -91,6 +89,8 @@ fun EventDetailScreen(
         (state.event?.name ?: "").split(":", limit = 2).getOrNull(1)?.trim()
     }
 
+    val dateStrings = rememberLocalizedDateStrings()
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -98,19 +98,19 @@ fun EventDetailScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.topBarBackground)
+                modifier = Modifier.background(AppColors.eventDetailTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
                         Column(verticalArrangement = Arrangement.Center) {
                             Text(
-                                text = eventTitleLine.ifEmpty { stringResource(Res.string.event_details_fallback) },
+                                text = eventTitleLine.ifEmpty { strings.eventDetailsFallback },
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.titleLarge,
+                                fontSize = 22.sp,
                                 fontWeight = FontWeight.SemiBold,
                             )
                             if (eventSubtitleLine != null) {
@@ -118,7 +118,7 @@ fun EventDetailScreen(
                                     text = eventSubtitleLine,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontSize = 14.sp,
                                     color = AppColors.textSecondary,
                                 )
                             }
@@ -128,13 +128,13 @@ fun EventDetailScreen(
                         IconButton(onClick = onBackClick) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(Res.string.content_description_back),
+                                contentDescription = strings.contentDescriptionBack,
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = AppColors.topBarBackground,
-                        scrolledContainerColor = AppColors.topBarBackground,
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent,
                         navigationIconContentColor = AppColors.textPrimary,
                         titleContentColor = AppColors.textPrimary,
                     ),
@@ -144,7 +144,8 @@ fun EventDetailScreen(
                 AppTabRow(
                     tabs = tabs,
                     pagerState = pagerState,
-                    coroutineScope = coroutineScope
+                    coroutineScope = coroutineScope,
+                    containerColor = Color.Transparent
                 )
             }
         }
@@ -168,20 +169,22 @@ fun EventDetailScreen(
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onFightClick = onFightClick,
-                        emptyMessage = stringResource(Res.string.empty_main_card_fights),
+                        emptyMessage = strings.emptyMainCardFights,
                         listState = mainCardListState,
-                        eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(),
-                        eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null }
+                        eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek),
+                        eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null },
+                        extraBottomPadding = navBarBottomPadding,
                     )
                     1 -> FightsContainer(
                         fights = state.prelimFights,
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onFightClick = onFightClick,
-                        emptyMessage = stringResource(Res.string.empty_prelim_fights),
+                        emptyMessage = strings.emptyPrelimFights,
                         listState = prelimsListState,
-                        eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(),
-                        eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null }
+                        eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek),
+                        eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null },
+                        extraBottomPadding = navBarBottomPadding,
                     )
                 }
             }
