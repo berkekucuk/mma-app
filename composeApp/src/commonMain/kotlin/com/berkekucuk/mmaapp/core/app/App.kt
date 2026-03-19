@@ -16,6 +16,8 @@ import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.EnStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.TrStrings
+import com.berkekucuk.mmaapp.core.storage.LanguageStorage
+import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
@@ -25,7 +27,12 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailSc
 @Composable
 fun App() {
     val rootNavController = rememberNavController()
-    val languageState = remember { mutableStateOf(AppLanguage.EN) }
+    val languageStorage: LanguageStorage = koinInject()
+    val languageState = remember {
+        mutableStateOf(
+            try { AppLanguage.valueOf(languageStorage.load()) } catch (_: Exception) { AppLanguage.EN }
+        )
+    }
     val language by languageState
     val strings = if (language == AppLanguage.EN) EnStrings else TrStrings
 
@@ -53,7 +60,10 @@ fun App() {
                     onNavigateToProfileEdit = {
                         rootNavController.navigate(Route.ProfileEdit)
                     },
-                    onLanguageChange = { languageState.value = it },
+                    onLanguageChange = {
+                        languageState.value = it
+                        languageStorage.save(it.name)
+                    },
                 )
             }
 
