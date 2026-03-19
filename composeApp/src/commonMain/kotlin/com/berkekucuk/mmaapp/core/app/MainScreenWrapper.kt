@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.core.app
 
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingsScreenRoot
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -19,6 +20,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -27,57 +30,69 @@ import androidx.compose.animation.ExitTransition
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToRankingDetail: (String, String) -> Unit,
-    onNavigateToProfileEdit: () -> Unit
+    onNavigateToProfileEdit: () -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val strings = LocalAppStrings.current
 
     Scaffold(
         containerColor = AppColors.topBarBackground,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         bottomBar = {
-            NavigationBar(
-                containerColor = AppColors.topBarBackground,
-                tonalElevation = 0.dp
-            ) {
-                bottomNavItems.forEach { item ->
-                    val isSelected = currentDestination?.hierarchy?.any {
-                        it.hasRoute(item.route::class)
-                    } == true
+            Column {
+                HorizontalDivider(color = Color.Black, thickness = 1.dp)
+                NavigationBar(
+                    containerColor = AppColors.topBarBackground,
+                    tonalElevation = 0.dp
+                ) {
+                    bottomNavItems.forEach { item ->
+                        val isSelected = currentDestination?.hierarchy?.any {
+                            it.hasRoute(item.route::class)
+                        } == true
 
-                    NavigationBarItem(
-                        selected = isSelected,
-                        onClick = {
-                            bottomNavController.navigate(item.route) {
-                                popUpTo(bottomNavController.graph.findStartDestination().id) {
-                                    saveState = true
+                        val label = when (item.route) {
+                            Route.Home -> strings.navFights
+                            Route.Rankings -> strings.navRankings
+                            Route.Profile -> strings.navProfile
+                            else -> item.name
+                        }
+
+                        NavigationBarItem(
+                            selected = isSelected,
+                            onClick = {
+                                bottomNavController.navigate(item.route) {
+                                    popUpTo(bottomNavController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = item.icon,
-                                contentDescription = item.name
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = item.icon,
+                                    contentDescription = label
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            },
+                            alwaysShowLabel = true,
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = AppColors.ufcRed,
+                                selectedTextColor = AppColors.ufcRed,
+                                indicatorColor = Color.Transparent,
+                                unselectedIconColor = Color.Gray,
+                                unselectedTextColor = Color.Gray
                             )
-                        },
-                        label = {
-                            Text(
-                                text = item.name,
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        },
-                        alwaysShowLabel = true,
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = AppColors.ufcRed,
-                            selectedTextColor = AppColors.ufcRed,
-                            indicatorColor = Color.Transparent,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray
                         )
-                    )
+                    }
                 }
             }
         }
@@ -96,6 +111,7 @@ fun MainScreenWrapper(
             composable<Route.Home> {
                 HomeScreenRoot(
                     onNavigateToEventDetail = onNavigateToEventDetail,
+                    onLanguageChange = onLanguageChange,
                 )
             }
 

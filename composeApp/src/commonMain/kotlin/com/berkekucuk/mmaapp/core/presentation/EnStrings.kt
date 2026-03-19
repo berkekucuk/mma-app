@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation
 
 val EnStrings = AppStrings(
+    language = AppLanguage.EN,
     eventsTitle = "EVENTS",
     tabUpcoming = "Upcoming",
     tabCompleted = "Completed",
@@ -88,6 +89,9 @@ val EnStrings = AppStrings(
     profileEditErrorFullnameShort = "Full name must be at least 3 characters.",
     profileEditErrorFullnameLong = "Full name must be at most 50 characters.",
     profileEditErrorUnknown = "An unknown error occurred.",
+    navFights = "Fights",
+    navRankings = "Rankings",
+    navProfile = "Profile",
     weightClassDisplayName = { name ->
         when (name) {
             "STRAWWEIGHT" -> "Strawweight"

@@ -1,6 +1,11 @@
 package com.berkekucuk.mmaapp.core.presentation
 
+import androidx.compose.runtime.compositionLocalOf
+
+val LocalAppStrings = compositionLocalOf { EnStrings }
+
 data class AppStrings(
+    val language: AppLanguage,
     // Home Screen
     val eventsTitle: String,
     val tabUpcoming: String,
@@ -99,6 +104,10 @@ data class AppStrings(
     val profileEditErrorFullnameShort: String,
     val profileEditErrorFullnameLong: String,
     val profileEditErrorUnknown: String,
+    // Bottom Nav
+    val navFights: String,
+    val navRankings: String,
+    val navProfile: String,
     // Enum display names
     val weightClassDisplayName: (String) -> String,
     val resultDisplayName: (String) -> String,
