@@ -22,9 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.to_be_announced
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
 fun EventInfoCard(
@@ -32,6 +30,7 @@ fun EventInfoCard(
     venueAndLocation: String?,
     modifier: Modifier = Modifier
 ) {
+    val strings = LocalAppStrings.current
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -51,7 +50,7 @@ fun EventInfoCard(
                 modifier = Modifier.size(14.dp)
             )
             Text(
-                text = date ?: stringResource(Res.string.to_be_announced),
+                text = date ?: strings.tba,
                 color = AppColors.textPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
@@ -71,7 +70,7 @@ fun EventInfoCard(
                 modifier = Modifier.size(14.dp)
             )
             Text(
-                text = venueAndLocation ?: stringResource(Res.string.to_be_announced),
+                text = venueAndLocation ?: strings.toBeAnnounced,
                 color = AppColors.dateColor,
                 fontSize = 12.sp,
                 maxLines = 1,

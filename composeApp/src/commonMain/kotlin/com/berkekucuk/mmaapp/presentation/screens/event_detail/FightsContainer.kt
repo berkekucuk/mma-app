@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,15 +34,17 @@ fun FightsContainer(
     emptyMessage: String,
     listState: LazyListState,
     eventDate: String?,
-    eventVenueAndLocation: String?
+    eventVenueAndLocation: String?,
+    extraBottomPadding: Dp = 0.dp,
 ) {
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = PaddingValues(top = 10.dp),
+        contentPadding = PaddingValues(top = 8.dp),
         verticalSpacing = 0.dp,
-        userScrollEnabled = fights.isNotEmpty()
+        userScrollEnabled = fights.isNotEmpty(),
+        extraBottomPadding = extraBottomPadding,
     ) {
         item(contentType = "EventHeader") {
             Column {
@@ -49,7 +52,7 @@ fun FightsContainer(
                     date = eventDate,
                     venueAndLocation = eventVenueAndLocation
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
 

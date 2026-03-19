@@ -11,11 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.empty_upcoming_events
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,6 +24,7 @@ fun UpcomingContainer(
     onEventClick: (String) -> Unit,
     listState: LazyListState
 ) {
+    val strings = LocalAppStrings.current
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
@@ -41,7 +40,7 @@ fun UpcomingContainer(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(Res.string.empty_upcoming_events),
+                        text = strings.emptyUpcomingEvents,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
