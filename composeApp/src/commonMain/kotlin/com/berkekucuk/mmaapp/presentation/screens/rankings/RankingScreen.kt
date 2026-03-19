@@ -20,12 +20,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.presentation.AppTypography
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import mmaapp.composeapp.generated.resources.Res
@@ -81,20 +82,20 @@ fun RankingScreen(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.topBarBackground)
+                modifier = Modifier.background(AppColors.rankingTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
                         Text(
                             text = stringResource(Res.string.rankings_title).uppercase(),
-                            style = AppTypography.titleLarge,
+                            fontSize = 22.sp,
                             fontFamily = AppFonts.RobotoCondensed,
                             fontWeight = FontWeight.Bold
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = AppColors.topBarBackground,
-                        scrolledContainerColor = AppColors.topBarBackground,
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent,
                         titleContentColor = AppColors.textPrimary
                     ),
                     scrollBehavior = scrollBehavior
@@ -103,7 +104,8 @@ fun RankingScreen(
                 AppTabRow(
                     tabs = tabs,
                     pagerState = pagerState,
-                    coroutineScope = coroutineScope
+                    coroutineScope = coroutineScope,
+                    containerColor = Color.Transparent
                 )
             }
         }

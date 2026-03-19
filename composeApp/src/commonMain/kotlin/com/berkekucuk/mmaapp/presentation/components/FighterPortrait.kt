@@ -26,6 +26,7 @@ fun FighterPortrait(
     flagWidth: Dp = 18.dp,
     flagHeight: Dp = 12.dp,
     nameFontSize: TextUnit = 12.sp,
+    nameTrailingContent: @Composable (() -> Unit)? = null,
 ) {
     Row(
         horizontalArrangement = if (alignment == Alignment.Start) Arrangement.Start else Arrangement.End,
@@ -41,6 +42,7 @@ fun FighterPortrait(
                 horizontalAlignment = Alignment.End,
                 modifier = Modifier.weight(1f),
                 nameFontSize = nameFontSize,
+                nameTrailingContent = nameTrailingContent,
             )
             Spacer(modifier = Modifier.width(8.dp))
             FighterImage(imageUrl ?: "", name ?: "", countryCode ?: "", result, alignment, imageSize, flagWidth, flagHeight)
@@ -55,6 +57,7 @@ fun FighterPortrait(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.weight(1f),
                 nameFontSize = nameFontSize,
+                nameTrailingContent = nameTrailingContent,
             )
         }
     }
