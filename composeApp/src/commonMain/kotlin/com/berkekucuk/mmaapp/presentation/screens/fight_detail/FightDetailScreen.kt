@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -34,9 +36,7 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.presentation.components.FighterImage
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_back
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -68,9 +68,11 @@ fun FightDetailScreen(
     state: FightDetailUiState,
     onAction: (FightDetailUiAction) -> Unit,
 ) {
+    val strings = LocalAppStrings.current
     val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
 
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -78,7 +80,7 @@ fun FightDetailScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
-        contentWindowInsets = WindowInsets.navigationBars,
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             MediumTopAppBar(
                 title = {
@@ -127,7 +129,7 @@ fun FightDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.content_description_back),
+                            contentDescription = strings.contentDescriptionBack,
                         )
                     }
                 },
@@ -151,6 +153,7 @@ fun FightDetailScreen(
                 isRefreshing = state.isRefreshing,
                 onRefresh = onRefresh,
                 contentPadding = PaddingValues(top = 10.dp),
+                extraBottomPadding = navBarBottomPadding,
             ) {
                 state.fight?.takeIf { it.hasDisplayableResult() }?.let { fight ->
                     item(contentType = "FightResultCard") {

@@ -21,18 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Participant
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.fight_detail_height_cm
-import mmaapp.composeapp.generated.resources.fight_detail_label_age
-import mmaapp.composeapp.generated.resources.fight_detail_label_height
-import mmaapp.composeapp.generated.resources.fight_detail_label_hometown
-import mmaapp.composeapp.generated.resources.fight_detail_label_name
-import mmaapp.composeapp.generated.resources.fight_detail_label_odds
-import mmaapp.composeapp.generated.resources.fight_detail_label_reach
-import mmaapp.composeapp.generated.resources.fight_detail_label_record
-import mmaapp.composeapp.generated.resources.fight_detail_label_result
-import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Instant
 
 @Composable
@@ -54,70 +44,21 @@ fun FightDetailContainer(
 
     val showRecord = redCorner?.recordAfterFight != null || blueCorner?.recordAfterFight != null
 
+    val strings = LocalAppStrings.current
     val rows = buildList {
-        add(
-            Triple(
-                redFighter?.name,
-                stringResource(Res.string.fight_detail_label_name),
-                blueFighter?.name,
-            )
-        )
-        add(
-            Triple(
-                redFighterAge,
-                stringResource(Res.string.fight_detail_label_age),
-                blueFighterAge,
-            )
-        )
-        add(
-            Triple(
-                redFighter?.fightingOutOf?.ifBlank { null },
-                stringResource(Res.string.fight_detail_label_hometown),
-                blueFighter?.fightingOutOf?.ifBlank { null },
-            )
-        )
-        add(
-            Triple(
-                redFighter?.height?.metric?.let { stringResource(Res.string.fight_detail_height_cm, it) },
-                stringResource(Res.string.fight_detail_label_height),
-                blueFighter?.height?.metric?.let { stringResource(Res.string.fight_detail_height_cm, it) },
-            )
-        )
-        add(
-            Triple(
-                redFighter?.reach?.metric?.let { stringResource(Res.string.fight_detail_height_cm, it) },
-                stringResource(Res.string.fight_detail_label_reach),
-                blueFighter?.reach?.metric?.let { stringResource(Res.string.fight_detail_height_cm, it) },
-            )
-        )
-        add(
-            Triple(
-                redCorner?.oddsValue?.let {
-                    val sign = if (it >= 0) "+" else ""
-                    "$sign$it\n(${redCorner.oddsLabel})"
-                },
-                stringResource(Res.string.fight_detail_label_odds),
-                blueCorner?.oddsValue?.let {
-                    val sign = if (it >= 0) "+" else ""
-                    "$sign$it\n(${blueCorner.oddsLabel})"
-                },
-            )
-        )
-        add(
-            Triple(
-                redCorner?.result?.name?.lowercase()?.replaceFirstChar { it.uppercase() },
-                stringResource(Res.string.fight_detail_label_result),
-                blueCorner?.result?.name?.lowercase()?.replaceFirstChar { it.uppercase() },
-            )
-        )
+        add(Triple(redFighter?.name, strings.fightDetailLabelName, blueFighter?.name))
+        add(Triple(redFighterAge, strings.fightDetailLabelAge, blueFighterAge))
+        add(Triple(redFighter?.fightingOutOf?.ifBlank { null }, strings.fightDetailLabelHometown, blueFighter?.fightingOutOf?.ifBlank { null }))
+        add(Triple(redFighter?.height?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelHeight, blueFighter?.height?.metric?.let { strings.heightCm(it.toString()) }))
+        add(Triple(redFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelReach, blueFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }))
+        add(Triple(
+            redCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it\n(${redCorner.oddsLabel})" },
+            strings.fightDetailLabelOdds,
+            blueCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it\n(${blueCorner.oddsLabel})" },
+        ))
+        add(Triple(redCorner?.result?.name?.let { strings.resultDisplayName(it) }, strings.fightDetailLabelResult, blueCorner?.result?.name?.let { strings.resultDisplayName(it) }))
         if (showRecord) {
-            add(
-                Triple(
-                    redCorner?.recordAfterFight?.toString(),
-                    stringResource(Res.string.fight_detail_label_record),
-                    blueCorner?.recordAfterFight?.toString(),
-                )
-            )
+            add(Triple(redCorner?.recordAfterFight?.toString(), strings.fightDetailLabelRecord, blueCorner?.recordAfterFight?.toString()))
         }
     }
 

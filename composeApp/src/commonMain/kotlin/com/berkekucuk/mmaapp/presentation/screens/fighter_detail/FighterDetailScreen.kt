@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,13 +29,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.content_description_back
-import mmaapp.composeapp.generated.resources.tab_details
-import mmaapp.composeapp.generated.resources.tab_fights
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -68,7 +66,8 @@ fun FighterDetailScreen(
     onAction: (FighterDetailUiAction) -> Unit,
 ) {
 
-    val tabs = listOf(stringResource(Res.string.tab_details), stringResource(Res.string.tab_fights))
+    val strings = LocalAppStrings.current
+    val tabs = listOf(strings.tabOverview, strings.tabFights)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
 
@@ -76,13 +75,14 @@ fun FighterDetailScreen(
     val onRefresh = remember(onAction) { { onAction(FighterDetailUiAction.OnRefresh) } }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.fighterBarBackground)
@@ -102,7 +102,7 @@ fun FighterDetailScreen(
                         IconButton(onClick = onBackClick) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(Res.string.content_description_back),
+                                contentDescription = strings.contentDescriptionBack,
                             )
                         }
                     },
@@ -128,7 +128,6 @@ fun FighterDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .navigationBarsPadding()
         ) {
             HorizontalPager(
                 state = pagerState,
@@ -139,10 +138,11 @@ fun FighterDetailScreen(
             ) { page ->
                 when (page) {
                     0 -> state.fighter?.let { fighter ->
-                        FighterDetailContainer(
+                        FighterOverviewContainer(
                             fighter = fighter,
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
+                            extraBottomPadding = navBarBottomPadding,
                         )
                     }
                     1 -> state.fighter?.let { fighter ->
@@ -151,6 +151,7 @@ fun FighterDetailScreen(
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
                             onAction = onAction,
+                            extraBottomPadding = navBarBottomPadding,
                         )
                     }
                 }

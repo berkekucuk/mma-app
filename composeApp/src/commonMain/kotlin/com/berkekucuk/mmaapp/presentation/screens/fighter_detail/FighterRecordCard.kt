@@ -17,17 +17,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Record
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.fighter_detail_record_draws
-import mmaapp.composeapp.generated.resources.fighter_detail_record_losses
-import mmaapp.composeapp.generated.resources.fighter_detail_record_wins
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FighterRecordCard(
     record: Record,
 ) {
+    val strings = LocalAppStrings.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,17 +36,17 @@ fun FighterRecordCard(
     ) {
         StatItem(
             value = record.wins.toString(),
-            label = stringResource(Res.string.fighter_detail_record_wins),
+            label = strings.fighterDetailRecordWins,
             valueColor = AppColors.winColor,
         )
         StatItem(
             value = record.losses.toString(),
-            label = stringResource(Res.string.fighter_detail_record_losses),
+            label = strings.fighterDetailRecordLosses,
             valueColor = AppColors.loseColor,
         )
         StatItem(
             value = record.draws.toString(),
-            label = stringResource(Res.string.fighter_detail_record_draws),
+            label = strings.fighterDetailRecordDraws,
             valueColor = AppColors.textSecondary,
         )
     }

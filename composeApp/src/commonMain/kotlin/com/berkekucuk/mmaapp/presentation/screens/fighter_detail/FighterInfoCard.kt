@@ -17,18 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fighter
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.fighter_detail_height_cm
-import mmaapp.composeapp.generated.resources.fighter_detail_label_age
-import mmaapp.composeapp.generated.resources.fighter_detail_label_born
-import mmaapp.composeapp.generated.resources.fighter_detail_label_date_of_birth
-import mmaapp.composeapp.generated.resources.fighter_detail_label_fighting_out_of
-import mmaapp.composeapp.generated.resources.fighter_detail_label_height
-import mmaapp.composeapp.generated.resources.fighter_detail_label_reach
-import mmaapp.composeapp.generated.resources.fighter_detail_label_weight_class
-import mmaapp.composeapp.generated.resources.fighter_detail_value_unavailable
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FighterInfoCard(
@@ -37,54 +27,16 @@ fun FighterInfoCard(
     formattedDob: String?,
     weightClassDisplay: String,
 ) {
-    val unavailable = stringResource(Res.string.fighter_detail_value_unavailable)
+    val strings = LocalAppStrings.current
+    val unavailable = strings.fighterDetailValueUnavailable
     val rows = buildList {
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_weight_class),
-                weightClassDisplay.ifEmpty { unavailable },
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_date_of_birth),
-                formattedDob ?: unavailable,
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_age),
-                age ?: unavailable,
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_height),
-                fighter.height?.metric?.let {
-                    stringResource(Res.string.fighter_detail_height_cm, it)
-                } ?: unavailable,
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_reach),
-                fighter.reach?.metric?.let {
-                    stringResource(Res.string.fighter_detail_height_cm, it)
-                } ?: unavailable,
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_born),
-                fighter.born?.ifBlank { null } ?: unavailable,
-            )
-        )
-        add(
-            Pair(
-                stringResource(Res.string.fighter_detail_label_fighting_out_of),
-                fighter.fightingOutOf?.ifBlank { null } ?: unavailable,
-            )
-        )
+        add(Pair(strings.fighterDetailLabelWeightClass, weightClassDisplay.ifEmpty { unavailable }))
+        add(Pair(strings.fighterDetailLabelDateOfBirth, formattedDob ?: unavailable))
+        add(Pair(strings.fighterDetailLabelAge, age ?: unavailable))
+        add(Pair(strings.fighterDetailLabelHeight, fighter.height?.metric?.let { strings.heightCm(it.toString()) } ?: unavailable))
+        add(Pair(strings.fighterDetailLabelReach, fighter.reach?.metric?.let { strings.heightCm(it.toString()) } ?: unavailable))
+        add(Pair(strings.fighterDetailLabelBorn, fighter.born?.ifBlank { null } ?: unavailable))
+        add(Pair(strings.fighterDetailLabelFightingOutOf, fighter.fightingOutOf?.ifBlank { null } ?: unavailable))
     }
 
     Column(
