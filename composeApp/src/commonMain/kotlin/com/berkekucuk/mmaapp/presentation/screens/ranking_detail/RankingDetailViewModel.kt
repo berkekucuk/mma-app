@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -24,7 +23,7 @@ class RankingDetailViewModel(
     private val weightClassId = route.weightClassId
     private val weightClassName = route.weightClassName
 
-    private val _state = MutableStateFlow(RankingDetailUiState(weightClassName = weightClassName))
+    private val _state = MutableStateFlow(RankingDetailUiState(weightClassId = weightClassId, weightClassName = weightClassName))
     val state: StateFlow<RankingDetailUiState> = _state.asStateFlow()
 
     private val _navigation = MutableSharedFlow<RankingDetailNavigationEvent>()
@@ -38,9 +37,7 @@ class RankingDetailViewModel(
         viewModelScope.launch {
             repository.getRankingsByWeightClass(weightClassId)
                 .collect { rankingsList ->
-                    val sorted = rankingsList.sortedBy { it.rankNumber }.filterNot {
-                        it.rankNumber == 0 && (weightClassId == "mens_p4p" || weightClassId == "womens_p4p")
-                    }
+                    val sorted = rankingsList.sortedBy { it.rankNumber }
                     _state.update {
                         it.copy(
                             rankedFighters = sorted,

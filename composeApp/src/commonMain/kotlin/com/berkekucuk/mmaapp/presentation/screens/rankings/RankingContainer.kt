@@ -20,17 +20,19 @@ fun RankingContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
         listState = listState,
-        contentPadding = PaddingValues(top = 8.dp),
-        verticalSpacing = 8.dp
+        contentPadding = PaddingValues(top = 10.dp),
+        verticalSpacing = 10.dp
     ) {
         rankings.forEach { (weightClass, rankingsList) ->
             val weightClassId = rankingsList.firstOrNull()?.weightClassId ?: ""
+            val isPoundForPound = weightClassId == "mens_p4p" || weightClassId == "womens_p4p"
             val champion = rankingsList.minByOrNull { it.rankNumber }
 
             item(key = "header_${weightClass.name}") {
                 WeightClassCard(
                     weightClassName = weightClass.name,
                     champion = champion,
+                    isPoundForPound = isPoundForPound,
                     onWeightClassClicked = { onWeightClassClicked(weightClassId, weightClass.name) }
                 )
             }

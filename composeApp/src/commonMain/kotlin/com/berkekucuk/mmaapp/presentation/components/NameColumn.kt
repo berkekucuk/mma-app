@@ -41,6 +41,7 @@ fun NameColumn(
     horizontalAlignment: Alignment.Horizontal,
     modifier: Modifier = Modifier,
     nameFontSize: TextUnit = 12.sp,
+    nameTrailingContent: @Composable (() -> Unit)? = null,
 ) {
     val winContentDescription = stringResource(Res.string.content_description_win)
     val lossContentDescription = stringResource(Res.string.content_description_loss)
@@ -97,19 +98,9 @@ fun NameColumn(
             horizontalAlignment = horizontalAlignment,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(
-                text = firstName,
-                color = nameColor,
-                fontSize = nameFontSize,
-                fontWeight = FontWeight.Medium,
-                textAlign = textAlign,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-
             if (lastName != null) {
                 Text(
-                    text = lastName,
+                    text = firstName,
                     color = nameColor,
                     fontSize = nameFontSize,
                     fontWeight = FontWeight.Medium,
@@ -117,6 +108,38 @@ fun NameColumn(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = lastName,
+                        color = nameColor,
+                        fontSize = nameFontSize,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = textAlign,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    nameTrailingContent?.invoke()
+                }
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = firstName,
+                        color = nameColor,
+                        fontSize = nameFontSize,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = textAlign,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    nameTrailingContent?.invoke()
+                }
             }
 
             if (record != null) {
