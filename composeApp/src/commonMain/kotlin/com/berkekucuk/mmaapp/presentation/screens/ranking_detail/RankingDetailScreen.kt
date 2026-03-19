@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.graphics.Color
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,9 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.AppTypography
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import com.berkekucuk.mmaapp.presentation.screens.rankings.RankedFighterRow
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.content_description_back
 import mmaapp.composeapp.generated.resources.rankings_champion_rank_label
@@ -75,28 +75,32 @@ fun RankingDetailScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = AppColors.pagerBackground,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = state.weightClassName.uppercase(),
-                        style = AppTypography.titleLarge,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClicked) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.content_description_back)
+            Column(
+                modifier = Modifier.background(AppColors.rankingTopBarGradient)
+            ) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = state.weightClassName.uppercase(),
+                            fontSize = 20.sp,
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.topBarBackground,
-                    scrolledContainerColor = AppColors.topBarBackground,
-                    navigationIconContentColor = AppColors.textPrimary,
-                    titleContentColor = AppColors.textPrimary
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClicked) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(Res.string.content_description_back)
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent,
+                        navigationIconContentColor = AppColors.textPrimary,
+                        titleContentColor = AppColors.textPrimary
+                    )
                 )
-            )
+            }
         }
     ) { innerPadding ->
         LoadingContent(
@@ -112,19 +116,24 @@ fun RankingDetailScreen(
                 verticalSpacing = 0.dp,
             ) {
                 item {
+                    val displayedFighters = if (state.isPoundForPound) {
+                        state.rankedFighters.filter { it.rankNumber > 0 }
+                    } else {
+                        state.rankedFighters
+                    }
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
+                            .clip(RoundedCornerShape(16.dp))
                             .background(AppColors.fightItemBackground)
                     ) {
-                        state.rankedFighters.forEachIndexed { index, ranking ->
+                        displayedFighters.forEachIndexed { index, ranking ->
                             ranking.fighter?.let { fighter ->
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 8.dp)
-                                        .padding(top = 4.dp, bottom = 4.dp)
+                                        .padding(horizontal = 12.dp)
                                 ) {
                                     val rankLabelStr = if (ranking.rankNumber == 0) championRankLabel else ranking.rankNumber.toString()
 
@@ -137,10 +146,10 @@ fun RankingDetailScreen(
                                         onFighterClicked = { onFighterClicked(fighter.fighterId) }
                                     )
 
-                                    if (index < state.rankedFighters.lastIndex) {
+                                    if (index < displayedFighters.lastIndex) {
                                         HorizontalDivider(
                                             color = AppColors.dividerColor,
-                                            thickness = 0.8.dp,
+                                            thickness = 0.5.dp,
                                         )
                                     }
                                 }

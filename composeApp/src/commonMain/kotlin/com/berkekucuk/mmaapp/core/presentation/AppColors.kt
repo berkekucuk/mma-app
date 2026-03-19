@@ -40,13 +40,12 @@ object AppColors {
     val loginButtonBackground = Color.White
     val loginButtonContent = Color(0xFF1A1A1A)
 
-    // Profile Screen
-    val profileCardBackground = Color(0xFF141414)
-    val profileCardBorder = Color(0xFF2A2A2A)
-    val profileInputBackground = Color(0xFF1C1C1C)
-    val profileInputBorder = Color(0xFF333333)
-    val profileInputBorderFocused = Color(0xFFD30102)
-    val profileAvatarBackground = Color(0xFF222222)
-    val profileSignOutBackground = Color(0xFF1A1010)
-    val profileSignOutBorder = Color(0xFF3A1A1A)
+    // Rankings Screen
+    val rankingTopBarGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF1A1020), Color(0xFF14121C), Color(0xFF100E18))
+    )
+    val rankingChampionBadge = Brush.horizontalGradient(
+        colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))
+    )
+    val rankingWeightClassAccent = Color(0xFF3A3A3A)
 }
