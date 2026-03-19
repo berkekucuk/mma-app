@@ -2,7 +2,6 @@ package com.berkekucuk.mmaapp.data.mapper
 
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
-import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.Measurement
 import com.berkekucuk.mmaapp.domain.model.Record
@@ -34,7 +33,7 @@ fun FighterDto.toDomain(): Fighter {
         record = record?.toDomain() ?: Record.EMPTY,
         height = height?.toDomain() ?: Measurement.EMPTY,
         reach = reach?.toDomain() ?: Measurement.EMPTY,
-        weightClassId = WeightClass.fromId(weightClassId),
+        weightClassId = weightClassId ?: "",
         dateOfBirth = dateOfBirth ?: "",
         born = born ?: "",
         fightingOutOf = fightingOutOf ?: "",
@@ -69,7 +68,7 @@ fun FighterEntity.toDomain(): Fighter {
         record = record?.toDomain() ?: Record.EMPTY,
         height = height?.toDomain() ?: Measurement.EMPTY,
         reach = reach?.toDomain() ?: Measurement.EMPTY,
-        weightClassId = WeightClass.fromId(weightClassId),
+        weightClassId = weightClassId ?: "",
         dateOfBirth = dateOfBirth ?: "",
         born = born,
         fightingOutOf = fightingOutOf,

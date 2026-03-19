@@ -93,22 +93,24 @@ val EnStrings = AppStrings(
     navFights = "Fights",
     navRankings = "Rankings",
     navProfile = "Profile",
-    weightClassDisplayName = { name ->
-        when (name) {
-            "STRAWWEIGHT" -> "Strawweight"
-            "FLYWEIGHT" -> "Flyweight"
-            "WOMENS_FLYWEIGHT" -> "Women's Flyweight"
-            "BANTAMWEIGHT" -> "Bantamweight"
-            "WOMENS_BANTAMWEIGHT" -> "Women's Bantamweight"
-            "FEATHERWEIGHT" -> "Featherweight"
-            "WOMENS_FEATHERWEIGHT" -> "Women's Featherweight"
-            "LIGHTWEIGHT" -> "Lightweight"
-            "WELTERWEIGHT" -> "Welterweight"
-            "MIDDLEWEIGHT" -> "Middleweight"
-            "LIGHTHEAVYWEIGHT" -> "Light Heavyweight"
-            "HEAVYWEIGHT" -> "Heavyweight"
-            "CATCHWEIGHT" -> "Catchweight"
-            else -> name.replace("_", " ").lowercase().split(" ").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+    weightClassDisplayName = { id ->
+        when (id.uppercase()) {
+            "SW" -> "Women's Strawweight"
+            "FLW" -> "Flyweight"
+            "W_FLW" -> "Women's Flyweight"
+            "BW" -> "Bantamweight"
+            "W_BW" -> "Women's Bantamweight"
+            "FW" -> "Featherweight"
+            "W_FW" -> "Women's Featherweight"
+            "LW" -> "Lightweight"
+            "WW" -> "Welterweight"
+            "MW" -> "Middleweight"
+            "LHW" -> "Light Heavyweight"
+            "HW" -> "Heavyweight"
+            "CW" -> "Catchweight"
+            "MENS_P4P" -> "Men's Pound-for-Pound"
+            "WOMENS_P4P" -> "Women's Pound-for-Pound"
+            else -> id
         }
     },
     resultDisplayName = { name ->
@@ -123,4 +125,5 @@ val EnStrings = AppStrings(
             else -> name.lowercase().replaceFirstChar { it.uppercase() }
         }
     },
+    toUpperCase = { it.uppercase() },
 )

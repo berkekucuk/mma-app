@@ -1,7 +1,6 @@
 package com.berkekucuk.mmaapp.data.mapper
 
 import com.berkekucuk.mmaapp.data.remote.dto.FightDto
-import com.berkekucuk.mmaapp.domain.enums.WeightClass
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.graphql.GetEventsQuery
 
@@ -32,7 +31,7 @@ fun FightDto.toDomain(): Fight {
         roundSummary = roundSummary ?: "",
         boutType = boutType ?: "",
         weightClassLbs = weightClassLbs,
-        weightClass = WeightClass.fromId(weightClassId),
+        weightClassId = weightClassId ?: "",
         roundsFormat = roundsFormat ?: "",
         fightOrder = fightOrder ?: 0,
         participants = participants?.map { it.toDomain() } ?: emptyList()

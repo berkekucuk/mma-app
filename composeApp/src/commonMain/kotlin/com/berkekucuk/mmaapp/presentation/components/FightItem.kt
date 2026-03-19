@@ -20,10 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fight
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.weight_class_bout
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FightItem(
@@ -45,10 +43,8 @@ fun FightItem(
         }
     }
 
-    val weightClassLabel = stringResource(
-        Res.string.weight_class_bout,
-        fight.weightClass.name.lowercase().replaceFirstChar { it.uppercase() }
-    )
+    val strings = LocalAppStrings.current
+    val weightClassLabel = strings.weightClassBout(strings.weightClassDisplayName(fight.weightClassId))
 
     val headerText = remember(methodText, weightClassLabel) {
         methodText.ifEmpty { weightClassLabel }
