@@ -24,6 +24,7 @@ fun ListContainer(
     contentPadding: PaddingValues,
     verticalSpacing: Dp = 12.dp,
     userScrollEnabled: Boolean = true,
+    extraBottomPadding: Dp = 0.dp,
     content: LazyListScope.() -> Unit
 ) {
     PullToRefreshBox(
@@ -38,7 +39,7 @@ fun ListContainer(
                 start = 8.dp,
                 end = 8.dp,
                 top = contentPadding.calculateTopPadding(),
-                bottom = 16.dp
+                bottom = contentPadding.calculateBottomPadding() + 16.dp + extraBottomPadding
             ),
             verticalArrangement = Arrangement.spacedBy(verticalSpacing),
             userScrollEnabled = userScrollEnabled,

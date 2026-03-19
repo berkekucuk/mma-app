@@ -32,7 +32,7 @@ fun AppTabRow(
             TabRowDefaults.PrimaryIndicator(
                 modifier = Modifier.tabIndicatorOffset(pagerState.currentPage),
                 width = Dp.Unspecified,
-                height = 3.dp,
+                height = 2.dp,
                 color = AppColors.ufcRed
             )
         },

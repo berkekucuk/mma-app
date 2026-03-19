@@ -13,6 +13,7 @@ data class AppStrings(
     val emptyUpcomingEvents: String,
     val emptyEventsForYear: (String) -> String,
     val toBeAnnounced: String,
+    val tba: String,
     val selectYear: String,
     // Fight Item
     val weightClassBout: (String) -> String,

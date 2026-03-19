@@ -8,7 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,29 +24,32 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import kotlinx.coroutines.launch
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.events_title
-import mmaapp.composeapp.generated.resources.tab_completed
-import mmaapp.composeapp.generated.resources.tab_upcoming
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onNavigateToEventDetail: (String) -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -55,6 +64,7 @@ fun HomeScreenRoot(
     HomeScreen(
         state = uiState,
         onAction = viewModel::onAction,
+        onLanguageChange = onLanguageChange,
     )
 }
 
@@ -63,15 +73,16 @@ fun HomeScreenRoot(
 fun HomeScreen(
     state: HomeUiState,
     onAction: (HomeUiAction) -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
 ) {
-    val tabs = listOf(
-        stringResource(Res.string.tab_upcoming),
-        stringResource(Res.string.tab_completed)
-    )
+    val strings = LocalAppStrings.current
+    val currentLanguage = strings.language
+    val tabs = listOf(strings.tabUpcoming, strings.tabCompleted)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    var menuExpanded by remember { mutableStateOf(false) }
 
     val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
     val onRefreshCompletedTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshCompletedTab) } }
@@ -88,20 +99,62 @@ fun HomeScreen(
         contentWindowInsets = WindowInsets(0),
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.topBarBackground)
+                modifier = Modifier.background(AppColors.eventsTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
                         Text(
-                            text = stringResource(Res.string.events_title),
+                            text = strings.eventsTitle,
                             style = MaterialTheme.typography.titleLarge,
                             fontFamily = AppFonts.RobotoCondensed,
                             fontWeight = FontWeight.Bold,
                         )
                     },
+                    actions = {
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = null,
+                                tint = AppColors.textPrimary,
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = menuExpanded,
+                            onDismissRequest = { menuExpanded = false },
+                            containerColor = AppColors.dropdownMenuBackground,
+                            modifier = Modifier.width(IntrinsicSize.Min),
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "English",
+                                        color = if (currentLanguage == AppLanguage.EN) AppColors.ufcRed else AppColors.textPrimary,
+                                        fontWeight = if (currentLanguage == AppLanguage.EN) FontWeight.Bold else FontWeight.Normal,
+                                    )
+                                },
+                                onClick = {
+                                    onLanguageChange(AppLanguage.EN)
+                                    menuExpanded = false
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = "Türkçe",
+                                        color = if (currentLanguage == AppLanguage.TR) AppColors.ufcRed else AppColors.textPrimary,
+                                        fontWeight = if (currentLanguage == AppLanguage.TR) FontWeight.Bold else FontWeight.Normal,
+                                    )
+                                },
+                                onClick = {
+                                    onLanguageChange(AppLanguage.TR)
+                                    menuExpanded = false
+                                },
+                            )
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = AppColors.topBarBackground,
-                        scrolledContainerColor = AppColors.topBarBackground,
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent,
                         titleContentColor = AppColors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior
@@ -110,7 +163,8 @@ fun HomeScreen(
                 AppTabRow(
                     tabs = tabs,
                     pagerState = pagerState,
-                    coroutineScope = coroutineScope
+                    coroutineScope = coroutineScope,
+                    containerColor = Color.Transparent
                 )
             }
         }

@@ -25,10 +25,9 @@ import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.to_be_announced
-import org.jetbrains.compose.resources.stringResource
+import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
 
 @Composable
 fun EventItem(
@@ -36,6 +35,8 @@ fun EventItem(
     onClick: (String) -> Unit
 ) {
     val mainEvent = event.mainEvent
+    val strings = LocalAppStrings.current
+    val dateStrings = rememberLocalizedDateStrings()
 
     Card(
         modifier = Modifier
@@ -57,7 +58,7 @@ fun EventItem(
             ) {
                 Text(
                     text = event.name,
-                    color = Color.White,
+                    color = AppColors.textPrimary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -65,7 +66,7 @@ fun EventItem(
                 )
 
                 Text(
-                    text = event.datetimeUtc?.toUserFriendlyDate() ?: stringResource(Res.string.to_be_announced),
+                    text = event.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek) ?: strings.tba,
                     color = AppColors.dateColor,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(top = 2.dp),
@@ -88,8 +89,8 @@ fun EventItem(
                     contentAlignment = Alignment.Center
                 ){
                     Text(
-                        text = stringResource(Res.string.to_be_announced),
-                        color = Color.White,
+                        text = strings.toBeAnnounced,
+                        color = AppColors.textPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )

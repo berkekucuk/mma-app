@@ -31,13 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import kotlinx.coroutines.delay
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.empty_events_for_year
-import mmaapp.composeapp.generated.resources.select_year
-import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +49,7 @@ fun CompletedContainer(
     onYearSelected: (Int) -> Unit,
     listState: LazyListState
 ) {
+    val strings = LocalAppStrings.current
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     var showEmptyMessage by remember { mutableStateOf(false) }
@@ -88,7 +86,7 @@ fun CompletedContainer(
                         label = {
                             Text(
                                 text = selectedYear?.toString()
-                                    ?: stringResource(Res.string.select_year),
+                                    ?: strings.selectYear,
                                 fontWeight = FontWeight.Medium
                             )
                         },
@@ -151,10 +149,7 @@ fun CompletedContainer(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = stringResource(
-                                Res.string.empty_events_for_year,
-                                selectedYear.toString()
-                            ),
+                            text = strings.emptyEventsForYear(selectedYear.toString()),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

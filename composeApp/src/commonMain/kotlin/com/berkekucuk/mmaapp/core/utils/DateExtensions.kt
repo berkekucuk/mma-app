@@ -6,28 +6,27 @@ import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Instant
 
-private val MONTHS = listOf(
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-)
-
 private val Instant.localDateTime get() = toLocalDateTime(TimeZone.currentSystemDefault())
 
-fun Instant.toUserFriendlyDate(): String {
+fun Instant.toUserFriendlyDate(
+    months: List<String>,
+    daysOfWeek: List<String>,
+): String {
     val localDateTime = this.localDateTime
     val day = localDateTime.day.toString().padStart(2, '0')
-    val month = MONTHS[localDateTime.month.number - 1]
+    val month = months[localDateTime.month.number - 1]
     val year = localDateTime.year
+    val dayOfWeek = daysOfWeek[localDateTime.dayOfWeek.ordinal]
     val hour = localDateTime.hour.toString().padStart(2, '0')
     val minute = localDateTime.minute.toString().padStart(2, '0')
-    return "$day $month $year | $hour:$minute"
+    return "$day $month $year $dayOfWeek | $hour:$minute"
 }
 
 fun Instant.toYear(): String = localDateTime.year.toString()
 
-fun Instant.toShortDate(): String {
+fun Instant.toShortDate(months: List<String>): String {
     val ldt = localDateTime
-    return "${MONTHS[ldt.month.number - 1]} ${ldt.day}"
+    return "${months[ldt.month.number - 1]} ${ldt.day}"
 }
 
 fun calculateAgeAtDate(dateOfBirth: String?, referenceDate: Instant?): String? {
@@ -47,12 +46,12 @@ fun calculateAgeAtDate(dateOfBirth: String?, referenceDate: Instant?): String? {
     }
 }
 
-fun formatDateOfBirth(dateOfBirth: String?): String? {
+fun formatDateOfBirth(dateOfBirth: String?, months: List<String>): String? {
     if (dateOfBirth.isNullOrBlank()) return null
     return try {
         val date = LocalDate.parse(dateOfBirth)
         val day = date.day.toString().padStart(2, '0')
-        val month = MONTHS[date.month.number - 1]
+        val month = months[date.month.number - 1]
         val year = date.year
         "$day $month $year"
     } catch (e: Exception) {

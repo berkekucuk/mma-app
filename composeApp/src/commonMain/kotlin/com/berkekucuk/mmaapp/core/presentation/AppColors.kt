@@ -6,11 +6,11 @@ import androidx.compose.ui.graphics.Color
 object AppColors {
     val topBarBackground = Color(0xFF1A1A1A)
     val pagerBackground = Color.Black
-    val dropdownMenuBackground = Color(0xFF333333)
+    val dropdownMenuBackground = Color(0xFF2A2A2A)
     val textPrimary = Color(0xFFECEDEF)
     val textSecondary = Color(0xFF8B8E90)
     val dateColor = Color(0xFFB0B0B0)
-    val ufcRed = Color(0xFFD30102)
+    val ufcRed = Color(0xFFD20909)
     val winnerFrame = Color(0xFF33A854)
     val upcomingColor = Color(0xFF525252)
     val upcomingColor2 = Color(0xFFE2E2E2)
@@ -39,6 +39,16 @@ object AppColors {
     val loginSubtitle = Color(0xFF6B6B6B)
     val loginButtonBackground = Color.White
     val loginButtonContent = Color(0xFF1A1A1A)
+
+    // Events Screen
+    val eventDetailTopBarGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF200000), Color(0xFF150000), Color(0xFF0A0000))
+    )
+
+    // Event Detail Screen
+    val eventsTopBarGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF161B1F), Color(0xFF101418), Color(0xFF0A0C0F))
+    )
 
     // Rankings Screen
     val rankingTopBarGradient = Brush.verticalGradient(
