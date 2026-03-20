@@ -2,7 +2,9 @@ package com.berkekucuk.mmaapp.presentation.screens.fighter_search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import com.berkekucuk.mmaapp.domain.repository.RankingRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,8 +20,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class FighterSearchViewModel(
-    private val repository: FighterRepository
+    private val fighterRepository: FighterRepository,
+    private val rankingRepository: RankingRepository,
 ) : ViewModel() {
+
+    companion object {
+        private const val MENS_P4P_ID = "mens_p4p"
+    }
 
     private val _state = MutableStateFlow(FighterSearchUiState())
     val state = _state.asStateFlow()
@@ -27,11 +34,26 @@ class FighterSearchViewModel(
     private val _navigation = MutableSharedFlow<FighterSearchNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 
+    private var p4pFighters: List<Fighter> = emptyList()
+
     init {
+        observeP4PFighters()
         observeSearchQuery()
     }
 
-    private fun observeSearchQuery(){
+    private fun observeP4PFighters() {
+        viewModelScope.launch {
+            rankingRepository.getRankingsByWeightClass(MENS_P4P_ID)
+                .collect { rankings ->
+                p4pFighters = rankings.mapNotNull { it.fighter }
+                if (_state.value.query.length < 2) {
+                    _state.update { it.copy(results = p4pFighters) }
+                }
+            }
+        }
+    }
+
+    private fun observeSearchQuery() {
         viewModelScope.launch {
             _state
                 .map { it.query }
@@ -41,31 +63,35 @@ class FighterSearchViewModel(
                     if (query.length >= 2) {
                         search(query)
                     } else {
-                        _state.update { it.copy(results = emptyList(), isLoading = false, isEmpty = false) }
+                        _state.update { it.copy(results = p4pFighters, isLoading = false, error = null) }
                     }
                 }
         }
     }
 
     private suspend fun search(query: String) {
-        _state.update { it.copy(isLoading = true, isEmpty = false, error = null) }
-        repository.searchFighters(query)
+        _state.update { it.copy(isLoading = true, error = null) }
+        fighterRepository.searchFighters(query)
             .onSuccess { results ->
-                _state.update { it.copy(results = results, isLoading = false, isEmpty = results.isEmpty()) }
+                _state.update { it.copy(results = results, isLoading = false) }
             }
             .onFailure { e ->
                 val errorType = when (e) {
                     is PostgrestRestException -> FighterSearchError.UNKNOWN_ERROR
                     else -> FighterSearchError.NETWORK_ERROR
                 }
-                _state.update { it.copy(isLoading = false, isEmpty = false, error = errorType) }
+                _state.update { it.copy(isLoading = false, error = errorType) }
             }
     }
 
     fun onAction(action: FighterSearchUiAction) {
         when (action) {
-            is FighterSearchUiAction.OnQueryChanged -> _state.update { it.copy(query = action.query, error = null) }
-            is FighterSearchUiAction.OnClearQuery -> _state.update { it.copy(query = "", results = emptyList(), isEmpty = false, error = null) }
+            is FighterSearchUiAction.OnQueryChanged -> _state.update {
+                it.copy(query = action.query, error = null)
+            }
+            is FighterSearchUiAction.OnClearQuery -> _state.update {
+                it.copy(query = "", results = p4pFighters, error = null)
+            }
             is FighterSearchUiAction.OnFighterClicked -> navigateTo(FighterSearchNavigationEvent.ToFighterDetail(action.fighterId))
             is FighterSearchUiAction.OnBackClicked -> navigateTo(FighterSearchNavigationEvent.Back)
         }
