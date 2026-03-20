@@ -24,7 +24,7 @@ class FighterSupabaseAPI(
             filter {
                 ilike("name", "%$query%")
             }
-            limit(20)
+            limit(15)
         }.decodeList<FighterDto>()
     }
 }
