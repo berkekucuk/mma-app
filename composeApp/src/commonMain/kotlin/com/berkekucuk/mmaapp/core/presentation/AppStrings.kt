@@ -95,7 +95,6 @@ data class AppStrings(
     val profileEditFullName: String,
     val profileEditUsernameLabel: String,
     val profileEditSaveChanges: String,
-    val profileEditErrorNetwork: String,
     val profileEditErrorUsernameTaken: String,
     val profileEditErrorEmptyUsername: String,
     val profileEditErrorInvalidUsername: String,
@@ -104,7 +103,12 @@ data class AppStrings(
     val profileEditErrorEmptyFullname: String,
     val profileEditErrorFullnameShort: String,
     val profileEditErrorFullnameLong: String,
-    val profileEditErrorUnknown: String,
+    // Fighter Search Screen
+    val fighterSearchPlaceholder: String,
+    val fighterSearchEmpty: String,
+    // Common Errors
+    val errorNetwork: String,
+    val errorUnknown: String,
     // Bottom Nav
     val navFights: String,
     val navRankings: String,
