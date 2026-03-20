@@ -105,6 +105,7 @@ class HomeViewModel(
             is HomeUiAction.OnYearSelected -> onYearSelected(action.year)
             is HomeUiAction.OnRefreshUpcomingTab -> onRefreshUpcomingTab()
             is HomeUiAction.OnRefreshCompletedTab -> onRefreshCompletedTab()
+            is HomeUiAction.OnSearchClicked -> navigateTo(HomeNavigationEvent.ToFighterSearch)
         }
     }
 

@@ -50,4 +50,14 @@ class FighterRepositoryImpl(
             }
         }
     }
+
+    override suspend fun searchFighters(query: String): Result<List<Fighter>> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.searchFighters(query).map { it.toDomain() }
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
 }

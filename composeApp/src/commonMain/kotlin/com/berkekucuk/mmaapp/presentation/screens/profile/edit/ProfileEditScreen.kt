@@ -48,7 +48,7 @@ fun ProfileEditScreen(
 
     val strings = LocalAppStrings.current
     val errorMessage = when (state.error) {
-        ProfileEditError.NETWORK_ERROR -> strings.profileEditErrorNetwork
+        ProfileEditError.NETWORK_ERROR -> strings.errorNetwork
         ProfileEditError.USERNAME_TAKEN -> strings.profileEditErrorUsernameTaken
         ProfileEditError.EMPTY_USERNAME -> strings.profileEditErrorEmptyUsername
         ProfileEditError.INVALID_USERNAME -> strings.profileEditErrorInvalidUsername
@@ -57,7 +57,7 @@ fun ProfileEditScreen(
         ProfileEditError.EMPTY_FULLNAME -> strings.profileEditErrorEmptyFullname
         ProfileEditError.FULLNAME_TOO_SHORT -> strings.profileEditErrorFullnameShort
         ProfileEditError.FULLNAME_TOO_LONG -> strings.profileEditErrorFullnameLong
-        ProfileEditError.UNKNOWN_ERROR -> strings.profileEditErrorUnknown
+        ProfileEditError.UNKNOWN_ERROR -> strings.errorUnknown
         null -> null
     }
 
