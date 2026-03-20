@@ -4,4 +4,5 @@ sealed interface FightDetailUiAction {
     data class OnFighterClicked(val fighterId: String): FightDetailUiAction
     data object OnBackClicked: FightDetailUiAction
     data object OnRefresh: FightDetailUiAction
+    data class OnEventClicked(val eventId: String): FightDetailUiAction
 }

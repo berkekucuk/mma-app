@@ -48,7 +48,8 @@ class FightDetailViewModel(
                         it.copy(
                             fight = fight,
                             eventDate = event.datetimeUtc,
-                            isLoading = false
+                            isLoading = false,
+                            eventName = event.name
                         )
                     }
                 }
@@ -65,7 +66,8 @@ class FightDetailViewModel(
                         it.copy(
                             fight = fight,
                             eventDate = fight?.eventDate,
-                            isLoading = false
+                            isLoading = false,
+                            eventName = fight?.eventName
                         )
                     }
                 }
@@ -77,6 +79,7 @@ class FightDetailViewModel(
             is FightDetailUiAction.OnFighterClicked -> navigateTo(FightDetailNavigationEvent.ToFighterDetail(action.fighterId))
             is FightDetailUiAction.OnBackClicked -> navigateTo(FightDetailNavigationEvent.Back)
             is FightDetailUiAction.OnRefresh -> onRefresh()
+            is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))
         }
     }
 

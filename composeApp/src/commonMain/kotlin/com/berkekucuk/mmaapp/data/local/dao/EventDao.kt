@@ -17,7 +17,7 @@ interface EventDao {
     suspend fun insertEvents(events: List<EventEntity>)
 
     @Query("SELECT * FROM events WHERE event_id = :eventId")
-    fun getEventById(eventId: String): Flow<EventEntity>
+    fun getEventById(eventId: String): Flow<EventEntity?>
 
     @Query("SELECT * FROM events WHERE LOWER(status) IN ('upcoming', 'live') ORDER BY datetime_utc ASC")
     fun getUpcomingEvents(): Flow<List<EventEntity>>
