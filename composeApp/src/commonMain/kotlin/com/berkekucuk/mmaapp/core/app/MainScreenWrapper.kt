@@ -31,6 +31,7 @@ fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToRankingDetail: (String, String) -> Unit,
     onNavigateToProfileEdit: () -> Unit,
+    onNavigateToFighterSearch: () -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val bottomNavController = rememberNavController()
@@ -111,6 +112,7 @@ fun MainScreenWrapper(
             composable<Route.Home> {
                 HomeScreenRoot(
                     onNavigateToEventDetail = onNavigateToEventDetail,
+                    onNavigateToFighterSearch = onNavigateToFighterSearch,
                     onLanguageChange = onLanguageChange,
                 )
             }
