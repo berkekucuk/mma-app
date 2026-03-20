@@ -52,11 +52,10 @@ fun FightDetailContainer(
         add(Triple(redFighter?.height?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelHeight, blueFighter?.height?.metric?.let { strings.heightCm(it.toString()) }))
         add(Triple(redFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelReach, blueFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }))
         add(Triple(
-            redCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it\n(${redCorner.oddsLabel})" },
+            redCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it" },
             strings.fightDetailLabelOdds,
-            blueCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it\n(${blueCorner.oddsLabel})" },
+            blueCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it" },
         ))
-        add(Triple(redCorner?.result?.name?.let { strings.resultDisplayName(it) }, strings.fightDetailLabelResult, blueCorner?.result?.name?.let { strings.resultDisplayName(it) }))
         if (showRecord) {
             add(Triple(redCorner?.recordAfterFight?.toString(), strings.fightDetailLabelRecord, blueCorner?.recordAfterFight?.toString()))
         }

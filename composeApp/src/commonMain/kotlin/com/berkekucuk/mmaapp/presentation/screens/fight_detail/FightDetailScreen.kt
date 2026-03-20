@@ -38,11 +38,15 @@ import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun FightDetailScreenRoot(
     viewModel: FightDetailViewModel = koinViewModel(),
     onNavigateToFighterDetail: (fighterId: String) -> Unit,
+    onNavigateToEventDetail: (eventId: String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -52,6 +56,7 @@ fun FightDetailScreenRoot(
             when (event) {
                 is FightDetailNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
                 is FightDetailNavigationEvent.Back -> onBackClick()
+                is FightDetailNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
             }
         }
     }
@@ -93,35 +98,145 @@ fun FightDetailScreen(
                         state.fight?.let { fight ->
                             val redCorner = fight.redCorner?.fighter
                             val blueCorner = fight.blueCorner?.fighter
+                            val isExpanded = scrollBehavior.state.collapsedFraction < 0.5f
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                FighterImage(
-                                    imageUrl = redCorner?.imageUrl ?: "",
-                                    name = redCorner?.name ?: "",
-                                    countryCode = redCorner?.countryCode ?: "",
-                                    result = fight.redCorner?.result?.name,
-                                    alignment = Alignment.Start,
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.clickable {
+                                        redCorner?.fighterId?.let { id -> 
+                                            onAction(FightDetailUiAction.OnFighterClicked(id))
+                                        }
+                                    }
+                                ) {
+                                    FighterImage(
+                                        imageUrl = redCorner?.imageUrl ?: "",
+                                        name = redCorner?.name ?: "",
+                                        countryCode = redCorner?.countryCode ?: "",
+                                        result = fight.redCorner?.result?.name,
+                                        alignment = Alignment.Start,
+                                        imageSize = if(isExpanded) 55.dp else 40.dp
+                                    )
+                                    if (isExpanded) {
+                                        Text(
+                                            text = redCorner?.name ?: "",
+                                            color = AppColors.textPrimary,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            modifier = Modifier
+                                            .padding(top = 8.dp)
+                                            .offset(x = (-12).dp)
+                                        )
+                                    }
+                                }
 
-                                Text(
-                                    text = "VS",
-                                    color = AppColors.textSecondary,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(horizontal = 50.dp),
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .offset(y = if (isExpanded) 0.dp else 10.dp)
+                                ) {
+                                    val redResult = fight.redCorner?.result?.name
+                                    val blueResult = fight.blueCorner?.result?.name
+                                    
+                                    val hasWinnerOrLoser = redResult == "WIN" || blueResult == "WIN" || redResult == "LOSS" || blueResult == "LOSS"
+                                    
+                                    if (hasWinnerOrLoser && redResult != null && blueResult != null) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.Center
+                                        ) {
+                                            val textSize = if (isExpanded) 20.sp else 18.sp
+                                            Text(
+                                                text = if (redResult == "WIN") "W" else "L",
+                                                color = if (redResult == "WIN") AppColors.winColor else AppColors.loseColor,
+                                                fontSize = textSize,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                            Text(
+                                                text = " - ",
+                                                color = AppColors.textSecondary,
+                                                fontSize = textSize,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                            Text(
+                                                text = if (blueResult == "WIN") "W" else "L",
+                                                color = if (blueResult == "WIN") AppColors.winColor else AppColors.loseColor,
+                                                fontSize = textSize,
+                                                fontWeight = FontWeight.Bold,
+                                            )
+                                        }
+                                        val methodText = buildString {
+                                            if (fight.methodType.isNotBlank()) append(fight.methodType)
+                                            if (fight.roundSummary.isNotBlank()) {
+                                                if (isNotEmpty()) append(" | ")
+                                                append(fight.roundSummary.replace("\n", " "))
+                                            }
+                                        }
+                                        if (methodText.isNotBlank()) {
+                                            Text(
+                                                text = methodText,
+                                                color = AppColors.textSecondary,
+                                                fontSize = 11.sp,
+                                                modifier = Modifier.padding(top = 4.dp)
+                                            )
+                                        }
+                                    } else if (redResult == "DRAW") {
+                                         Text(
+                                            text = "D - D",
+                                            color = AppColors.drawColor,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    } else if (redResult == "NO_CONTEST") {
+                                         Text(
+                                            text = "NC",
+                                            color = AppColors.noContestColor,
+                                            fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "VS",
+                                            color = AppColors.textSecondary,
+                                            fontSize = 14.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    }
+                                }
 
-                                FighterImage(
-                                    imageUrl = blueCorner?.imageUrl ?: "",
-                                    name = blueCorner?.name ?: "",
-                                    countryCode = blueCorner?.countryCode ?: "",
-                                    result = fight.blueCorner?.result?.name,
-                                    alignment = Alignment.End,
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.clickable {
+                                        blueCorner?.fighterId?.let { id -> 
+                                            onAction(FightDetailUiAction.OnFighterClicked(id))
+                                        }
+                                    }) {
+                                    FighterImage(
+                                        imageUrl = blueCorner?.imageUrl ?: "",
+                                        name = blueCorner?.name ?: "",
+                                        countryCode = blueCorner?.countryCode ?: "",
+                                        result = fight.blueCorner?.result?.name,
+                                        alignment = Alignment.End,
+                                        imageSize = if (isExpanded) 55.dp else 40.dp
+                                    )
+                                    if (isExpanded) {
+                                        Text(
+                                            text = blueCorner?.name ?: "",
+                                            color = AppColors.textPrimary,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            modifier = Modifier
+                                            .padding(top = 8.dp)
+                                            .offset(x = 12.dp)
+                                        )
+                                    }
+                                }
                             }
+
                         }
                     }
                 },
@@ -155,6 +270,28 @@ fun FightDetailScreen(
                 contentPadding = PaddingValues(top = 10.dp),
                 extraBottomPadding = navBarBottomPadding,
             ) {
+                val displayEventName = state.eventName?: state.fight?.eventName
+                displayEventName?.let {
+                    eventName ->
+                    item(contentType = "EventName") {
+                        Text(
+                            text = eventName,
+                            color = AppColors.textSecondary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val eventId = state.fight?.eventId
+                                if (!eventId.isNullOrBlank())
+                                onAction(FightDetailUiAction.OnEventClicked(eventId))
+                            }
+                            .padding(horizontal = 16.dp,
+                            vertical = 12.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
                 state.fight?.takeIf { it.hasDisplayableResult() }?.let { fight ->
                     item(contentType = "FightResultCard") {
                         FightResultCard(fight = fight)

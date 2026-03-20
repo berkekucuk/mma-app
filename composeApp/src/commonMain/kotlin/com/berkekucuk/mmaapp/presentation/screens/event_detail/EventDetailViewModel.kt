@@ -30,6 +30,9 @@ class EventDetailViewModel(
 
     init {
         observeEvent()
+        viewModelScope.launch {
+            eventRepository.refreshEventById(eventId)
+        }
     }
 
     private fun observeEvent() {

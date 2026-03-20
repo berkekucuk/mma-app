@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.flow.filterNotNull
+
 
 class EventRepositoryImpl(
     private val remoteDataSource: EventRemoteDataSource,
@@ -48,6 +50,7 @@ class EventRepositoryImpl(
 
     override fun getEventById(eventId: String): Flow<Event> {
         return dao.getEventById(eventId)
+            .filterNotNull()
             .map { it.toDomain() }
             .flowOn(Dispatchers.IO)
             .distinctUntilChanged()
