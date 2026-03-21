@@ -9,16 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
@@ -42,13 +41,10 @@ fun FightDetailContainer(
         calculateAgeAtDate(blueFighter?.dateOfBirth, eventDate)
     }
 
-    val showRecord = redCorner?.recordAfterFight != null || blueCorner?.recordAfterFight != null
-
     val strings = LocalAppStrings.current
+    val showRecord = redCorner?.recordAfterFight != null || blueCorner?.recordAfterFight != null
     val rows = buildList {
-        add(Triple(redFighter?.name, strings.fightDetailLabelName, blueFighter?.name))
         add(Triple(redFighterAge, strings.fightDetailLabelAge, blueFighterAge))
-        add(Triple(redFighter?.fightingOutOf?.ifBlank { null }, strings.fightDetailLabelHometown, blueFighter?.fightingOutOf?.ifBlank { null }))
         add(Triple(redFighter?.height?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelHeight, blueFighter?.height?.metric?.let { strings.heightCm(it.toString()) }))
         add(Triple(redFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelReach, blueFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }))
         add(Triple(
@@ -95,31 +91,30 @@ private fun StatRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 18.dp),
+            .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             text = leftValue,
+            style = MaterialTheme.typography.bodyMedium,
             color = AppColors.textPrimary,
-            fontSize = 12.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier.weight(1f),
         )
 
         Text(
             text = label,
+            style = MaterialTheme.typography.bodyMedium,
             color = AppColors.textSecondary,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1.5f),
         )
 
         Text(
             text = rightValue,
+            style = MaterialTheme.typography.bodyMedium,
             color = AppColors.textPrimary,
-            fontSize = 12.sp,
             textAlign = TextAlign.End,
             modifier = Modifier.weight(1f),
         )

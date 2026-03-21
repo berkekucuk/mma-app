@@ -37,7 +37,7 @@ fun NameColumn(
     textAlign: TextAlign,
     horizontalAlignment: Alignment.Horizontal,
     modifier: Modifier = Modifier,
-    nameFontSize: TextUnit = 12.sp,
+    nameFontSize: TextUnit = 14.sp,
     nameTrailingContent: @Composable (() -> Unit)? = null,
 ) {
     val strings = LocalAppStrings.current
