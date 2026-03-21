@@ -14,6 +14,7 @@ import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.ProfileEntity
 import com.berkekucuk.mmaapp.data.local.entity.RankingEntity
+import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
@@ -22,9 +23,10 @@ import kotlinx.coroutines.IO
         EventEntity::class,
         RankingEntity::class,
         FighterEntity::class,
-        ProfileEntity::class
+        ProfileEntity::class,
+        SyncedYearEntity::class
     ],
-    version = 4
+    version = 5
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
