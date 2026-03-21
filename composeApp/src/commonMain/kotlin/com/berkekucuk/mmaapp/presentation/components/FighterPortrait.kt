@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,11 +28,12 @@ fun FighterPortrait(
     flagHeight: Dp = 12.dp,
     nameFontSize: TextUnit = 12.sp,
     nameTrailingContent: @Composable (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Row(
         horizontalArrangement = if (alignment == Alignment.Start) Arrangement.Start else Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
     ) {
         if (alignment == Alignment.End) {
             NameColumn(

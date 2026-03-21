@@ -39,11 +39,8 @@ class FighterRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncKey(fighterId))) {
                     return@runCatching
                 }
-
                 val fighterDto = remoteDataSource.fetchFighterById(fighterId)
                 dao.insertFighter(fighterDto.toEntity())
-
-                rateLimiter.markAsFetched(syncKey(fighterId))
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncKey(fighterId))

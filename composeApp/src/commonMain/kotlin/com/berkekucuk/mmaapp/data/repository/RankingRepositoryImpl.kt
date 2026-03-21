@@ -50,15 +50,11 @@ class RankingRepositoryImpl(
                 if (!rateLimiter.shouldFetch(KEY_SYNC_RANKINGS)) {
                     return@runCatching
                 }
-
                 val rankingDtos = remoteDataSource.fetchRankings()
                 val entities = rankingDtos.map { it.toEntity() }
-
                 if (entities.isNotEmpty()) {
                     dao.insertRankings(entities)
                 }
-
-                rateLimiter.markAsFetched(KEY_SYNC_RANKINGS)
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(KEY_SYNC_RANKINGS)

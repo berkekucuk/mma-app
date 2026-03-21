@@ -95,7 +95,7 @@ class HomeViewModel(
 
     private fun syncEvents() {
         viewModelScope.launch {
-            eventRepository.syncEvents()
+            eventRepository.initializeEvents()
         }
     }
 
@@ -116,7 +116,7 @@ class HomeViewModel(
         selectedYearFlow.value = year
 
         viewModelScope.launch {
-            eventRepository.getEventsByYear(year)
+            eventRepository.syncEventsByYear(year)
                 .onSuccess {
                     _state.update { it.copy(isYearLoading = false) }
                 }
@@ -129,7 +129,7 @@ class HomeViewModel(
     private fun onRefreshUpcomingTab() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingUpcomingTab = true) }
-            eventRepository.refreshEvents()
+            eventRepository.refreshPendingEvents()
                 .onSuccess {
                     _state.update { it.copy(isRefreshingUpcomingTab = false) }
                 }
@@ -143,7 +143,7 @@ class HomeViewModel(
         val selectedYear = _state.value.selectedYear ?: dateTimeProvider.currentYear
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingCompletedTab = true) }
-            eventRepository.getEventsByYear(selectedYear, forceRefresh = true)
+            eventRepository.syncEventsByYear(selectedYear, forceRefresh = true)
                 .onSuccess {
                     _state.update { it.copy(isRefreshingCompletedTab = false) }
                 }

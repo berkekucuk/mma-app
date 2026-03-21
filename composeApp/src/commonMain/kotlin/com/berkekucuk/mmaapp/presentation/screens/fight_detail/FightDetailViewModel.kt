@@ -24,7 +24,7 @@ class FightDetailViewModel(
     private val eventId: String = route.eventId
     private val fightId: String = route.fightId
     private val fighterId: String? = route.fighterId
-
+    val cameFromEvent: Boolean = fighterId == null
     private val _state = MutableStateFlow(FightDetailUiState())
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
@@ -76,7 +76,13 @@ class FightDetailViewModel(
 
     fun onAction(action: FightDetailUiAction) {
         when (action) {
-            is FightDetailUiAction.OnFighterClicked -> navigateTo(FightDetailNavigationEvent.ToFighterDetail(action.fighterId))
+            is FightDetailUiAction.OnFighterClicked -> {
+                if (action.fighterId == fighterId) {
+                    navigateTo(FightDetailNavigationEvent.Back)
+                } else {
+                    navigateTo(FightDetailNavigationEvent.ToFighterDetail(action.fighterId))
+                }
+            }
             is FightDetailUiAction.OnBackClicked -> navigateTo(FightDetailNavigationEvent.Back)
             is FightDetailUiAction.OnRefresh -> onRefresh()
             is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))

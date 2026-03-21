@@ -7,8 +7,8 @@ interface EventRepository {
     fun getUpcomingEvents(): Flow<List<Event>>
     fun getCompletedEventsByYear(year: Int): Flow<List<Event>>
     fun getEventById(eventId: String): Flow<Event>
-    suspend fun syncEvents(): Result<Unit>
-    suspend fun refreshEvents(): Result<Unit>
+    suspend fun initializeEvents(): Result<Unit>
+    suspend fun refreshPendingEvents(): Result<Unit>
     suspend fun refreshEventById(eventId: String): Result<Unit>
-    suspend fun getEventsByYear(year: Int, forceRefresh: Boolean = false): Result<Unit>
+    suspend fun syncEventsByYear(year: Int, forceRefresh: Boolean = false): Result<Unit>
 }

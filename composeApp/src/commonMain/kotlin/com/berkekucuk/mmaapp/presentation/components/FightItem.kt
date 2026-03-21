@@ -28,6 +28,8 @@ fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    onRedCornerClick: (() -> Unit)? = null,
+    onBlueCornerClick: (() -> Unit)? = null,
 ) {
     val redCorner = fight.redCorner
     val blueCorner = fight.blueCorner
@@ -97,6 +99,7 @@ fun FightItem(
                     record = redRecord,
                     alignment = Alignment.Start,
                     modifier = Modifier.weight(1f),
+                    onClick = onRedCornerClick,
                 )
 
                 Box(
@@ -119,6 +122,7 @@ fun FightItem(
                     record = blueRecord,
                     alignment = Alignment.End,
                     modifier = Modifier.weight(1f),
+                    onClick = onBlueCornerClick,
                 )
             }
 
