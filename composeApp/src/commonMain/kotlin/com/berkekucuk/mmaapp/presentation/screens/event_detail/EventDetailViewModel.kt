@@ -30,8 +30,10 @@ class EventDetailViewModel(
 
     init {
         observeEvent()
-        viewModelScope.launch {
-            eventRepository.refreshEventById(eventId)
+        if (route.fromFightDetail) {
+            viewModelScope.launch {
+                eventRepository.refreshEventById(eventId)
+            }
         }
     }
 

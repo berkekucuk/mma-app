@@ -96,7 +96,7 @@ fun App() {
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
                     onNavigateToEventDetail = { eventId ->
-                        rootNavController.navigate(Route.EventDetail(eventId))
+                        rootNavController.navigate(Route.EventDetail(eventId, fromFightDetail = true))
                     },
                     onBackClick = { rootNavController.navigateUp() }
                 )
