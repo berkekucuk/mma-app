@@ -24,12 +24,6 @@ class RateLimiter(
         }
     }
 
-    suspend fun markAsFetched(key: String) {
-        mutex.withLock {
-            timestamps[key] = dateTimeProvider.now.toEpochMilliseconds()
-        }
-    }
-
     suspend fun reset(key: String) {
         mutex.withLock {
             timestamps.remove(key)
