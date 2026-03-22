@@ -18,7 +18,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+<<<<<<< Updated upstream
 import androidx.compose.material3.Text
+=======
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+>>>>>>> Stashed changes
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -281,6 +288,7 @@ fun FightDetailScreen(
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier
                             .fillMaxWidth()
+<<<<<<< Updated upstream
                             .clickable {
                                 val eventId = state.fight?.eventId
                                 if (!eventId.isNullOrBlank())
@@ -303,6 +311,87 @@ fun FightDetailScreen(
                         blueCorner = state.fight?.blueCorner,
                         eventDate = state.eventDate,
                     )
+=======
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(AppColors.fightItemBackground),
+                    ) {
+                        if (fight != null) {
+                            FightItem(
+                                fight = fight,
+                                modifier = Modifier.height(108.dp),
+                                onRedCornerClick = onRedCornerClick,
+                                onBlueCornerClick = onBlueCornerClick,
+                            )
+                        }
+                    }
+                }
+
+                item(contentType = "TabRow") {
+                    TabRow(
+                        selectedTabIndex = state.selectedTab,
+                        containerColor = AppColors.fightItemBackground,
+                        contentColor = AppColors.textPrimary,
+                        indicator = { tabPositions ->
+                            if (state.selectedTab < tabPositions.size) {
+                                androidx.compose.material3.TabRowDefaults.SecondaryIndicator(
+                                    modifier = with(androidx.compose.material3.TabRowDefaults) {
+                                        Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[state.selectedTab])
+                                    },
+                                    color = AppColors.ufcRed
+                                )
+                            }
+                        }
+                    ) {
+                        Tab(
+                            selected = state.selectedTab == 0,
+                            onClick = { onAction(FightDetailUiAction.OnTabSelected(0)) },
+                            text = { Text("Details") },
+                        )
+                        Tab(
+                            selected = state.selectedTab == 1,
+                            onClick = { onAction(FightDetailUiAction.OnTabSelected(1)) },
+                            text = { Text("Comparison") },
+                        )
+                    }
+                }
+
+                when (state.selectedTab) {
+                    0 -> {
+                        item(contentType = "FightDetailContainer") {
+                            FightDetailContainer(
+                                redCorner = fight?.redCorner,
+                                blueCorner = fight?.blueCorner,
+                                eventDate = state.eventDate,
+                            )
+                        }
+                        if (hasMetaInfo) {
+                            item(contentType = "FightMetaCard") {
+                                FightMetaCard(fight = fight)
+                            }
+                        }
+                        if (!eventId.isNullOrBlank() && displayTitle != null) {
+                            item(contentType = "EventLink") {
+                                EventLinkRow(
+                                    eventName = displayTitle,
+                                    isBackNavigation = cameFromEvent,
+                                    onClick = onEventLinkClick,
+                                )
+                            }
+                        }
+                    }
+                    1 -> {
+                        if (fight != null) {
+                            item(contentType = "RadarChart") {
+                                FighterRadarChart(
+                                    redCorner = fight.redCorner,
+                                    blueCorner = fight.blueCorner,
+                                    redFighterFull = state.redFighterFull,
+                                    blueFighterFull = state.blueFighterFull,
+                                )
+                            }
+                        }
+                    }
+>>>>>>> Stashed changes
                 }
             }
         }
