@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.app
 
 import kotlinx.serialization.Serializable
+
 sealed interface Route {
     @Serializable data object MainGraph : Route
     @Serializable data object Home : Route
@@ -12,4 +13,5 @@ sealed interface Route {
     @Serializable data class FighterDetail(val fighterId: String) : Route
     @Serializable data class RankingDetail(val weightClassId: String, val weightClassName: String) : Route
     @Serializable data object FighterSearch : Route
+    @Serializable data object Settings : Route
 }

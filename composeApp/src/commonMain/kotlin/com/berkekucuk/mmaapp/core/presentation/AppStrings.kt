@@ -1,9 +1,5 @@
 package com.berkekucuk.mmaapp.core.presentation
 
-import androidx.compose.runtime.compositionLocalOf
-
-val LocalAppStrings = compositionLocalOf { EnStrings }
-
 data class AppStrings(
     val language: AppLanguage,
     // Home Screen
@@ -108,7 +104,14 @@ data class AppStrings(
     val fighterSearchEmpty: String,
     // Common Errors
     val errorNetwork: String,
+    val errorNetwork2: String,
     val errorUnknown: String,
+    val retry: String,
+    // Settings Screen
+    val settingsTitle: String,
+    val settingsSectionLanguage: String,
+    val settingsSectionMeasurements: String,
+    val settingsSectionOdds: String,
     // Bottom Nav
     val navFights: String,
     val navRankings: String,

@@ -15,13 +15,20 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.EnStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
+import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.OddsFormat
 import com.berkekucuk.mmaapp.core.presentation.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
+import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
+import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
 import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
 import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 
@@ -37,7 +44,27 @@ fun App() {
     val language by languageState
     val strings = if (language == AppLanguage.EN) EnStrings else TrStrings
 
-    CompositionLocalProvider(LocalAppStrings provides strings) {
+    val measurementUnitStorage: MeasurementUnitStorage = koinInject()
+    val measurementUnitState = remember {
+        mutableStateOf(
+            try { MeasurementUnit.valueOf(measurementUnitStorage.load()) } catch (_: Exception) { MeasurementUnit.METRIC }
+        )
+    }
+    val measurementUnit by measurementUnitState
+
+    val oddsFormatStorage: OddsFormatStorage = koinInject()
+    val oddsFormatState = remember {
+        mutableStateOf(
+            try { OddsFormat.valueOf(oddsFormatStorage.load()) } catch (_: Exception) { OddsFormat.DECIMAL }
+        )
+    }
+    val oddsFormat by oddsFormatState
+
+    CompositionLocalProvider(
+        LocalAppStrings provides strings,
+        LocalMeasurementUnit provides measurementUnit,
+        LocalOddsFormat provides oddsFormat,
+    ) {
         NavHost(
             navController = rootNavController,
             startDestination = Route.MainGraph,
@@ -64,9 +91,8 @@ fun App() {
                     onNavigateToFighterSearch = {
                         rootNavController.navigate(Route.FighterSearch)
                     },
-                    onLanguageChange = {
-                        languageState.value = it
-                        languageStorage.save(it.name)
+                    onNavigateToSettings = {
+                        rootNavController.navigate(Route.Settings)
                     },
                 )
             }
@@ -152,6 +178,29 @@ fun App() {
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
                     onBackClick = { rootNavController.navigateUp() }
+                )
+            }
+
+            composable<Route.Settings>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) {
+                SettingsScreen(
+                    onBackClick = { rootNavController.navigateUp() },
+                    onLanguageChange = {
+                        languageState.value = it
+                        languageStorage.save(it.name)
+                    },
+                    onMeasurementUnitChange = {
+                        measurementUnitState.value = it
+                        measurementUnitStorage.save(it.name)
+                    },
+                    onOddsFormatChange = {
+                        oddsFormatState.value = it
+                        oddsFormatStorage.save(it.name)
+                    },
                 )
             }
         }
