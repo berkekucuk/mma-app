@@ -19,13 +19,13 @@ fun FighterHistoryContainer(
     fighter: Fighter,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onAction: (FighterDetailUiAction) -> Unit,
+    onFightClicked: (eventId: String, fightId: String) -> Unit,
     extraBottomPadding: Dp = 0.dp,
 ) {
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        contentPadding = PaddingValues(top = 10.dp),
+        contentPadding = PaddingValues(top = 8.dp),
         verticalSpacing = 0.dp,
         extraBottomPadding = extraBottomPadding,
     ) {
@@ -41,14 +41,7 @@ fun FighterHistoryContainer(
                     FightHistoryRow(
                         fight = fight,
                         fighterId = fighterId,
-                        onClick = {
-                            onAction(
-                                FighterDetailUiAction.OnFightClicked(
-                                    eventId = fight.eventId,
-                                    fightId = fight.fightId,
-                                )
-                            )
-                        }
+                        onClick = { onFightClicked(fight.eventId, fight.fightId) }
                     )
                     if (index < fights.lastIndex) {
                         HorizontalDivider(

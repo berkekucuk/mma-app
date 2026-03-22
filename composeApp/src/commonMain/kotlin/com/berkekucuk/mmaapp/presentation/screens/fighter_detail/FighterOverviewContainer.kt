@@ -35,8 +35,8 @@ fun FighterOverviewContainer(
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        contentPadding = PaddingValues(top = 10.dp),
-        verticalSpacing = 10.dp,
+        contentPadding = PaddingValues(top = 8.dp),
+        verticalSpacing = 8.dp,
         extraBottomPadding = extraBottomPadding,
     ) {
         item(key = "record_card") {
