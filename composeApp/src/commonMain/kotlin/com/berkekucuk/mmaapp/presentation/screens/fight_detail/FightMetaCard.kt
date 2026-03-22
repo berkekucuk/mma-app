@@ -32,7 +32,7 @@ fun FightMetaCard(
 
     val stats = buildList {
         if (fight.roundsFormat.isNotBlank()) add(MetaStat(fight.roundsFormat, strings.fightDetailLabelRoundsFormat))
-        if (fight.roundSummary.isNotBlank()) add(MetaStat(fight.roundSummary.replace("\n", " "), strings.fightDetailLabelRoundSummary))
+        if (fight.roundSummary.isNotBlank()) add(MetaStat(fight.roundSummary.trim().replace(Regex("\\s+"), " | "), strings.fightDetailLabelRoundSummary))
         fight.weightClassLbs?.let { add(MetaStat("$it lbs", strings.fighterDetailLabelWeightClass)) }
     }
 
