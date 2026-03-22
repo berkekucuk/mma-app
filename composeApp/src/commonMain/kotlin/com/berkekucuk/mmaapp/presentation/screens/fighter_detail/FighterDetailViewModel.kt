@@ -20,10 +20,8 @@ class FighterDetailViewModel(
 
     private val route = savedStateHandle.toRoute<Route.FighterDetail>()
     private val fighterId: String = route.fighterId
-
     private val _state = MutableStateFlow(FighterDetailUiState())
     val state = _state.asStateFlow()
-
     private val _navigation = MutableSharedFlow<FighterDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 
@@ -36,11 +34,9 @@ class FighterDetailViewModel(
         viewModelScope.launch {
             repository.getFighterById(fighterId)
                 .collect { fighter ->
-                    _state.update { it ->
+                    _state.update {
                         it.copy(
-                            fighter = fighter.copy(
-                                fights = fighter.fights.filter { it.boutType != "cancelled" && it.boutType != "fizzled" }
-                            ),
+                            fighter = fighter,
                             isLoading = false
                         )
                     }
