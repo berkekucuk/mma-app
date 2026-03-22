@@ -7,11 +7,7 @@ data class Measurement(
     val metric: Int?,
     val imperial: String?
 ) {
-    val displayValue: String
-        get() = imperial ?: metric?.toString() ?: ""
-
     companion object {
         val EMPTY = Measurement(metric = null, imperial = null)
     }
 }
-

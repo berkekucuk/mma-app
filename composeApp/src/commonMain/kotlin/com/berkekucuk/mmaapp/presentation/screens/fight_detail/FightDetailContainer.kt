@@ -19,8 +19,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
+import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.OddsFormat
+import com.berkekucuk.mmaapp.core.presentation.toAmericanOdds
+import com.berkekucuk.mmaapp.core.presentation.toDecimalOdds
+import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
 import com.berkekucuk.mmaapp.domain.model.Participant
 import kotlin.time.Instant
 
@@ -42,15 +48,37 @@ fun FightDetailContainer(
     }
 
     val strings = LocalAppStrings.current
+    val measurementUnit = LocalMeasurementUnit.current
+    val oddsFormat = LocalOddsFormat.current
     val showRecord = redCorner?.recordAfterFight != null || blueCorner?.recordAfterFight != null
     val rows = buildList {
         add(Triple(redFighterAge, strings.fightDetailLabelAge, blueFighterAge))
-        add(Triple(redFighter?.height?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelHeight, blueFighter?.height?.metric?.let { strings.heightCm(it.toString()) }))
-        add(Triple(redFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }, strings.fightDetailLabelReach, blueFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }))
         add(Triple(
-            redCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it" },
+            when (measurementUnit) {
+                MeasurementUnit.METRIC -> redFighter?.height?.metric?.let { strings.heightCm(it.toString()) }
+                MeasurementUnit.IMPERIAL -> redFighter?.height?.imperial?.ifBlank { null }
+            },
+            strings.fightDetailLabelHeight,
+            when (measurementUnit) {
+                MeasurementUnit.METRIC -> blueFighter?.height?.metric?.let { strings.heightCm(it.toString()) }
+                MeasurementUnit.IMPERIAL -> blueFighter?.height?.imperial?.ifBlank { null }
+            },
+        ))
+        add(Triple(
+            when (measurementUnit) {
+                MeasurementUnit.METRIC -> redFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }
+                MeasurementUnit.IMPERIAL -> redFighter?.reach?.imperial?.ifBlank { null }
+            },
+            strings.fightDetailLabelReach,
+            when (measurementUnit) {
+                MeasurementUnit.METRIC -> blueFighter?.reach?.metric?.let { strings.heightCm(it.toString()) }
+                MeasurementUnit.IMPERIAL -> blueFighter?.reach?.imperial?.ifBlank { null }
+            },
+        ))
+        add(Triple(
+            redCorner?.oddsValue?.let { if (oddsFormat == OddsFormat.DECIMAL) it.toDecimalOdds() else it.toAmericanOdds() },
             strings.fightDetailLabelOdds,
-            blueCorner?.oddsValue?.let { val sign = if (it >= 0) "+" else ""; "$sign$it" },
+            blueCorner?.oddsValue?.let { if (oddsFormat == OddsFormat.DECIMAL) it.toDecimalOdds() else it.toAmericanOdds() },
         ))
         if (showRecord) {
             add(Triple(redCorner?.recordAfterFight?.toString(), strings.fightDetailLabelRecord, blueCorner?.recordAfterFight?.toString()))

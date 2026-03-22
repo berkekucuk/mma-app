@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.domain.model.Fighter
 
 @Composable
@@ -28,13 +30,20 @@ fun FighterInfoCard(
     weightClassDisplay: String,
 ) {
     val strings = LocalAppStrings.current
+    val measurementUnit = LocalMeasurementUnit.current
     val unavailable = strings.fighterDetailValueUnavailable
     val rows = buildList {
         add(Pair(strings.fighterDetailLabelWeightClass, weightClassDisplay.ifEmpty { unavailable }))
         add(Pair(strings.fighterDetailLabelDateOfBirth, formattedDob ?: unavailable))
         add(Pair(strings.fighterDetailLabelAge, age ?: unavailable))
-        add(Pair(strings.fighterDetailLabelHeight, fighter.height?.metric?.let { strings.heightCm(it.toString()) } ?: unavailable))
-        add(Pair(strings.fighterDetailLabelReach, fighter.reach?.metric?.let { strings.heightCm(it.toString()) } ?: unavailable))
+        add(Pair(strings.fighterDetailLabelHeight, when (measurementUnit) {
+            MeasurementUnit.METRIC -> fighter.height.metric?.let { strings.heightCm(it.toString()) } ?: unavailable
+            MeasurementUnit.IMPERIAL -> fighter.height.imperial?.ifBlank { null } ?: unavailable
+        }))
+        add(Pair(strings.fighterDetailLabelReach, when (measurementUnit) {
+            MeasurementUnit.METRIC -> fighter.reach.metric?.let { strings.heightCm(it.toString()) } ?: unavailable
+            MeasurementUnit.IMPERIAL -> fighter.reach.imperial?.ifBlank { null } ?: unavailable
+        }))
         add(Pair(strings.fighterDetailLabelBorn, fighter.born?.ifBlank { null } ?: unavailable))
         add(Pair(strings.fighterDetailLabelFightingOutOf, fighter.fightingOutOf?.ifBlank { null } ?: unavailable))
     }

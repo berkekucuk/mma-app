@@ -34,10 +34,11 @@ fun FightHistoryRow(
     fighterId: String,
     onClick: () -> Unit,
 ) {
+    val strings = LocalAppStrings.current
+    val dateStrings = rememberLocalizedDateStrings()
     val fighter = fight.participants.find { it.fighter.fighterId == fighterId }
     val opponent = fight.participants.find { it.fighter.fighterId != fighterId }
     val opponentFighter = opponent?.fighter
-
     val result = fighter?.result
 
     val badgeColor = when (result) {
@@ -58,8 +59,6 @@ fun FightHistoryRow(
         else -> AppColors.cardBorder
     }
 
-    val strings = LocalAppStrings.current
-    val dateStrings = rememberLocalizedDateStrings()
     val resultLetter = when (result) {
         Result.WIN -> strings.fighterDetailResultWin
         Result.LOSS -> strings.fighterDetailResultLoss
@@ -93,7 +92,7 @@ fun FightHistoryRow(
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
-                if (methodAbbr != null) {
+                if (methodAbbr != null && result != Result.DRAW && result != Result.NO_CONTEST) {
                     Text(
                         text = methodAbbr,
                         color = badgeScriptColor,

@@ -6,4 +6,10 @@ data class FighterDetailUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val fighter: Fighter? = null,
+    val error: FighterDetailError? = null,
 )
+
+enum class FighterDetailError {
+    NETWORK_ERROR,
+    UNKNOWN_ERROR,
+}

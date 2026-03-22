@@ -20,7 +20,6 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import androidx.compose.animation.EnterTransition
@@ -32,7 +31,7 @@ fun MainScreenWrapper(
     onNavigateToRankingDetail: (String, String) -> Unit,
     onNavigateToProfileEdit: () -> Unit,
     onNavigateToFighterSearch: () -> Unit,
-    onLanguageChange: (AppLanguage) -> Unit,
+    onNavigateToSettings: () -> Unit,
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -113,7 +112,7 @@ fun MainScreenWrapper(
                 HomeScreenRoot(
                     onNavigateToEventDetail = onNavigateToEventDetail,
                     onNavigateToFighterSearch = onNavigateToFighterSearch,
-                    onLanguageChange = onLanguageChange,
+                    onNavigateToSettings = onNavigateToSettings,
                 )
             }
 

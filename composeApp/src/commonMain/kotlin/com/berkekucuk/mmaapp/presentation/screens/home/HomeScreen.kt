@@ -9,10 +9,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,20 +23,15 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.width
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -49,7 +42,7 @@ fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToFighterSearch: () -> Unit,
-    onLanguageChange: (AppLanguage) -> Unit,
+    onNavigateToSettings: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -65,7 +58,7 @@ fun HomeScreenRoot(
     HomeScreen(
         state = uiState,
         onAction = viewModel::onAction,
-        onLanguageChange = onLanguageChange,
+        onNavigateToSettings = onNavigateToSettings,
     )
 }
 
@@ -74,16 +67,14 @@ fun HomeScreenRoot(
 fun HomeScreen(
     state: HomeUiState,
     onAction: (HomeUiAction) -> Unit,
-    onLanguageChange: (AppLanguage) -> Unit,
+    onNavigateToSettings: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
-    val currentLanguage = strings.language
     val tabs = listOf(strings.tabUpcoming, strings.tabCompleted)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    var menuExpanded by remember { mutableStateOf(false) }
 
     val onSearchClicked = remember(onAction) { { onAction(HomeUiAction.OnSearchClicked) } }
     val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
@@ -120,44 +111,11 @@ fun HomeScreen(
                                 tint = AppColors.textPrimary,
                             )
                         }
-                        IconButton(onClick = { menuExpanded = true }) {
+                        IconButton(onClick = onNavigateToSettings) {
                             Icon(
-                                imageVector = Icons.Default.MoreVert,
+                                imageVector = Icons.Default.Settings,
                                 contentDescription = null,
                                 tint = AppColors.textPrimary,
-                            )
-                        }
-                        DropdownMenu(
-                            expanded = menuExpanded,
-                            onDismissRequest = { menuExpanded = false },
-                            containerColor = AppColors.dropdownMenuBackground,
-                            modifier = Modifier.width(IntrinsicSize.Min),
-                        ) {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = "English",
-                                        color = if (currentLanguage == AppLanguage.EN) AppColors.ufcRed else AppColors.textPrimary,
-                                        fontWeight = if (currentLanguage == AppLanguage.EN) FontWeight.Bold else FontWeight.Normal,
-                                    )
-                                },
-                                onClick = {
-                                    onLanguageChange(AppLanguage.EN)
-                                    menuExpanded = false
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = "Türkçe",
-                                        color = if (currentLanguage == AppLanguage.TR) AppColors.ufcRed else AppColors.textPrimary,
-                                        fontWeight = if (currentLanguage == AppLanguage.TR) FontWeight.Bold else FontWeight.Normal,
-                                    )
-                                },
-                                onClick = {
-                                    onLanguageChange(AppLanguage.TR)
-                                    menuExpanded = false
-                                },
                             )
                         }
                     },

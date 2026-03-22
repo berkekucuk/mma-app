@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,10 +21,8 @@ class FighterDetailViewModel(
 
     private val route = savedStateHandle.toRoute<Route.FighterDetail>()
     private val fighterId: String = route.fighterId
-
     private val _state = MutableStateFlow(FighterDetailUiState())
     val state = _state.asStateFlow()
-
     private val _navigation = MutableSharedFlow<FighterDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 
@@ -36,11 +35,9 @@ class FighterDetailViewModel(
         viewModelScope.launch {
             repository.getFighterById(fighterId)
                 .collect { fighter ->
-                    _state.update { it ->
+                    _state.update {
                         it.copy(
-                            fighter = fighter.copy(
-                                fights = fighter.fights.filter { it.boutType != "cancelled" && it.boutType != "fizzled" }
-                            ),
+                            fighter = fighter,
                             isLoading = false
                         )
                     }
@@ -50,13 +47,27 @@ class FighterDetailViewModel(
 
     private fun syncFighter(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = isRefreshing) }
+            _state.update { current ->
+                if (isRefreshing && current.fighter == null) {
+                    current.copy(isLoading = true, error = null)
+                } else {
+                    current.copy(isRefreshing = isRefreshing, error = null)
+                }
+            }
             repository.syncFighter(fighterId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isRefreshing = false) }
+                .onFailure { e ->
+                    _state.update { current ->
+                        val errorType = if (current.fighter == null) {
+                            when (e) {
+                                is PostgrestRestException -> FighterDetailError.UNKNOWN_ERROR
+                                else -> FighterDetailError.NETWORK_ERROR
+                            }
+                        } else null
+                        current.copy(isLoading = false, isRefreshing = false, error = errorType)
+                    }
                 }
         }
     }

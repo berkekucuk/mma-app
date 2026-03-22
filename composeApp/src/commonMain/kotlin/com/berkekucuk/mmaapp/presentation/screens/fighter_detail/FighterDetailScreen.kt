@@ -4,10 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -27,9 +30,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
@@ -65,17 +70,32 @@ fun FighterDetailScreen(
     state: FighterDetailUiState,
     onAction: (FighterDetailUiAction) -> Unit,
 ) {
-
     val strings = LocalAppStrings.current
     val tabs = listOf(strings.tabOverview, strings.tabFights)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
-
     val onBackClick = remember(onAction) { { onAction(FighterDetailUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(FighterDetailUiAction.OnRefresh) } }
-
+    val onFightClicked = remember(onAction) { { eventId: String, fightId: String -> onAction(FighterDetailUiAction.OnFightClicked(eventId, fightId)) } }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(state.error) {
+        state.error?.let { error ->
+            val message = when (error) {
+                FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
+                FighterDetailError.UNKNOWN_ERROR -> strings.errorUnknown
+            }
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = strings.retry,
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                onRefresh()
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -83,6 +103,18 @@ fun FighterDetailScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = navBarBottomPadding),
+                snackbar = { snackbarData ->
+                    AppErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.fighterBarBackground)
@@ -150,7 +182,7 @@ fun FighterDetailScreen(
                             fighter = fighter,
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
-                            onAction = onAction,
+                            onFightClicked = onFightClicked,
                             extraBottomPadding = navBarBottomPadding,
                         )
                     }
