@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.ui.Alignment
-import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ErrorBox
+import com.berkekucuk.mmaapp.presentation.components.ErrorBox
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
