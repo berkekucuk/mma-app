@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,7 @@ import com.berkekucuk.mmaapp.domain.model.Fight
 fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = AppColors.fightItemBackground,
     onClick: (() -> Unit)? = null,
     onRedCornerClick: (() -> Unit)? = null,
     onBlueCornerClick: (() -> Unit)? = null,
@@ -63,7 +65,7 @@ fun FightItem(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .background(AppColors.fightItemBackground)
+            .background(backgroundColor)
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .padding(10.dp)
     ) {

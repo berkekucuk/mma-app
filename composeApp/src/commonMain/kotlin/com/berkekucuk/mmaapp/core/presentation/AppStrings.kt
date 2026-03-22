@@ -25,6 +25,9 @@ data class AppStrings(
     val tabPrelims: String,
     val emptyMainCardFights: String,
     val emptyPrelimFights: String,
+    // Fight Detail Screen Tabs
+    val tabFightDetails: String,
+    val tabFightComparison: String,
     // Fight Detail Screen
     val fightDetailLabelName: String,
     val fightDetailLabelAge: String,
@@ -38,6 +41,13 @@ data class AppStrings(
     val fightDetailLabelMethod: String,
     val fightDetailLabelRoundSummary: String,
     val heightCm: (String) -> String,
+    // Radar Chart
+    val radarLabelHeight: String,
+    val radarLabelReach: String,
+    val radarLabelOdds: String,
+    val radarLabelWinRate: String,
+    val radarLabelKoTkoRate: String,
+    val radarLabelSubRate: String,
     // Fight Result Card
     val fightResultDefeats: (String, String) -> String,
     val fightResultDraw: String,

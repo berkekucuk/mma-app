@@ -32,7 +32,6 @@ class EventSupabaseAPI(
                 fight_order,
                 participants(
                     odds_value,
-                    odds_label,
                     result,
                     record_after_fight,
                     is_red_corner,
@@ -44,7 +43,6 @@ class EventSupabaseAPI(
                         height,
                         reach,
                         date_of_birth,
-                        fighting_out_of,
                         country_code
                     )
                 )

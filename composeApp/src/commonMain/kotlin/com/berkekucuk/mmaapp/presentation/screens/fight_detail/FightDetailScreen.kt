@@ -6,23 +6,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -30,14 +29,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -77,9 +78,30 @@ fun FightDetailScreen(
     onAction: (FightDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val tabs = listOf(strings.tabFightDetails, strings.tabFightComparison)
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val coroutineScope = rememberCoroutineScope()
     val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
+    val onRetry = remember(onAction) { { onAction(FightDetailUiAction.OnRetry) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(state.error) {
+        state.error?.let { error ->
+            val message = when (error) {
+                FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
+                FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
+            }
+            val result = snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = strings.retry,
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                onRetry()
+            }
+        }
+    }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val eventId = state.fight?.eventId
     val displayTitle = state.eventName ?: state.fight?.eventName
@@ -111,6 +133,18 @@ fun FightDetailScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = navBarBottomPadding),
+                snackbar = { snackbarData ->
+                    AppErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(modifier = Modifier.background(AppColors.eventDetailTopBarGradient)) {
                 TopAppBar(
@@ -140,6 +174,21 @@ fun FightDetailScreen(
                     ),
                     scrollBehavior = scrollBehavior,
                 )
+                if (fight != null) {
+                    FightItem(
+                        fight = fight,
+                        modifier = Modifier.height(108.dp),
+                        backgroundColor = Color.Transparent,
+                        onRedCornerClick = onRedCornerClick,
+                        onBlueCornerClick = onBlueCornerClick,
+                    )
+                }
+                AppTabRow(
+                    tabs = tabs,
+                    pagerState = pagerState,
+                    coroutineScope = coroutineScope,
+                    containerColor = Color.Transparent,
+                )
             }
         },
     ) { innerPadding ->
@@ -149,73 +198,27 @@ fun FightDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            ListContainer(
-                isRefreshing = state.isRefreshing,
-                onRefresh = onRefresh,
-                contentPadding = PaddingValues(top = 8.dp),
-                verticalSpacing = 8.dp,
-                extraBottomPadding = navBarBottomPadding,
-            ) {
-                item(contentType = "FightCard") {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(AppColors.fightItemBackground),
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(AppColors.pagerBackground),
+                beyondViewportPageCount = 1,
+            ) { page ->
+                when (page) {
+                    0 -> ListContainer(
+                        isRefreshing = state.isRefreshing,
+                        onRefresh = onRefresh,
+                        contentPadding = PaddingValues(top = 8.dp),
+                        verticalSpacing = 8.dp,
+                        extraBottomPadding = navBarBottomPadding,
                     ) {
-                        if (fight != null) {
-                            FightItem(
-                                fight = fight,
-                                modifier = Modifier.height(108.dp),
-                                onRedCornerClick = onRedCornerClick,
-                                onBlueCornerClick = onBlueCornerClick,
-                            )
-                        }
-                    }
-                }
-
-                item(contentType = "TabRow") {
-                    TabRow(
-                        selectedTabIndex = state.selectedTab,
-                        containerColor = AppColors.fightItemBackground,
-                        contentColor = AppColors.textPrimary,
-                        indicator = { tabPositions ->
-                            if (state.selectedTab < tabPositions.size) {
-                                androidx.compose.material3.TabRowDefaults.SecondaryIndicator(
-                                    modifier = with(androidx.compose.material3.TabRowDefaults) {
-                                        Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[state.selectedTab])
-                                    },
-                                    color = AppColors.ufcRed
-                                )
-                            }
-                        }
-                    ) {
-                        Tab(
-                            selected = state.selectedTab == 0,
-                            onClick = { onAction(FightDetailUiAction.OnTabSelected(0)) },
-                            text = { Text("Details") },
-                        )
-                        Tab(
-                            selected = state.selectedTab == 1,
-                            onClick = { onAction(FightDetailUiAction.OnTabSelected(1)) },
-                            text = { Text("Comparison") },
-                        )
-                    }
-                }
-
-                when (state.selectedTab) {
-                    0 -> {
                         item(contentType = "FightDetailContainer") {
                             FightDetailContainer(
                                 redCorner = fight?.redCorner,
                                 blueCorner = fight?.blueCorner,
                                 eventDate = state.eventDate,
                             )
-                        }
-                        state.fight?.takeIf { it.hasDisplayableResult() }?.let { f ->
-                            item(contentType = "FightResultCard") {
-                                FightResultCard(fight = f)
-                            }
                         }
                         if (hasMetaInfo) {
                             item(contentType = "FightMetaCard") {
@@ -232,14 +235,20 @@ fun FightDetailScreen(
                             }
                         }
                     }
-                    1 -> {
+                    1 -> ListContainer(
+                        isRefreshing = state.isRefreshing,
+                        onRefresh = onRefresh,
+                        contentPadding = PaddingValues(top = 8.dp),
+                        verticalSpacing = 8.dp,
+                        extraBottomPadding = navBarBottomPadding,
+                    ) {
                         if (fight != null) {
                             item(contentType = "RadarChart") {
                                 FighterRadarChart(
                                     redCorner = fight.redCorner,
                                     blueCorner = fight.blueCorner,
-                                    redFighterFull = state.redFighterFull,
-                                    blueFighterFull = state.blueFighterFull,
+                                    redFighterFull = state.redFighter,
+                                    blueFighterFull = state.blueFighter,
                                 )
                             }
                         }
