@@ -10,6 +10,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
@@ -42,13 +42,13 @@ import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onNavigateToEventDetail: (String) -> Unit,
+    onNavigateToFighterSearch: () -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -57,6 +57,7 @@ fun HomeScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is HomeNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
+                is HomeNavigationEvent.ToFighterSearch -> onNavigateToFighterSearch()
             }
         }
     }
@@ -84,6 +85,7 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     var menuExpanded by remember { mutableStateOf(false) }
 
+    val onSearchClicked = remember(onAction) { { onAction(HomeUiAction.OnSearchClicked) } }
     val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
     val onRefreshCompletedTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshCompletedTab) } }
     val onEventClicked = remember(onAction) { { eventId: String -> onAction(HomeUiAction.OnEventClicked(eventId)) } }
@@ -111,6 +113,13 @@ fun HomeScreen(
                         )
                     },
                     actions = {
+                        IconButton(onClick = onSearchClicked) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = AppColors.textPrimary,
+                            )
+                        }
                         IconButton(onClick = { menuExpanded = true }) {
                             Icon(
                                 imageVector = Icons.Default.MoreVert,

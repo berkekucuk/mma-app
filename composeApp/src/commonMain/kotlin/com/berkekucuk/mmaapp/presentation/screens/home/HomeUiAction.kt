@@ -5,4 +5,5 @@ sealed interface HomeUiAction {
     data class OnYearSelected(val year: Int) : HomeUiAction
     data object OnRefreshUpcomingTab : HomeUiAction
     data object OnRefreshCompletedTab : HomeUiAction
+    data object OnSearchClicked : HomeUiAction
 }

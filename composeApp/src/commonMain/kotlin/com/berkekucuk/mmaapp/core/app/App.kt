@@ -21,6 +21,7 @@ import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 
@@ -60,6 +61,9 @@ fun App() {
                     onNavigateToProfileEdit = {
                         rootNavController.navigate(Route.ProfileEdit)
                     },
+                    onNavigateToFighterSearch = {
+                        rootNavController.navigate(Route.FighterSearch)
+                    },
                     onLanguageChange = {
                         languageState.value = it
                         languageStorage.save(it.name)
@@ -92,7 +96,7 @@ fun App() {
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
                     onNavigateToEventDetail = { eventId ->
-                        rootNavController.navigate(Route.EventDetail(eventId))
+                        rootNavController.navigate(Route.EventDetail(eventId, fromFightDetail = true))
                     },
                     onBackClick = { rootNavController.navigateUp() }
                 )
@@ -134,6 +138,20 @@ fun App() {
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     }
+                )
+            }
+
+            composable<Route.FighterSearch>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) {
+                FighterSearchScreenRoot(
+                    onNavigateToFighterDetail = { fighterId ->
+                        rootNavController.navigate(Route.FighterDetail(fighterId))
+                    },
+                    onBackClick = { rootNavController.navigateUp() }
                 )
             }
         }
