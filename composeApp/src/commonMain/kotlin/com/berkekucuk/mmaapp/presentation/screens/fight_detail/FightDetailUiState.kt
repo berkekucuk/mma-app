@@ -10,7 +10,12 @@ data class FightDetailUiState(
     val eventDate: Instant? = null,
     val fight: Fight? = null,
     val eventName: String? = null,
-    val redFighterFull: Fighter? = null,
-    val blueFighterFull: Fighter? = null,
-    val selectedTab: Int = 0
+    val redFighter: Fighter? = null,
+    val blueFighter: Fighter? = null,
+    val error: FightDetailError? = null,
 )
+
+enum class FightDetailError {
+    NETWORK_ERROR,
+    UNKNOWN_ERROR
+}

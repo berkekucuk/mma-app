@@ -8,6 +8,8 @@ import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.model.Fight
+import com.berkekucuk.mmaapp.domain.model.Fighter
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -84,17 +86,22 @@ class FightDetailViewModel(
     private fun loadFighterProfiles(fight: Fight) {
         val redId = fight.redCorner?.fighter?.fighterId ?: return
         val blueId = fight.blueCorner?.fighter?.fighterId ?: return
+        _state.update { it.copy(error = null) }
+        syncFighterProfile(redId) { fighter -> _state.update { it.copy(redFighter = fighter) } }
+        syncFighterProfile(blueId) { fighter -> _state.update { it.copy(blueFighter = fighter) } }
+    }
+
+    private fun syncFighterProfile(fighterId: String, onUpdate: (Fighter) -> Unit) {
         viewModelScope.launch {
-            fighterRepository.syncFighter(redId)
-            fighterRepository.getFighterById(redId).collect { fighter ->
-                _state.update { it.copy(redFighterFull = fighter) }
-            }
-        }
-        viewModelScope.launch {
-            fighterRepository.syncFighter(blueId)
-            fighterRepository.getFighterById(blueId).collect { fighter ->
-                _state.update { it.copy(blueFighterFull = fighter) }
-            }
+            fighterRepository.syncFighter(fighterId)
+                .onFailure { e ->
+                    val errorType = when (e) {
+                        is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
+                        else -> FightDetailError.NETWORK_ERROR
+                    }
+                    _state.update { it.copy(error = errorType) }
+                }
+            fighterRepository.getFighterById(fighterId).collect(onUpdate)
         }
     }
 
@@ -109,10 +116,11 @@ class FightDetailViewModel(
             }
             is FightDetailUiAction.OnBackClicked -> navigateTo(FightDetailNavigationEvent.Back)
             is FightDetailUiAction.OnRefresh -> onRefresh()
-            is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))
-            is FightDetailUiAction.OnTabSelected -> { 
-                _state.update { it.copy(selectedTab = action.tabIndex)}
+            is FightDetailUiAction.OnRetry -> {
+                val fight = _state.value.fight ?: return
+                loadFighterProfiles(fight)
             }
+            is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))
         }
     }
 
