@@ -20,6 +20,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -168,29 +171,78 @@ fun FightDetailScreen(
                                 onBlueCornerClick = onBlueCornerClick,
                             )
                         }
-                        HorizontalDivider(
-                            color = AppColors.dividerColor,
-                            thickness = 0.8.dp,
+                    }
+                }
+
+                item(contentType = "TabRow") {
+                    TabRow(
+                        selectedTabIndex = state.selectedTab,
+                        containerColor = AppColors.fightItemBackground,
+                        contentColor = AppColors.textPrimary,
+                        indicator = { tabPositions ->
+                            if (state.selectedTab < tabPositions.size) {
+                                androidx.compose.material3.TabRowDefaults.SecondaryIndicator(
+                                    modifier = with(androidx.compose.material3.TabRowDefaults) {
+                                        Modifier.tabIndicatorOffset(currentTabPosition = tabPositions[state.selectedTab])
+                                    },
+                                    color = AppColors.ufcRed
+                                )
+                            }
+                        }
+                    ) {
+                        Tab(
+                            selected = state.selectedTab == 0,
+                            onClick = { onAction(FightDetailUiAction.OnTabSelected(0)) },
+                            text = { Text("Details") },
                         )
-                        FightDetailContainer(
-                            redCorner = fight?.redCorner,
-                            blueCorner = fight?.blueCorner,
-                            eventDate = state.eventDate,
+                        Tab(
+                            selected = state.selectedTab == 1,
+                            onClick = { onAction(FightDetailUiAction.OnTabSelected(1)) },
+                            text = { Text("Comparison") },
                         )
                     }
                 }
-                if (hasMetaInfo) {
-                    item(contentType = "FightMetaCard") {
-                        FightMetaCard(fight = fight)
+
+                when (state.selectedTab) {
+                    0 -> {
+                        item(contentType = "FightDetailContainer") {
+                            FightDetailContainer(
+                                redCorner = fight?.redCorner,
+                                blueCorner = fight?.blueCorner,
+                                eventDate = state.eventDate,
+                            )
+                        }
+                        state.fight?.takeIf { it.hasDisplayableResult() }?.let { f ->
+                            item(contentType = "FightResultCard") {
+                                FightResultCard(fight = f)
+                            }
+                        }
+                        if (hasMetaInfo) {
+                            item(contentType = "FightMetaCard") {
+                                FightMetaCard(fight = fight)
+                            }
+                        }
+                        if (!eventId.isNullOrBlank() && displayTitle != null) {
+                            item(contentType = "EventLink") {
+                                EventLinkRow(
+                                    eventName = displayTitle,
+                                    isBackNavigation = cameFromEvent,
+                                    onClick = onEventLinkClick,
+                                )
+                            }
+                        }
                     }
-                }
-                if (!eventId.isNullOrBlank() && displayTitle != null) {
-                    item(contentType = "EventLink") {
-                        EventLinkRow(
-                            eventName = displayTitle,
-                            isBackNavigation = cameFromEvent,
-                            onClick = onEventLinkClick,
-                        )
+                    1 -> {
+                        if (fight != null) {
+                            item(contentType = "RadarChart") {
+                                FighterRadarChart(
+                                    redCorner = fight.redCorner,
+                                    blueCorner = fight.blueCorner,
+                                    redFighterFull = state.redFighterFull,
+                                    blueFighterFull = state.blueFighterFull,
+                                )
+                            }
+                        }
                     }
                 }
             }
