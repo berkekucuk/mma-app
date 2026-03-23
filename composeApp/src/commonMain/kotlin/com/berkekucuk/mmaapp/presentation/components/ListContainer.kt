@@ -23,7 +23,6 @@ fun ListContainer(
     listState: LazyListState = rememberLazyListState(),
     contentPadding: PaddingValues,
     verticalSpacing: Dp = 12.dp,
-    userScrollEnabled: Boolean = true,
     extraBottomPadding: Dp = 0.dp,
     content: LazyListScope.() -> Unit
 ) {
@@ -42,7 +41,6 @@ fun ListContainer(
                 bottom = contentPadding.calculateBottomPadding() + 16.dp + extraBottomPadding
             ),
             verticalArrangement = Arrangement.spacedBy(verticalSpacing),
-            userScrollEnabled = userScrollEnabled,
             content = content
         )
     }

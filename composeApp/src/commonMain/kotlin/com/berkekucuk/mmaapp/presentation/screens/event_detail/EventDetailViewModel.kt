@@ -5,16 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
-import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class EventDetailViewModel(
     private val eventRepository: EventRepository,
@@ -31,9 +29,7 @@ class EventDetailViewModel(
     init {
         observeEvent()
         if (route.fromFightDetail) {
-            viewModelScope.launch {
-                eventRepository.refreshEventById(eventId)
-            }
+            syncEvent()
         }
     }
 
@@ -41,38 +37,13 @@ class EventDetailViewModel(
         viewModelScope.launch {
             eventRepository.getEventById(eventId)
                 .collect { event ->
-                _state.update {
-                    it.copy(
-                        event = event,
-                        isLoading = false
-                    )
+                    _state.update {
+                        it.copy(
+                            event = event,
+                            isLoading = false,
+                        )
+                    }
                 }
-                processAndSetFights(event.fights)
-            }
-        }
-    }
-
-    private suspend fun processAndSetFights(fights: List<Fight>) {
-        val (mainCard, prelims) = withContext(Dispatchers.Default) {
-             val main = fights.filter { fight ->
-                fight.boutType.contains("Main Card", ignoreCase = true) ||
-                        fight.boutType.contains("Main Event", ignoreCase = true) ||
-                        fight.boutType.contains("Co-Main", ignoreCase = true)
-            }.sortedByDescending { it.fightOrder }
-
-             val pre = fights.filter { fight ->
-                fight.boutType.contains("Prelim", ignoreCase = true)
-            }.sortedByDescending { it.fightOrder }
-
-            main to pre
-        }
-
-        _state.update {
-            it.copy(
-                allFights = fights,
-                mainCardFights = mainCard,
-                prelimFights = prelims,
-            )
         }
     }
 
@@ -80,19 +51,33 @@ class EventDetailViewModel(
         when(action){
             is EventDetailUiAction.OnFightClicked -> navigateTo(EventDetailNavigationEvent.ToFightDetail(eventId, action.fightId))
             is EventDetailUiAction.OnBackClicked -> navigateTo(EventDetailNavigationEvent.Back)
-            is EventDetailUiAction.OnRefresh -> onRefresh()
+            is EventDetailUiAction.OnRefresh -> syncEvent(isRefreshing = true)
         }
     }
 
-    private fun onRefresh() {
+    private fun syncEvent(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true) }
-            eventRepository.refreshEventById(eventId = eventId)
+            _state.update { current ->
+                if (isRefreshing && current.event == null) {
+                    current.copy(isLoading = true, error = null)
+                } else {
+                    current.copy(isRefreshing = isRefreshing, error = null)
+                }
+            }
+            eventRepository.refreshEventById(eventId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isRefreshing = false) }
+                .onFailure { e ->
+                    _state.update { current ->
+                        val errorType = if (current.event == null) {
+                            when (e) {
+                                is PostgrestRestException -> EventDetailError.UNKNOWN_ERROR
+                                else -> EventDetailError.NETWORK_ERROR
+                            }
+                        } else null
+                        current.copy(isLoading = false, isRefreshing = false, error = errorType)
+                    }
                 }
         }
     }

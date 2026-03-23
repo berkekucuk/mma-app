@@ -7,9 +7,9 @@ import kotlin.time.Instant
 data class FightDetailUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
+    val eventName: String? = null,
     val eventDate: Instant? = null,
     val fight: Fight? = null,
-    val eventName: String? = null,
     val redFighter: Fighter? = null,
     val blueFighter: Fighter? = null,
     val error: FightDetailError? = null,
