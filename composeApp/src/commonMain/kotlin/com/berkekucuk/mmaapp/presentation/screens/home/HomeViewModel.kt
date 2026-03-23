@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
+import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -26,11 +29,9 @@ class HomeViewModel(
     val navigation = _navigation.asSharedFlow()
     private var isMinSplashTimePassed = false
     private var isDataReady = false
-    private val selectedYearFlow = MutableStateFlow(0)
 
     init {
         val currentYear = dateTimeProvider.currentYear
-        selectedYearFlow.value = currentYear
         _state.update {
             it.copy(
                 selectedYear = currentYear,
@@ -58,8 +59,7 @@ class HomeViewModel(
     private fun observeUpcomingEvents() {
         viewModelScope.launch {
             eventRepository.getUpcomingEvents()
-                .catch { error ->
-                    println("Error observing upcoming events: $error")
+                .catch {
                     isDataReady = true
                     checkLoadingState()
                 }
@@ -74,19 +74,17 @@ class HomeViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeCompletedEvents() {
         viewModelScope.launch {
-            selectedYearFlow
+            _state
+                .map { it.selectedYear }
+                .distinctUntilChanged()
                 .flatMapLatest { year ->
                     eventRepository.getCompletedEventsByYear(year)
-                }
-                .catch { error ->
-                    println("Error observing completed events: $error")
                 }
                 .collect { events ->
                     _state.update { state ->
                         state.copy(
                             completedEvents = events,
-                            isYearLoading = if (state.isYearLoading && events.isNotEmpty()) false
-                                            else state.isYearLoading,
+                            isYearLoading = if (state.isYearLoading && events.isNotEmpty()) false else state.isYearLoading,
                         )
                     }
                 }
@@ -96,6 +94,12 @@ class HomeViewModel(
     private fun syncEvents() {
         viewModelScope.launch {
             eventRepository.initializeEvents()
+                .onFailure { e ->
+                    if (_state.value.upcomingEvents.isEmpty()) {
+                        val error = if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
+                        _state.update { it.copy(error = error) }
+                    }
+                }
         }
     }
 
@@ -111,17 +115,18 @@ class HomeViewModel(
 
     private fun onYearSelected(year: Int) {
         if (_state.value.selectedYear == year) return
-
-        _state.update { it.copy(selectedYear = year, isYearLoading = true) }
-        selectedYearFlow.value = year
-
+        _state.update { it.copy(selectedYear = year, isYearLoading = true, error = null)}
         viewModelScope.launch {
             eventRepository.syncEventsByYear(year)
                 .onSuccess {
                     _state.update { it.copy(isYearLoading = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isYearLoading = false) }
+                .onFailure { e ->
+                    val isSynced = eventRepository.isYearSynced(year)
+                    val errorType = if (!isSynced) {
+                        if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
+                    } else null
+                    _state.update { it.copy(isYearLoading = false, error = errorType) }
                 }
         }
     }
@@ -129,7 +134,7 @@ class HomeViewModel(
     private fun onRefreshUpcomingTab() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingUpcomingTab = true) }
-            eventRepository.refreshPendingEvents()
+            eventRepository.syncPendingEvents()
                 .onSuccess {
                     _state.update { it.copy(isRefreshingUpcomingTab = false) }
                 }
@@ -140,12 +145,12 @@ class HomeViewModel(
     }
 
     private fun onRefreshCompletedTab() {
-        val selectedYear = _state.value.selectedYear ?: dateTimeProvider.currentYear
+        val selectedYear = _state.value.selectedYear
         viewModelScope.launch {
             _state.update { it.copy(isRefreshingCompletedTab = true) }
             eventRepository.syncEventsByYear(selectedYear, forceRefresh = true)
                 .onSuccess {
-                    _state.update { it.copy(isRefreshingCompletedTab = false) }
+                    _state.update { it.copy(isRefreshingCompletedTab = false, error = null) }
                 }
                 .onFailure {
                     _state.update { it.copy(isRefreshingCompletedTab = false) }

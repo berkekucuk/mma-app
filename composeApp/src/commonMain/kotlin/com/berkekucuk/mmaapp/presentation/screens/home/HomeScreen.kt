@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,8 +35,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
+import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,9 +77,12 @@ fun HomeScreen(
     val strings = LocalAppStrings.current
     val tabs = listOf(strings.tabUpcoming, strings.tabCompleted)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val coroutineScope = rememberCoroutineScope()
     val upcomingListState = rememberLazyListState()
     val completedListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
 
     val onSearchClicked = remember(onAction) { { onAction(HomeUiAction.OnSearchClicked) } }
     val onRefreshUpcomingTab = remember(onAction) { { onAction(HomeUiAction.OnRefreshUpcomingTab) } }
@@ -82,7 +90,17 @@ fun HomeScreen(
     val onEventClicked = remember(onAction) { { eventId: String -> onAction(HomeUiAction.OnEventClicked(eventId)) } }
     val onYearSelected = remember(onAction) { { year: Int -> onAction(HomeUiAction.OnYearSelected(year)) } }
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val errorMessage = when (state.error) {
+        HomeError.NETWORK_ERROR -> strings.errorNetwork2
+        HomeError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> ""
+    }
+    ErrorSnackbarEffect(
+        error = state.error,
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        onRetry = onRefreshCompletedTab,
+    )
 
     Scaffold(
         modifier = Modifier
@@ -90,6 +108,17 @@ fun HomeScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { snackbarData ->
+                    AppErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.eventsTopBarGradient)

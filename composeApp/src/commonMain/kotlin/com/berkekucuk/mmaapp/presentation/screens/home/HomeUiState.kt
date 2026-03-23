@@ -7,9 +7,15 @@ data class HomeUiState(
     val isYearLoading: Boolean = false,
     val isRefreshingUpcomingTab: Boolean = false,
     val isRefreshingCompletedTab: Boolean = false,
-    val selectedYear: Int? = null,
+    val selectedYear: Int = 0,
     val availableYears: List<Int> = emptyList(),
     val upcomingEvents: List<Event> = emptyList(),
-    val completedEvents: List<Event> = emptyList()
+    val completedEvents: List<Event> = emptyList(),
+    val error: HomeError? = null,
 )
+
+enum class HomeError {
+    NETWORK_ERROR,
+    UNKNOWN_ERROR,
+}
 

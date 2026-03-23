@@ -136,7 +136,7 @@ class FightDetailViewModel(
             if (fighterId != null) {
                 fighterRepository.syncFighter(fighterId)
             } else {
-                eventRepository.refreshEventById(eventId = eventId)
+                eventRepository.syncEventById(eventId = eventId)
             }.onSuccess {
                 _state.update { it.copy(isRefreshing = false) }
             }.onFailure {
