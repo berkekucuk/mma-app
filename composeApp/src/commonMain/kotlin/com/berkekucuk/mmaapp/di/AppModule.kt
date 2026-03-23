@@ -69,14 +69,6 @@ val appModule = module {
         )
     }
 
-    // apollo client
-//    single {
-//        ApolloClientFactory.create(
-//            url = BuildConfig.APPSYNC_API_URL,
-//            apiKey = BuildConfig.APPSYNC_API_KEY
-//        )
-//    }
-
     // local db
     single<AppDatabase> {
         getRoomDatabase(get())

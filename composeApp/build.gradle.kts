@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.buildConfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
-    alias(libs.plugins.apollo)
 }
 
 kotlin {
@@ -63,8 +62,6 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
-
-                implementation(libs.apollo.runtime)
             }
         }
 
@@ -139,7 +136,7 @@ android {
 }
 
 val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
+val localPropertiesFile: File = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
@@ -151,11 +148,6 @@ buildConfig {
     val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
     buildConfigField("String", "SUPABASE_URL", "\"$url\"")
     buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
-
-//    val appsyncUrl = localProperties.getProperty("APPSYNC_API_URL") ?: ""
-//    val appsyncKey = localProperties.getProperty("APPSYNC_API_KEY") ?: ""
-//    buildConfigField("String", "APPSYNC_API_URL", "\"$appsyncUrl\"")
-//    buildConfigField("String", "APPSYNC_API_KEY", "\"$appsyncKey\"")
 
     val googleClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
     buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
@@ -171,10 +163,4 @@ dependencies {
 
 room {
     schemaDirectory("$projectDir/schemas")
-}
-
-apollo {
-    service("service") {
-        packageName.set("com.berkekucuk.mmaapp.graphql")
-    }
 }

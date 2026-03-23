@@ -6,18 +6,6 @@ import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.Measurement
 import com.berkekucuk.mmaapp.domain.model.Participant
 import com.berkekucuk.mmaapp.domain.model.Record
-import com.berkekucuk.mmaapp.graphql.GetEventsQuery
-
-fun GetEventsQuery.Participant.toDto(): ParticipantDto {
-    return ParticipantDto(
-        oddsValue = odds_value?.toIntOrNull(),
-        oddsLabel = odds_label,
-        result = result,
-        recordAfterFight = record_after_fight?.toDto(),
-        isRedCorner = is_red_corner,
-        fighter = fighters?.toDto()
-    )
-}
 
 fun ParticipantDto.toDomain(): Participant {
     return Participant(
