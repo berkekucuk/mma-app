@@ -64,7 +64,7 @@ class EventDetailViewModel(
                     current.copy(isRefreshing = isRefreshing, error = null)
                 }
             }
-            eventRepository.refreshEventById(eventId)
+            eventRepository.syncEventById(eventId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }

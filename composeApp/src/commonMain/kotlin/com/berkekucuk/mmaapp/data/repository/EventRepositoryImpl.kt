@@ -11,8 +11,6 @@ import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
@@ -58,34 +56,16 @@ class EventRepositoryImpl(
 
     override suspend fun initializeEvents(): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            runCatching {
-                val currentYear = dateTimeProvider.currentYear
-                if (needsInitialSync(currentYear, forceRefresh = false)) {
-                    populateInitialEvents()
-                } else {
-                    syncPendingEvents()
-                }
-            }.onFailure {
-                if (it is CancellationException) throw it
-            }
-        }
-    }
-
-    override suspend fun refreshPendingEvents(): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                if (!rateLimiter.shouldFetch(KEY_REFRESH_PENDING_EVENTS)) {
-                    return@runCatching
-                }
+            val currentYear = dateTimeProvider.currentYear
+            if (needsInitialSync(currentYear)) {
+                syncEventsByYear(currentYear)
+            } else {
                 syncPendingEvents()
-            }.onFailure {
-                if (it is CancellationException) throw it
-                rateLimiter.reset(KEY_REFRESH_PENDING_EVENTS)
             }
         }
     }
 
-    override suspend fun refreshEventById(eventId: String): Result<Unit> {
+    override suspend fun syncEventById(eventId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             val refreshKey = getRefreshEventKey(eventId)
             runCatching {
@@ -121,40 +101,27 @@ class EventRepositoryImpl(
         }
     }
 
-    private suspend fun needsInitialSync(year: Int, forceRefresh: Boolean): Boolean {
-        if (forceRefresh) return true
-        return !dao.hasEventsForYear(year)
+    override suspend fun isYearSynced(year: Int): Boolean {
+        return withContext(Dispatchers.IO) { dao.isYearFullySynced(year) }
     }
 
-    private suspend fun populateInitialEvents() {
-        val currentYear = dateTimeProvider.currentYear
-        val currentMonth = dateTimeProvider.currentMonth
-
-        val yearsToSync = if (currentMonth <= 6) {
-            listOf(currentYear - 1, currentYear)
-        } else {
-            listOf(currentYear, currentYear + 1)
-        }
-
-        coroutineScope {
-            yearsToSync.map { year ->
-                async {
-                    val events = remoteDataSource.fetchEventsByYear(year)
-                    if (events.isNotEmpty()) {
-                        dao.insertEvents(events.map { it.toEntity() })
-                    }
+    override suspend fun syncPendingEvents(): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                if (!rateLimiter.shouldFetch(KEY_REFRESH_PENDING_EVENTS)) return@runCatching
+                val syncAfterDate = dao.getOldestPendingEventDate() ?: dateTimeProvider.now
+                val events = remoteDataSource.fetchEventsAfter(syncAfterDate)
+                if (events.isNotEmpty()) {
+                    dao.insertEvents(events.map { it.toEntity() })
                 }
-            }.forEach { it.await() }
+            }.onFailure {
+                if (it is CancellationException) throw it
+                rateLimiter.reset(KEY_REFRESH_PENDING_EVENTS)
+            }
         }
     }
 
-    private suspend fun syncPendingEvents() {
-        val syncAfterDate = dao.getOldestPendingEventDate() ?: dateTimeProvider.now
-
-        val events = remoteDataSource.fetchEventsAfter(syncAfterDate)
-
-        if (events.isNotEmpty()) {
-            dao.insertEvents(events.map { it.toEntity() })
-        }
+    private suspend fun needsInitialSync(year: Int): Boolean {
+        return !dao.hasEventsForYear(year)
     }
 }
