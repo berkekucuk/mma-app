@@ -126,7 +126,7 @@ fun FighterDetailScreen(
                                 imageUrl = fighter.imageUrl,
                                 name = fighter.name,
                                 countryCode = fighter.countryCode,
-                                nickname = fighter.nickname ?: " ",
+                                nickname = fighter.nickname,
                             )
                         }
                     },
