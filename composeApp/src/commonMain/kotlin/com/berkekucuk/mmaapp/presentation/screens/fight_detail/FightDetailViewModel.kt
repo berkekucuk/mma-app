@@ -71,36 +71,42 @@ class FightDetailViewModel(
                     _state.update {
                         it.copy(
                             fight = fight,
+                            eventName = fight?.eventName,
                             eventDate = fight?.eventDate,
                             isLoading = false,
-                            eventName = fight?.eventName
                         )
                     }
                     if (fight != null) {
-                        loadFighterProfiles(fight)
+                        loadFighterProfiles(fight, knownFighterId = fighterId)
                     }
                 }
         }
     }
 
-    private fun loadFighterProfiles(fight: Fight) {
+    private fun loadFighterProfiles(fight: Fight, knownFighterId: String? = null) {
         val redId = fight.redCorner?.fighter?.fighterId ?: return
         val blueId = fight.blueCorner?.fighter?.fighterId ?: return
         _state.update { it.copy(error = null) }
-        syncFighterProfile(redId) { fighter -> _state.update { it.copy(redFighter = fighter) } }
-        syncFighterProfile(blueId) { fighter -> _state.update { it.copy(blueFighter = fighter) } }
+        loadFighter(redId, sync = redId != knownFighterId) { fighter ->
+            _state.update { it.copy(redFighter = fighter) }
+        }
+        loadFighter(blueId, sync = blueId != knownFighterId) {
+            fighter -> _state.update { it.copy(blueFighter = fighter) }
+        }
     }
 
-    private fun syncFighterProfile(fighterId: String, onUpdate: (Fighter) -> Unit) {
+    private fun loadFighter(fighterId: String, sync: Boolean, onUpdate: (Fighter) -> Unit) {
         viewModelScope.launch {
-            fighterRepository.syncFighter(fighterId)
-                .onFailure { e ->
+            if (sync) {
+                fighterRepository.syncFighter(fighterId)
+                    .onFailure { e ->
                     val errorType = when (e) {
                         is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
                         else -> FightDetailError.NETWORK_ERROR
                     }
                     _state.update { it.copy(error = errorType) }
                 }
+            }
             fighterRepository.getFighterById(fighterId).collect(onUpdate)
         }
     }
