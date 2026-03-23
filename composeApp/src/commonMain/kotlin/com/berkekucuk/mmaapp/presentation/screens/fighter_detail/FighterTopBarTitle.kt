@@ -38,13 +38,15 @@ fun FighterTopBarTitle(
                 style = MaterialTheme.typography.titleLarge,
                 color = AppColors.textPrimary,
             )
-            Text(
-                text = if (showQuotes) "\"$nickname\"" else nickname.orEmpty(),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyMedium,
-                color = AppColors.textSecondary,
-            )
+            if (!nickname.isNullOrBlank()) {
+                Text(
+                    text = if (showQuotes) "\"$nickname\"" else nickname,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = AppColors.textSecondary,
+                )
+            }
         }
     }
 }
