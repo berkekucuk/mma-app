@@ -21,7 +21,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -38,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
@@ -78,39 +78,26 @@ fun FightDetailScreen(
     onAction: (FightDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
-    val tabs = listOf(strings.tabFightDetails, strings.tabFightComparison)
-    val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val coroutineScope = rememberCoroutineScope()
-    val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
-    val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
-    val onRetry = remember(onAction) { { onAction(FightDetailUiAction.OnRetry) } }
-    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(state.error) {
-        state.error?.let { error ->
-            val message = when (error) {
-                FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
-                FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-            }
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = strings.retry,
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                onRetry()
-            }
-        }
-    }
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val eventId = state.fight?.eventId
     val displayTitle = state.eventName ?: state.fight?.eventName
     val fight = state.fight
     val hasMetaInfo = fight != null && (
-        fight.roundsFormat.isNotBlank() ||
-        fight.roundSummary.isNotBlank() ||
-        fight.weightClassLbs != null
-    )
+            fight.roundsFormat.isNotBlank() ||
+            fight.roundSummary.isNotBlank() ||
+                    fight.weightClassLbs != null
+            )
+
+    val tabs = listOf(strings.tabFightDetails, strings.tabFightComparison)
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val coroutineScope = rememberCoroutineScope()
+
+    val onRetry = remember(onAction) { { onAction(FightDetailUiAction.OnRetry) } }
+    val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
+    val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
     val onRedCornerClick = remember(onAction, fight) {
         fight?.redCorner?.fighter?.fighterId?.let { id -> { onAction(FightDetailUiAction.OnFighterClicked(id)) } }
     }
@@ -126,6 +113,18 @@ fun FightDetailScreen(
             }
         }
     }
+
+    val errorMessage = when (state.error) {
+        FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
+        FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> ""
+    }
+    ErrorSnackbarEffect(
+        error = state.error,
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        onRetry = onRetry,
+    )
 
     Scaffold(
         modifier = Modifier
