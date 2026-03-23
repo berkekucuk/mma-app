@@ -61,7 +61,6 @@ class EventRepositoryImpl(
                 syncEventsByYear(currentYear)
             } else {
                 syncPendingEvents()
-                Result.success(Unit)
             }
         }
     }

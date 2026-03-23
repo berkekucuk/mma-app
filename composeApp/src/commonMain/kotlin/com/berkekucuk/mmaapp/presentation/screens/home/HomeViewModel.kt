@@ -95,9 +95,9 @@ class HomeViewModel(
         viewModelScope.launch {
             eventRepository.initializeEvents()
                 .onFailure { e ->
-                    if (_state.value.upcomingEvents.isEmpty()) {
-                        val error = if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
-                        _state.update { it.copy(error = error) }
+                    if (isDataReady && _state.value.upcomingEvents.isEmpty()) {
+                        val errorType = if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
+                        _state.update { it.copy(error = errorType) }
                     }
                 }
         }
