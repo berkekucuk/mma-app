@@ -70,7 +70,7 @@ fun EventInfoCard(
                 modifier = Modifier.size(14.dp)
             )
             Text(
-                text = venueAndLocation ?: strings.toBeAnnounced,
+                text = venueAndLocation ?: strings.tba,
                 color = AppColors.dateColor,
                 fontSize = 12.sp,
                 maxLines = 1,

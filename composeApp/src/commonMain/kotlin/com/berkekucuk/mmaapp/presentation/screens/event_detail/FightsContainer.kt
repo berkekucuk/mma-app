@@ -43,7 +43,6 @@ fun FightsContainer(
         listState = listState,
         contentPadding = PaddingValues(top = 8.dp),
         verticalSpacing = 0.dp,
-        userScrollEnabled = fights.isNotEmpty(),
         extraBottomPadding = extraBottomPadding,
     ) {
         item(contentType = "EventHeader") {

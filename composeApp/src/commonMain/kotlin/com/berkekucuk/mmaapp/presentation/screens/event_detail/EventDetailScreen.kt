@@ -17,6 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -30,16 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
+import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -72,16 +77,7 @@ fun EventDetailScreen(
     onAction: (EventDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
-    val tabs = listOf(strings.tabMainCard, strings.tabPrelims)
-    val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val mainCardListState = rememberLazyListState()
-    val prelimsListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    val onRefresh = remember(onAction) { { onAction(EventDetailUiAction.OnRefresh) } }
-    val onFightClick = remember(onAction) { { fightId: String -> onAction(EventDetailUiAction.OnFightClicked(fightId)) } }
-    val onBackClick = remember(onAction) { { onAction(EventDetailUiAction.OnBackClicked) } }
-
+    val dateStrings = rememberLocalizedDateStrings()
     val eventTitleLine = remember(state.event?.name) {
         (state.event?.name ?: "").split(":", limit = 2)[0].trim()
     }
@@ -89,9 +85,31 @@ fun EventDetailScreen(
         (state.event?.name ?: "").split(":", limit = 2).getOrNull(1)?.trim()
     }
 
-    val dateStrings = rememberLocalizedDateStrings()
-    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val tabs = listOf(strings.tabMainCard, strings.tabPrelims)
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val coroutineScope = rememberCoroutineScope()
+    val mainCardListState = rememberLazyListState()
+    val prelimsListState = rememberLazyListState()
+
+    val onFightClick = remember(onAction) { { fightId: String -> onAction(EventDetailUiAction.OnFightClicked(fightId)) } }
+    val onRefresh = remember(onAction) { { onAction(EventDetailUiAction.OnRefresh) } }
+    val onBackClick = remember(onAction) { { onAction(EventDetailUiAction.OnBackClicked) } }
+
+    val errorMessage = when (state.error) {
+        EventDetailError.NETWORK_ERROR -> strings.errorNetwork2
+        EventDetailError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> ""
+    }
+    ErrorSnackbarEffect(
+        error = state.error,
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        onRetry = onRefresh,
+    )
 
     Scaffold(
         modifier = Modifier
@@ -99,6 +117,18 @@ fun EventDetailScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = navBarBottomPadding),
+                snackbar = { snackbarData ->
+                    AppErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.eventDetailTopBarGradient)
@@ -165,7 +195,7 @@ fun EventDetailScreen(
             ) { page ->
                 when (page) {
                     0 -> FightsContainer(
-                        fights = state.mainCardFights,
+                        fights = state.event?.mainCardFights ?: emptyList(),
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onFightClick = onFightClick,
@@ -176,7 +206,7 @@ fun EventDetailScreen(
                         extraBottomPadding = navBarBottomPadding,
                     )
                     1 -> FightsContainer(
-                        fights = state.prelimFights,
+                        fights = state.event?.prelimFights ?: emptyList(),
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onFightClick = onFightClick,

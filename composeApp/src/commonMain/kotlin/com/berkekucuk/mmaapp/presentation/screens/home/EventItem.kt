@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,7 +33,7 @@ fun EventItem(
     event: Event,
     onClick: (String) -> Unit
 ) {
-    val mainEvent = event.mainEvent
+    val mainFight = event.mainFight
     val strings = LocalAppStrings.current
     val dateStrings = rememberLocalizedDateStrings()
 
@@ -75,9 +74,9 @@ fun EventItem(
                 )
             }
 
-            if (mainEvent != null) {
+            if (mainFight != null) {
                 FightItem(
-                    fight = mainEvent,
+                    fight = mainFight,
                     modifier = Modifier.weight(1f)
                 )
             } else {
