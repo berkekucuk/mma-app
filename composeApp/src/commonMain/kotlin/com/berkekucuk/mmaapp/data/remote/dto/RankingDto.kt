@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RankingDto(
     @SerialName("weight_class_id") val weightClassId: String,
-    @SerialName("rank_number") val rankNumber: Int? = null,
+    @SerialName("rank_number") val rankNumber: Int,
     @SerialName("fighters") val fighter: FighterDto? = null,
-    @SerialName("weight_classes") val weightClass: WeightClassDto? = null
 )

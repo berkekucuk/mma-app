@@ -5,7 +5,6 @@ import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
 import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
 import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
-import com.berkekucuk.mmaapp.data.remote.dto.WeightClassDto
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
 
@@ -52,12 +51,6 @@ class Converters {
 
     @TypeConverter
     fun toFighter(value: String?): FighterDto? = decode(value)
-
-    @TypeConverter
-    fun fromWeightClass(value: WeightClassDto?): String? = encode(value)
-
-    @TypeConverter
-    fun toWeightClass(value: String?): WeightClassDto? = decode(value)
 
     @TypeConverter
     fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.fromEpochMilliseconds(it) }
