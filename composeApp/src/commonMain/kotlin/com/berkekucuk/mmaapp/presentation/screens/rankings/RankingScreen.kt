@@ -10,6 +10,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,12 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,11 +70,24 @@ fun RankingScreen(
     val mensListState = rememberLazyListState()
     val womensListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val onRefresh = remember(onAction) { { onAction(RankingUiAction.OnRefresh) } }
     val onWeightClassClicked = remember(onAction) { { weightClassId: String, weightClassName: String -> onAction(RankingUiAction.OnWeightClassClicked(weightClassId, weightClassName)) } }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+    val errorMessage = when (state.error) {
+        RankingError.NETWORK_ERROR -> strings.errorNetwork2
+        RankingError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> ""
+    }
+    ErrorSnackbarEffect(
+        error = state.error,
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        onRetry = onRefresh,
+    )
 
     Scaffold(
         modifier = Modifier
@@ -77,6 +95,17 @@ fun RankingScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = AppColors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                snackbar = { snackbarData ->
+                    AppErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(
                 modifier = Modifier.background(AppColors.rankingTopBarGradient)
