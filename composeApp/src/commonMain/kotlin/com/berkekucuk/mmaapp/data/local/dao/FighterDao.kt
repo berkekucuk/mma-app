@@ -15,4 +15,7 @@ interface FighterDao {
 
     @Query("SELECT * FROM fighters WHERE fighter_id = :fighterId")
     fun getFighterById(fighterId: String): Flow<FighterEntity?>
+
+    @Query("SELECT EXISTS(SELECT 1 FROM fighters WHERE fighter_id = :fighterId)")
+    suspend fun hasFighterById(fighterId: String): Boolean
 }

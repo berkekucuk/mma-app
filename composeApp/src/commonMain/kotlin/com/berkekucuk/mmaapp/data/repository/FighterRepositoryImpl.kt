@@ -48,6 +48,10 @@ class FighterRepositoryImpl(
         }
     }
 
+    override suspend fun hasFighterById(fighterId: String): Boolean {
+        return withContext(Dispatchers.IO) { dao.hasFighterById(fighterId) }
+    }
+
     override suspend fun searchFighters(query: String): Result<List<Fighter>> {
         return withContext(Dispatchers.IO) {
             runCatching {

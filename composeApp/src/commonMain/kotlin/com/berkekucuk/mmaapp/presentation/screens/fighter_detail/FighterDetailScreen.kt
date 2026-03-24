@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
@@ -36,6 +37,7 @@ import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -73,13 +75,15 @@ fun FighterDetailScreen(
     val strings = LocalAppStrings.current
     val tabs = listOf(strings.tabOverview, strings.tabFights)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
-    val coroutineScope = rememberCoroutineScope()
-    val onBackClick = remember(onAction) { { onAction(FighterDetailUiAction.OnBackClicked) } }
-    val onRefresh = remember(onAction) { { onAction(FighterDetailUiAction.OnRefresh) } }
-    val onFightClicked = remember(onAction) { { eventId: String, fightId: String -> onAction(FighterDetailUiAction.OnFightClicked(eventId, fightId)) } }
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+    val onFightClicked = remember(onAction) { { eventId: String, fightId: String -> onAction(FighterDetailUiAction.OnFightClicked(eventId, fightId)) } }
+    val onRefresh = remember(onAction) { { onAction(FighterDetailUiAction.OnRefresh) } }
+    val onBackClick = remember(onAction) { { onAction(FighterDetailUiAction.OnBackClicked) } }
 
     val errorMessage = when (state.error) {
         FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
@@ -117,14 +121,12 @@ fun FighterDetailScreen(
             ){
                 MediumTopAppBar(
                     title = {
-                        state.fighter?.let { fighter ->
-                            FighterTopBarTitle(
-                                imageUrl = fighter.imageUrl,
-                                name = fighter.name,
-                                countryCode = fighter.countryCode,
-                                nickname = fighter.nickname,
-                            )
-                        }
+                        FighterTopBarTitle(
+                            imageUrl = state.fighter?.imageUrl ?: "",
+                            name = state.fighter?.name ?: "",
+                            countryCode = state.fighter?.countryCode ?: "",
+                            nickname = state.fighter?.nickname,
+                        )
                     },
                     navigationIcon = {
                         IconButton(onClick = onBackClick) {
@@ -164,16 +166,24 @@ fun FighterDetailScreen(
                     .background(AppColors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
+                val fighter = state.fighter
                 when (page) {
-                    0 -> state.fighter?.let { fighter ->
+                    0 -> if (fighter != null) {
                         FighterOverviewContainer(
                             fighter = fighter,
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
                             extraBottomPadding = navBarBottomPadding,
                         )
+                    } else {
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(),
+                            extraBottomPadding = navBarBottomPadding,
+                        ) {}
                     }
-                    1 -> state.fighter?.let { fighter ->
+                    1 -> if (fighter != null) {
                         FighterHistoryContainer(
                             fighter = fighter,
                             isRefreshing = state.isRefreshing,
@@ -181,6 +191,13 @@ fun FighterDetailScreen(
                             onFightClicked = onFightClicked,
                             extraBottomPadding = navBarBottomPadding,
                         )
+                    } else {
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(),
+                            extraBottomPadding = navBarBottomPadding,
+                        ) {}
                     }
                 }
             }
