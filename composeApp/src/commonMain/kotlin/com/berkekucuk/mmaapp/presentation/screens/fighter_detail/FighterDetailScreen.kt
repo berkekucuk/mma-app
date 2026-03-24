@@ -19,7 +19,6 @@ import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -35,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
@@ -81,21 +81,17 @@ fun FighterDetailScreen(
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(state.error) {
-        state.error?.let { error ->
-            val message = when (error) {
-                FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
-                FighterDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-            }
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = strings.retry,
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                onRefresh()
-            }
-        }
+    val errorMessage = when (state.error) {
+        FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
+        FighterDetailError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> ""
     }
+    ErrorSnackbarEffect(
+        error = state.error,
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        onRetry = onRefresh,
+    )
 
     Scaffold(
         modifier = Modifier
