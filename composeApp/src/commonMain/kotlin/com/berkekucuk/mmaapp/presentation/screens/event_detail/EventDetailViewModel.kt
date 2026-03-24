@@ -57,27 +57,19 @@ class EventDetailViewModel(
 
     private fun syncEvent(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { current ->
-                if (isRefreshing && current.event == null) {
-                    current.copy(isLoading = true, error = null)
-                } else {
-                    current.copy(isRefreshing = isRefreshing, error = null)
-                }
-            }
+            _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
             eventRepository.syncEventById(eventId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    _state.update { current ->
-                        val errorType = if (current.event == null) {
-                            when (e) {
-                                is PostgrestRestException -> EventDetailError.UNKNOWN_ERROR
-                                else -> EventDetailError.NETWORK_ERROR
-                            }
-                        } else null
-                        current.copy(isLoading = false, isRefreshing = false, error = errorType)
-                    }
+                    val errorType = if (!eventRepository.hasEventById(eventId)) {
+                        when (e) {
+                            is PostgrestRestException -> EventDetailError.UNKNOWN_ERROR
+                            else -> EventDetailError.NETWORK_ERROR
+                        }
+                    } else null
+                    _state.update { it.copy(isRefreshing = false, isLoading = false, error = errorType) }
                 }
         }
     }

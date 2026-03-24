@@ -121,6 +121,10 @@ class EventRepositoryImpl(
         }
     }
 
+    override suspend fun hasEventById(eventId: String): Boolean {
+        return withContext(Dispatchers.IO) { dao.hasEventById(eventId) }
+    }
+
     private suspend fun needsInitialSync(year: Int): Boolean {
         return !dao.hasEventsForYear(year)
     }

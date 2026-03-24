@@ -37,4 +37,7 @@ interface EventDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM events WHERE event_year = :year)")
     suspend fun hasEventsForYear(year: Int): Boolean
+
+    @Query("SELECT EXISTS(SELECT 1 FROM events WHERE event_id = :eventId)")
+    suspend fun hasEventById(eventId: String): Boolean
 }
