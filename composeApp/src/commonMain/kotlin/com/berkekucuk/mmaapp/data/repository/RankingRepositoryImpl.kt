@@ -26,22 +26,24 @@ class RankingRepositoryImpl(
         private const val KEY_SYNC_RANKINGS = "sync_rankings"
     }
 
-    override fun getRankings(): Flow<List<Ranking>> {
+    override fun getRankings(weightClassId: String?): Flow<Map<String, List<Ranking>>> {
         return dao.getAllRankings()
             .map { entities ->
-                entities.map { it.toDomain() }
+                entities
+                    .let { if (weightClassId != null)
+                        it.filter {
+                        e -> e.weightClassId.equals(weightClassId, ignoreCase = true)
+                        } else it
+                    }
+                    .map { it.toDomain() }
+                    .groupBy { it.weightClassId }
             }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }
 
-    override fun getRankingsByWeightClass(weightClassId: String): Flow<List<Ranking>> {
-        return dao.getRankingsByWeightClass(weightClassId)
-            .map { entities ->
-                entities.map { it.toDomain() }
-            }
-            .distinctUntilChanged()
-            .flowOn(Dispatchers.IO)
+    override suspend fun hasRankings(): Boolean {
+        return withContext(Dispatchers.IO) { dao.getCount() > 0 }
     }
 
     override suspend fun syncRankings(): Result<Unit> {

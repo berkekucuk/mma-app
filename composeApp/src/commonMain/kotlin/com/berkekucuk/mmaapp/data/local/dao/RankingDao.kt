@@ -15,9 +15,9 @@ interface RankingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRankings(rankings: List<RankingEntity>)
 
-    @Query("SELECT * FROM rankings")
+    @Query("SELECT * FROM rankings ORDER BY rank_number ASC")
     fun getAllRankings(): Flow<List<RankingEntity>>
 
-    @Query("SELECT * FROM rankings WHERE weight_class_id = :weightClassId ORDER BY rank_number ASC")
-    fun getRankingsByWeightClass(weightClassId: String): Flow<List<RankingEntity>>
+    @Query("SELECT COUNT(*) FROM rankings")
+    suspend fun getCount(): Int
 }

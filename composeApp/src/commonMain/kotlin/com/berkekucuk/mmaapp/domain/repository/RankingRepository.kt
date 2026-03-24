@@ -4,7 +4,7 @@ import com.berkekucuk.mmaapp.domain.model.Ranking
 import kotlinx.coroutines.flow.Flow
 
 interface RankingRepository {
-    fun getRankings(): Flow<List<Ranking>>
-    fun getRankingsByWeightClass(weightClassId: String): Flow<List<Ranking>>
+    fun getRankings(weightClassId: String? = null): Flow<Map<String, List<Ranking>>>
     suspend fun syncRankings(): Result<Unit>
+    suspend fun hasRankings(): Boolean
 }
