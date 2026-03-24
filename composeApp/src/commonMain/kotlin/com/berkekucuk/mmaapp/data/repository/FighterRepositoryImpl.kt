@@ -28,14 +28,7 @@ class FighterRepositoryImpl(
     override fun getFighterById(fighterId: String): Flow<Fighter> {
         return dao.getFighterById(fighterId)
             .filterNotNull()
-            .map { entity ->
-                val fighter = entity.toDomain()
-                fighter.copy(
-                    fights = fighter.fights.filter { fight ->
-                        fight.boutType != "cancelled" && fight.boutType != "fizzled"
-                    }
-                )
-            }
+            .map { it.toDomain() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }

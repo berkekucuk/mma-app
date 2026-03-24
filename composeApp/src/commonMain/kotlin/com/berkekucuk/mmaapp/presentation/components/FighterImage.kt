@@ -43,7 +43,7 @@ fun FighterImage(
     val badgeAlignment = if (alignment == Alignment.Start) Alignment.BottomEnd else Alignment.BottomStart
 
     val isWinner = result?.equals("WIN", ignoreCase = true) == true
-    val borderModifier = if (isWinner) Modifier.border(2.dp, AppColors.winnerFrame, CircleShape) else Modifier
+    val borderModifier = if (isWinner) Modifier.border(1.5.dp, AppColors.winnerFrame, CircleShape) else Modifier
 
     val imageRequest = remember(imageUrl) {
         ImageRequest.Builder(context)
@@ -80,7 +80,6 @@ fun FighterImage(
             modifier = Modifier
                 .size(imageSize)
                 .clip(CircleShape)
-                .background(AppColors.topBarBackground)
                 .then(borderModifier),
             contentScale = ContentScale.Crop,
         )

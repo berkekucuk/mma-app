@@ -23,7 +23,7 @@ fun FighterPortrait(
     record: String?,
     alignment: Alignment.Horizontal,
     modifier: Modifier = Modifier,
-    imageSize: Dp = 50.dp,
+    imageSize: Dp = 55.dp,
     flagWidth: Dp = 18.dp,
     flagHeight: Dp = 12.dp,
     nameFontSize: TextUnit = 12.sp,
@@ -46,11 +46,11 @@ fun FighterPortrait(
                 nameFontSize = nameFontSize,
                 nameTrailingContent = nameTrailingContent,
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             FighterImage(imageUrl ?: "", name ?: "", countryCode ?: "", result, alignment, imageSize, flagWidth, flagHeight)
         } else {
             FighterImage(imageUrl ?: "", name ?: "", countryCode ?: "", result, alignment, imageSize, flagWidth, flagHeight)
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(6.dp))
             NameColumn(
                 name = name ?: "",
                 result = result,
