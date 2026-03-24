@@ -10,7 +10,7 @@ class FighterSupabaseAPI(
 ) : FighterRemoteDataSource {
 
     override suspend fun fetchFighterById(id: String): FighterDto {
-        return client.from("fighter_match_history").select {
+        return client.from("fighter_view").select {
             filter {
                 eq("fighter_id", id)
             }

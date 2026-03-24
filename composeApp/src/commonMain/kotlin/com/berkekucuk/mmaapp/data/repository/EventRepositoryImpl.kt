@@ -72,7 +72,7 @@ class EventRepositoryImpl(
                 if (!rateLimiter.shouldFetch(refreshKey)) {
                     return@runCatching
                 }
-                val events = remoteDataSource.fetchEventsById(eventId)
+                val events = remoteDataSource.fetchEventById(eventId)
                 if (events.isNotEmpty()) {
                     dao.insertEvents(events.map { it.toEntity() })
                 }
