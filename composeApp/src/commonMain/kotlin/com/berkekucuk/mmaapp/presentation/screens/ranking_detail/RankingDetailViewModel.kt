@@ -35,9 +35,9 @@ class RankingDetailViewModel(
 
     private fun observeRankings() {
         viewModelScope.launch {
-            repository.getRankingsByWeightClass(weightClassId)
-                .collect { rankingsList ->
-                    val sorted = rankingsList.sortedBy { it.rankNumber }
+            repository.getRankings(weightClassId)
+                .collect { grouped ->
+                    val sorted = grouped.values.flatten().sortedBy { it.rankNumber }
                     _state.update {
                         it.copy(
                             rankedFighters = sorted,

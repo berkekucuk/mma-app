@@ -12,8 +12,7 @@ class RankingSupabaseAPI(
     private val columnsToSelect = """
             weight_class_id,
             rank_number,
-            fighters(fighter_id, name, image_url, record, country_code),
-            weight_classes(name, sort_order)
+            fighters(fighter_id, name, image_url, record, country_code)
     """.trimIndent().replace("\n", "").replace(" ", "")
 
     override suspend fun fetchRankings(): List<RankingDto> {

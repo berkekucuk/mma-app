@@ -7,9 +7,8 @@ import com.berkekucuk.mmaapp.domain.model.Ranking
 fun RankingDto.toEntity(): RankingEntity {
     return RankingEntity(
         weightClassId = this.weightClassId,
-        rankNumber = this.rankNumber ?: 0,
-        fighter = this.fighter,
-        weightClass = this.weightClass
+        rankNumber = this.rankNumber,
+        fighter = this.fighter
     )
 }
 
@@ -17,7 +16,6 @@ fun RankingEntity.toDomain(): Ranking {
     return Ranking(
         weightClassId = this.weightClassId,
         rankNumber = this.rankNumber,
-        fighter = this.fighter?.toDomain(),
-        weightClass = this.weightClass?.toDomain(),
+        fighter = this.fighter?.toDomain()
     )
 }

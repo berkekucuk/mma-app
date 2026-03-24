@@ -43,9 +43,9 @@ class FighterSearchViewModel(
 
     private fun observeP4PFighters() {
         viewModelScope.launch {
-            rankingRepository.getRankingsByWeightClass(MENS_P4P_ID)
-                .collect { rankings ->
-                p4pFighters = rankings.mapNotNull { it.fighter }
+            rankingRepository.getRankings(MENS_P4P_ID)
+                .collect { grouped ->
+                p4pFighters = grouped.values.flatten().mapNotNull { it.fighter }
                 if (_state.value.query.length < 2) {
                     _state.update { it.copy(results = p4pFighters) }
                 }
