@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import com.berkekucuk.mmaapp.domain.repository.RankingRepository
+import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class FighterSearchViewModel(
     private val fighterRepository: FighterRepository,
-    private val rankingRepository: RankingRepository,
+    private val weightClassRepository: WeightClassRepository,
 ) : ViewModel() {
 
     companion object {
@@ -43,9 +43,9 @@ class FighterSearchViewModel(
 
     private fun observeP4PFighters() {
         viewModelScope.launch {
-            rankingRepository.getRankings(MENS_P4P_ID)
-                .collect { grouped ->
-                p4pFighters = grouped.values.flatten().mapNotNull { it.fighter }
+            weightClassRepository.getWeightClassById(MENS_P4P_ID)
+                .collect { weightClass ->
+                p4pFighters = weightClass?.rankings?.mapNotNull { it.fighter } ?: emptyList()
                 if (_state.value.query.length < 2) {
                     _state.update { it.copy(results = p4pFighters) }
                 }

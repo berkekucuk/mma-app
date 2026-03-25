@@ -21,18 +21,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
+import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 
 @Composable
 fun RankedFighterRow(
-    rankLabel: String,
+    rankNumber: Int,
+    isChampion: Boolean,
     name: String,
     record: String,
     imageUrl: String,
     countryCode: String? = null,
     onFighterClicked: () -> Unit
 ) {
-    val isChampion = rankLabel == "C"
+    val rankLabel = if (isChampion) LocalAppStrings.current.rankingsChampionRankLabel else rankNumber.toString()
 
     Row(
         modifier = Modifier

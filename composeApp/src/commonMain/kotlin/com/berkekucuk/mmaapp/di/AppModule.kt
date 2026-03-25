@@ -12,19 +12,19 @@ import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.EventSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
-import com.berkekucuk.mmaapp.data.remote.api.RankingRemoteDataSource
-import com.berkekucuk.mmaapp.data.remote.api.RankingSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.WeightClassRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.WeightClassSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.ProfileRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.ProfileSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
-import com.berkekucuk.mmaapp.data.repository.RankingRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.WeightClassRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.AuthRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.ProfileRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import com.berkekucuk.mmaapp.domain.repository.RankingRepository
+import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import com.berkekucuk.mmaapp.domain.repository.ProfileRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
@@ -95,8 +95,8 @@ val appModule = module {
         EventSupabaseAPI(client = get())
     }
 
-    single<RankingRemoteDataSource> {
-        RankingSupabaseAPI(client = get())
+    single<WeightClassRemoteDataSource> {
+        WeightClassSupabaseAPI(client = get())
     }
 
     single<FighterRemoteDataSource>{
@@ -117,8 +117,8 @@ val appModule = module {
         )
     }
 
-    single<RankingRepository> {
-        RankingRepositoryImpl(
+    single<WeightClassRepository> {
+        WeightClassRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
             rateLimiter = get()
@@ -188,7 +188,7 @@ val appModule = module {
     viewModel {
         FighterSearchViewModel(
             fighterRepository = get(),
-            rankingRepository = get()
+            weightClassRepository = get()
         )
     }
 

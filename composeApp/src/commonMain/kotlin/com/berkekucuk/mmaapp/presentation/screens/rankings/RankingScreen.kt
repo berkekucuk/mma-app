@@ -151,14 +151,14 @@ fun RankingScreen(
             ) { page ->
                 when (page) {
                     0 -> RankingContainer(
-                        rankings = state.mensRankings,
+                        weightClasses = state.weightClasses.filter { !it.isWomens },
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onWeightClassClicked = onWeightClassClicked,
                         listState = mensListState
                     )
                     1 -> RankingContainer(
-                        rankings = state.womensRankings,
+                        weightClasses = state.weightClasses.filter { it.isWomens },
                         isRefreshing = state.isRefreshing,
                         onRefresh = onRefresh,
                         onWeightClassClicked = onWeightClassClicked,

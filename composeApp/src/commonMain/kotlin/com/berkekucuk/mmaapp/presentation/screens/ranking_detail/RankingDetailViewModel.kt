@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
-import com.berkekucuk.mmaapp.domain.repository.RankingRepository
+import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,17 +15,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RankingDetailViewModel(
-    private val repository: RankingRepository,
+    private val repository: WeightClassRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<Route.RankingDetail>()
     private val weightClassId = route.weightClassId
     private val weightClassName = route.weightClassName
-
     private val _state = MutableStateFlow(RankingDetailUiState(weightClassId = weightClassId, weightClassName = weightClassName))
     val state: StateFlow<RankingDetailUiState> = _state.asStateFlow()
-
     private val _navigation = MutableSharedFlow<RankingDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 
@@ -35,12 +33,11 @@ class RankingDetailViewModel(
 
     private fun observeRankings() {
         viewModelScope.launch {
-            repository.getRankings(weightClassId)
-                .collect { grouped ->
-                    val sorted = grouped.values.flatten().sortedBy { it.rankNumber }
+            repository.getWeightClassById(weightClassId)
+                .collect { weightClass ->
                     _state.update {
                         it.copy(
-                            rankedFighters = sorted,
+                            rankedFighters = weightClass?.rankings ?: emptyList(),
                             isLoading = false
                         )
                     }
@@ -59,7 +56,7 @@ class RankingDetailViewModel(
     private fun syncRankings() {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
-            repository.syncRankings()
+            repository.syncWeightClasses()
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }

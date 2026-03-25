@@ -2,8 +2,7 @@ package com.berkekucuk.mmaapp.presentation.screens.rankings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berkekucuk.mmaapp.domain.model.WeightClassRegistry
-import com.berkekucuk.mmaapp.domain.repository.RankingRepository
+import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,15 +13,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RankingViewModel(
-    private val repository: RankingRepository,
+    private val repository: WeightClassRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RankingUiState())
     val state: StateFlow<RankingUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<RankingNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
-    private val womensWeightClassIds = setOf("womens_p4p", "sw", "w_flw", "w_bw")
-
     init {
         observeRankings()
         syncRankings()
@@ -30,16 +27,10 @@ class RankingViewModel(
 
     private fun observeRankings() {
         viewModelScope.launch {
-            repository.getRankings()
-                .collect { grouped ->
-                val mens = grouped.filter { it.key.lowercase() !in womensWeightClassIds }
-                    .entries.sortedBy { WeightClassRegistry.sortOrderOf(it.key) }
-                    .associate { it.key to it.value }
-                val womens = grouped.filter { it.key.lowercase() in womensWeightClassIds }
-                    .entries.sortedBy { WeightClassRegistry.sortOrderOf(it.key) }
-                    .associate { it.key to it.value }
-                _state.update { it.copy(mensRankings = mens, womensRankings = womens, isLoading = false) }
-            }
+            repository.getAllWeightClasses()
+                .collect { weightClasses ->
+                    _state.update { it.copy(weightClasses = weightClasses, isLoading = false) }
+                }
         }
     }
 
@@ -53,12 +44,12 @@ class RankingViewModel(
     private fun syncRankings(isRefreshing: Boolean = false) {
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
-            repository.syncRankings()
+            repository.syncWeightClasses()
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = if (!repository.hasRankings()) {
+                    val errorType = if (!repository.hasData()) {
                         when (e) {
                             is PostgrestRestException -> RankingError.UNKNOWN_ERROR
                             else -> RankingError.NETWORK_ERROR

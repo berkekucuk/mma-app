@@ -71,7 +71,6 @@ fun RankingDetailScreen(
     val onRefresh = remember(onAction) { { onAction(RankingDetailUiAction.OnRefresh) } }
 
     val strings = LocalAppStrings.current
-    val championRankLabel = strings.rankingsChampionRankLabel
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Scaffold(
@@ -121,29 +120,22 @@ fun RankingDetailScreen(
                 extraBottomPadding = navBarBottomPadding,
             ) {
                 item {
-                    val displayedFighters = if (state.isPoundForPound) {
-                        state.rankedFighters.filter { it.rankNumber > 0 }
-                    } else {
-                        state.rankedFighters
-                    }
-
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(16.dp))
                             .background(AppColors.fightItemBackground)
                     ) {
-                        displayedFighters.forEachIndexed { index, ranking ->
+                        state.rankedFighters.forEachIndexed { index, ranking ->
                             ranking.fighter?.let { fighter ->
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 12.dp)
                                 ) {
-                                    val rankLabelStr = if (ranking.rankNumber == 0) championRankLabel else ranking.rankNumber.toString()
-
                                     RankedFighterRow(
-                                        rankLabel = rankLabelStr,
+                                        rankNumber = ranking.rankNumber,
+                                        isChampion = ranking.rankNumber == 0,
                                         name = fighter.name,
                                         record = fighter.record.toString(),
                                         imageUrl = fighter.imageUrl,
@@ -151,10 +143,10 @@ fun RankingDetailScreen(
                                         onFighterClicked = { onFighterClicked(fighter.fighterId) }
                                     )
 
-                                    if (index < displayedFighters.lastIndex) {
+                                    if (index < state.rankedFighters.lastIndex) {
                                         HorizontalDivider(
                                             color = AppColors.dividerColor,
-                                            thickness = 0.5.dp,
+                                            thickness = 0.8.dp,
                                         )
                                     }
                                 }

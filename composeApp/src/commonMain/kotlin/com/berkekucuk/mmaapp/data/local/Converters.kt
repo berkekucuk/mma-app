@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
 import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
+import com.berkekucuk.mmaapp.data.remote.dto.RankedFighterDto
 import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
 import kotlinx.serialization.json.Json
 import kotlin.time.Instant
@@ -69,4 +70,10 @@ class Converters {
 
     @TypeConverter
     fun toMeasurement(value: String?): MeasurementDto? = decode(value)
+
+    @TypeConverter
+    fun fromRankingsList(rankings: List<RankedFighterDto>?): String = encodeList(rankings)
+
+    @TypeConverter
+    fun toRankingsList(value: String?): List<RankedFighterDto> = decodeList(value)
 }
