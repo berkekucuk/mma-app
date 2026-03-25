@@ -5,12 +5,12 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.domain.model.Ranking
+import com.berkekucuk.mmaapp.domain.model.WeightClass
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 
 @Composable
 fun RankingContainer(
-    rankings: Map<String, List<Ranking>>,
+    weightClasses: List<WeightClass>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onWeightClassClicked: (String, String) -> Unit,
@@ -25,16 +25,14 @@ fun RankingContainer(
         contentPadding = PaddingValues(top = 10.dp),
         verticalSpacing = 10.dp
     ) {
-        rankings.forEach { (weightClassId, rankingsList) ->
-            val isPoundForPound = weightClassId.lowercase() == "mens_p4p" || weightClassId.lowercase() == "womens_p4p"
-            val champion = rankingsList.minByOrNull { it.rankNumber }
-            val displayName = strings.toUpperCase(strings.weightClassDisplayName(weightClassId))
-            item(key = "header_$weightClassId") {
+        weightClasses.forEach { weightClass ->
+            val champion = weightClass.rankings.minByOrNull { it.rankNumber }
+            val displayName = strings.toUpperCase(strings.weightClassDisplayName(weightClass.id))
+            item(key = "header_${weightClass.id}") {
                 WeightClassCard(
                     weightClassName = displayName,
                     champion = champion,
-                    isPoundForPound = isPoundForPound,
-                    onWeightClassClicked = { onWeightClassClicked(weightClassId, weightClassId) }
+                    onWeightClassClicked = { onWeightClassClicked(weightClass.id, displayName) }
                 )
             }
         }

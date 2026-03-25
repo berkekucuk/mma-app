@@ -56,7 +56,7 @@ fun FighterImage(
 
     val flagUrl = remember(countryCode) {
         if (countryCode.isNotBlank()) {
-            "https://flags-v1.s3.eu-central-1.amazonaws.com/${countryCode.lowercase()}.png"
+            "https://d18vwyi4kwpgwa.cloudfront.net/flags/${countryCode.lowercase()}.png"
         } else null
     }
 

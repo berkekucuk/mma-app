@@ -26,17 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.domain.model.Ranking
+import com.berkekucuk.mmaapp.domain.model.RankedFighter
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 
 @Composable
 fun WeightClassCard(
     weightClassName: String,
-    champion: Ranking?,
-    isPoundForPound: Boolean = false,
+    champion: RankedFighter?,
     onWeightClassClicked: () -> Unit
 ) {
-    val championFighter = champion?.fighter
 
     Box(
         modifier = Modifier
@@ -72,17 +70,17 @@ fun WeightClassCard(
                     color = AppColors.textSecondary,
                 )
 
-                if (championFighter != null) {
+                if (champion?.fighter != null) {
                     Spacer(Modifier.height(10.dp))
 
                     FighterPortrait(
-                        name = championFighter.name,
-                        imageUrl = championFighter.imageUrl,
-                        countryCode = championFighter.countryCode,
-                        record = championFighter.record.toString(),
+                        name = champion.fighter.name,
+                        imageUrl = champion.fighter.imageUrl,
+                        countryCode = champion.fighter.countryCode,
+                        record = champion.fighter.record.toString(),
                         alignment = Alignment.Start,
                         nameFontSize = 14.sp,
-                        nameTrailingContent = if (!isPoundForPound) {
+                        nameTrailingContent = if (champion.isChampion) {
                             {
                                 Box(
                                     modifier = Modifier
