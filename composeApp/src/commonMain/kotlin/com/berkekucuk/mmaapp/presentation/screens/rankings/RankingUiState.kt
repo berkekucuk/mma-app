@@ -1,12 +1,11 @@
 package com.berkekucuk.mmaapp.presentation.screens.rankings
 
-import com.berkekucuk.mmaapp.domain.model.Ranking
+import com.berkekucuk.mmaapp.domain.model.WeightClass
 
 data class RankingUiState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
-    val mensRankings: Map<String, List<Ranking>> = emptyMap(),
-    val womensRankings: Map<String, List<Ranking>> = emptyMap(),
+    val weightClasses: List<WeightClass> = emptyList(),
     val error: RankingError? = null,
 )
 
