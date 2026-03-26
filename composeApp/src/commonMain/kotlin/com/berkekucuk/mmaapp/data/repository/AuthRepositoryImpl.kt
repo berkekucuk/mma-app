@@ -10,7 +10,6 @@ import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class AuthRepositoryImpl(
@@ -20,14 +19,17 @@ class AuthRepositoryImpl(
     private val scope: CoroutineScope
 ) : AuthRepository {
 
-    override val authState: Flow<AuthState> = supabaseClient.auth.sessionStatus
-        .onEach { status ->
-            if (status is SessionStatus.Authenticated) {
-                scope.launch {
+    init {
+        scope.launch {
+            supabaseClient.auth.sessionStatus.collect { status ->
+                if (status is SessionStatus.Authenticated) {
                     registerDeviceToken(status.session.user?.id ?: "")
                 }
             }
         }
+    }
+
+    override val authState: Flow<AuthState> = supabaseClient.auth.sessionStatus
         .map { status ->
             when (status) {
                 is SessionStatus.Initializing -> AuthState.Loading

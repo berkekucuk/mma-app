@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.data.local.dao.ProfileDao
+import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.ProfileRemoteDataSource
@@ -43,6 +44,49 @@ class ProfileRepositoryImpl(
             runCatching {
                 remoteDataSource.updateProfile(userId, fullName, username)
                 dao.updateProfile(userId, fullName, username)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override fun observeFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
+        return dao.observeIsFightNotificationEnabled(fightId, userId)
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun syncFightNotificationStatus(fightId: String, userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                val isEnabled = remoteDataSource.isFightNotificationEnabled(fightId, userId)
+                if (isEnabled) {
+                    dao.insertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
+                } else {
+                    dao.deleteFightNotification(fightId, userId)
+                }
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun addFightNotification(fightId: String, userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.upsertFightNotification(fightId, userId)
+                dao.insertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun removeFightNotification(fightId: String, userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.deleteFightNotification(fightId, userId)
+                dao.deleteFightNotification(fightId, userId)
             }.onFailure {
                 if (it is CancellationException) throw it
             }
