@@ -64,13 +64,6 @@ val appModule = module {
         )
     }
 
-    single(named("fighter")) {
-        RateLimiter(
-            dateTimeProvider = get(),
-            timeoutMs = 60_000L
-        )
-    }
-
     // supabase client
     single {
         SupabaseClientFactory.create(
@@ -146,7 +139,7 @@ val appModule = module {
         FighterRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
-            rateLimiter = get(named("fighter"))
+            rateLimiter = get()
         )
     }
 
@@ -185,6 +178,8 @@ val appModule = module {
         FightDetailViewModel(
             eventRepository = get(),
             fighterRepository = get(),
+            authRepository = get(),
+            profileRepository = get(),
             savedStateHandle = get()
         )
     }
