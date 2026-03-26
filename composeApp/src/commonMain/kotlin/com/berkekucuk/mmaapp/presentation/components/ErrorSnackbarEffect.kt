@@ -5,27 +5,31 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
-fun ErrorSnackbarEffect(
-    error: Any?,
-    message: String,
+fun SnackbarEffect(
+    message: String?,
     snackbarHostState: SnackbarHostState,
-    onRetry: () -> Unit,
+    duration: SnackbarDuration = SnackbarDuration.Indefinite,
+    actionLabel: String? = null,
+    onAction: (() -> Unit)? = null,
+    onDismiss: (() -> Unit)? = null,
 ) {
-    val strings = LocalAppStrings.current
-    LaunchedEffect(error) {
-        if (error == null) return@LaunchedEffect
+    LaunchedEffect(message) {
+        if (message == null) return@LaunchedEffect
         while (true) {
             val result = snackbarHostState.showSnackbar(
                 message = message,
-                actionLabel = strings.retry,
-                duration = SnackbarDuration.Indefinite,
+                actionLabel = actionLabel,
+                duration = duration,
             )
             if (result == SnackbarResult.ActionPerformed) {
-                onRetry()
-            } else break
+                onAction?.invoke()
+            } else {
+                onDismiss?.invoke()
+                break
+            }
+            if (onAction == null) break
         }
     }
 }

@@ -35,9 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
-import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
@@ -93,13 +93,13 @@ fun HomeScreen(
     val errorMessage = when (state.error) {
         HomeError.NETWORK_ERROR -> strings.errorNetwork2
         HomeError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> ""
+        null -> null
     }
-    ErrorSnackbarEffect(
-        error = state.error,
+    SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
-        onRetry = onRefreshCompletedTab,
+        actionLabel = strings.retry,
+        onAction = onRefreshCompletedTab,
     )
 
     Scaffold(
@@ -112,7 +112,7 @@ fun HomeScreen(
             SnackbarHost(
                 hostState = snackbarHostState,
                 snackbar = { snackbarData ->
-                    AppErrorSnackbar(
+                    ErrorSnackbar(
                         snackbarData = snackbarData,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )
