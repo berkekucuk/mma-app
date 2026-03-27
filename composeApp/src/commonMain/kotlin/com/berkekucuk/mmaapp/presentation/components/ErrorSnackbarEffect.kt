@@ -17,19 +17,15 @@ fun SnackbarEffect(
 ) {
     LaunchedEffect(message) {
         if (message == null) return@LaunchedEffect
-        while (true) {
-            val result = snackbarHostState.showSnackbar(
-                message = message,
-                actionLabel = actionLabel,
-                duration = duration,
-            )
-            if (result == SnackbarResult.ActionPerformed) {
-                onAction?.invoke()
-            } else {
-                onDismiss?.invoke()
-                break
-            }
-            if (onAction == null) break
+        val result = snackbarHostState.showSnackbar(
+            message = message,
+            actionLabel = actionLabel,
+            duration = duration,
+        )
+        if (result == SnackbarResult.ActionPerformed) {
+            onAction?.invoke()
+        } else {
+            onDismiss?.invoke()
         }
     }
 }

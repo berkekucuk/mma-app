@@ -149,10 +149,6 @@ class FightDetailViewModel(
             }
             is FightDetailUiAction.OnBackClicked -> navigateTo(FightDetailNavigationEvent.Back)
             is FightDetailUiAction.OnRefresh -> onRefresh()
-            is FightDetailUiAction.OnRetry -> {
-                val fight = _state.value.fight ?: return
-                syncFighters(fight)
-            }
             is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))
             is FightDetailUiAction.OnNotificationClicked -> onNotificationClicked()
             is FightDetailUiAction.OnErrorShown -> _state.update { it.copy(error = null) }
@@ -174,22 +170,30 @@ class FightDetailViewModel(
                 profileRepository.addFightNotification(fightId, authState.userId)
             }
             result.onFailure {
-                _state.update { it.copy(error = FightDetailError.NOTIFICATION_NETWORK_ERROR) }
+                _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
             }
         }
     }
 
     private fun onRefresh() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true) }
-            if (fighterId != null) {
+            _state.update { it.copy(isRefreshing = true, error = null) }
+            val result = if (fighterId != null) {
                 fighterRepository.syncFighter(fighterId)
             } else {
                 eventRepository.syncEventById(eventId = eventId)
-            }.onSuccess {
+            }
+            result.onSuccess {
+                _state.value.fight?.let { currentFight ->
+                    syncFighters(currentFight, knownFighterId = fighterId)
+                }
                 _state.update { it.copy(isRefreshing = false) }
-            }.onFailure {
-                _state.update { it.copy(isRefreshing = false) }
+            }.onFailure { e ->
+                val errorType = when (e) {
+                    is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
+                    else -> FightDetailError.NETWORK_ERROR
+                }
+                _state.update { it.copy(isRefreshing = false, error = errorType) }
             }
         }
     }

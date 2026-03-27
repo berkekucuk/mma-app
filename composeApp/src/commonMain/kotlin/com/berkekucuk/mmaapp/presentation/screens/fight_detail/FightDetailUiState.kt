@@ -19,6 +19,5 @@ data class FightDetailUiState(
 enum class FightDetailError {
     NETWORK_ERROR,
     UNKNOWN_ERROR,
-    NOTIFICATION_NETWORK_ERROR,
     NOT_AUTHENTICATED
 }

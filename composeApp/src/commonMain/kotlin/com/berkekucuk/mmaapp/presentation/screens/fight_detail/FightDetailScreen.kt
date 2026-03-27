@@ -101,7 +101,6 @@ fun FightDetailScreen(
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val coroutineScope = rememberCoroutineScope()
 
-    val onRetry = remember(onAction) { { onAction(FightDetailUiAction.OnRetry) } }
     val onErrorShown = remember(onAction) { { onAction(FightDetailUiAction.OnErrorShown) } }
     val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
     val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
@@ -125,7 +124,6 @@ fun FightDetailScreen(
     val errorMessage = when (state.error) {
         FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        FightDetailError.NOTIFICATION_NETWORK_ERROR -> strings.errorNetwork
         FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
         else -> null
     }
@@ -134,7 +132,7 @@ fun FightDetailScreen(
         snackbarHostState = snackbarHostState,
         duration = if (isRetryableError) SnackbarDuration.Indefinite else SnackbarDuration.Short,
         actionLabel = if (isRetryableError) strings.retry else null,
-        onAction = if (isRetryableError) onRetry else null,
+        onAction = if (isRetryableError) onRefresh else null,
         onDismiss = if (!isRetryableError) onErrorShown else null,
     )
 
