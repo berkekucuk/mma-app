@@ -117,6 +117,7 @@ data class AppStrings(
     val errorNetwork2: String,
     val errorUnknown: String,
     val errorPleaseSignIn: String,
+    val errorFightCompleted: String,
     val retry: String,
     val dialogAccept: String,
     val dialogCancel: String,

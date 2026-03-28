@@ -125,6 +125,7 @@ fun FightDetailScreen(
         FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
         FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
+        FightDetailError.FIGHT_COMPLETED -> strings.errorFightCompleted
         else -> null
     }
     SnackbarEffect(

@@ -163,7 +163,14 @@ class FightDetailViewModel(
                 _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
                 return@launch
             }
-            val fightId = _state.value.fight?.fightId ?: return@launch
+
+            val fight = _state.value.fight
+            if (fight != null && (fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank())) {
+                _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
+                return@launch
+            }
+
+            val fightId = fight?.fightId ?: return@launch
             val isNotificationEnabled = _state.value.isNotificationEnabled
             val result = if (isNotificationEnabled) {
                 profileRepository.removeFightNotification(fightId, authState.userId)

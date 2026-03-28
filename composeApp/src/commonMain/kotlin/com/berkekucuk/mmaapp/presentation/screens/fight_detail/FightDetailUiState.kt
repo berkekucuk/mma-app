@@ -19,5 +19,6 @@ data class FightDetailUiState(
 enum class FightDetailError {
     NETWORK_ERROR,
     UNKNOWN_ERROR,
-    NOT_AUTHENTICATED
+    NOT_AUTHENTICATED,
+    FIGHT_COMPLETED
 }

@@ -102,6 +102,7 @@ val TrStrings = AppStrings(
     errorNetwork2 = "İnternet bağlantısı yok.",
     errorUnknown = "Bir hata oluştu. Lütfen tekrar deneyin.",
     errorPleaseSignIn = "Bu özelliği kullanmak için lütfen giriş yapın.",
+    errorFightCompleted = "Bu dövüş zaten tamamlandı.",
     retry = "Yenile",
     dialogAccept = "Onayla",
     dialogCancel = "Vazgeç",

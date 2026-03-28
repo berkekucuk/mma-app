@@ -102,6 +102,7 @@ val EnStrings = AppStrings(
     errorNetwork2 = "No internet connection.",
     errorUnknown = "Something went wrong. Please try again.",
     errorPleaseSignIn = "Please sign in to use this feature.",
+    errorFightCompleted = "This fight is already over.",
     retry = "Retry",
     dialogAccept = "Accept",
     dialogCancel = "Cancel",
