@@ -1,5 +1,8 @@
 package com.berkekucuk.mmaapp.di
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.dsl.module
 import com.berkekucuk.mmaapp.BuildConfig
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
@@ -8,6 +11,8 @@ import com.berkekucuk.mmaapp.core.utils.SystemDateTimeProvider
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getRoomDatabase
 import com.berkekucuk.mmaapp.data.remote.factory.SupabaseClientFactory
+import com.berkekucuk.mmaapp.data.remote.api.DeviceTokenRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.DeviceTokenSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.EventRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.EventSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
@@ -16,6 +21,7 @@ import com.berkekucuk.mmaapp.data.remote.api.WeightClassRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.ProfileRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.ProfileSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.WeightClassRepositoryImpl
@@ -42,6 +48,11 @@ val appModule = module {
 
     includes(platformModule)
 
+    // application scope
+    single(named("applicationScope")) {
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
+
     // time provider
     single<DateTimeProvider> { SystemDateTimeProvider() }
 
@@ -50,13 +61,6 @@ val appModule = module {
         RateLimiter(
             dateTimeProvider = get(),
             timeoutMs = 10_000L
-        )
-    }
-
-    single(named("fighter")) {
-        RateLimiter(
-            dateTimeProvider = get(),
-            timeoutMs = 60_000L
         )
     }
 
@@ -107,6 +111,12 @@ val appModule = module {
         ProfileSupabaseAPI(client = get())
     }
 
+    single<DeviceTokenRemoteDataSource> {
+        DeviceTokenSupabaseAPI(client = get())
+    }
+
+    single { DeviceTokenProvider() }
+
     // repository
     single<EventRepository> {
         EventRepositoryImpl(
@@ -129,12 +139,17 @@ val appModule = module {
         FighterRepositoryImpl(
             remoteDataSource = get(),
             dao = get(),
-            rateLimiter = get(named("fighter"))
+            rateLimiter = get()
         )
     }
 
     single<AuthRepository> {
-        AuthRepositoryImpl(supabaseClient = get())
+        AuthRepositoryImpl(
+            supabaseClient = get(),
+            deviceTokenRemoteDataSource = get(),
+            deviceTokenProvider = get(),
+            scope = get(named("applicationScope"))
+        )
     }
 
     single<ProfileRepository> {
@@ -163,6 +178,8 @@ val appModule = module {
         FightDetailViewModel(
             eventRepository = get(),
             fighterRepository = get(),
+            authRepository = get(),
+            profileRepository = get(),
             savedStateHandle = get()
         )
     }

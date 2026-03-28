@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
-import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -88,13 +88,13 @@ fun FighterDetailScreen(
     val errorMessage = when (state.error) {
         FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FighterDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> ""
+        null -> null
     }
-    ErrorSnackbarEffect(
-        error = state.error,
+    SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
-        onRetry = onRefresh,
+        actionLabel = strings.retry,
+        onAction = onRefresh,
     )
 
     Scaffold(
@@ -108,7 +108,7 @@ fun FighterDetailScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier.padding(bottom = navBarBottomPadding),
                 snackbar = { snackbarData ->
-                    AppErrorSnackbar(
+                    ErrorSnackbar(
                         snackbarData = snackbarData,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )

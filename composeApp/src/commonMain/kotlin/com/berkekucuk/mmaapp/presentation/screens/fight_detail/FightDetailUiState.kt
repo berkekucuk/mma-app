@@ -13,9 +13,12 @@ data class FightDetailUiState(
     val redFighter: Fighter? = null,
     val blueFighter: Fighter? = null,
     val error: FightDetailError? = null,
+    val isNotificationEnabled: Boolean = false,
 )
 
 enum class FightDetailError {
     NETWORK_ERROR,
-    UNKNOWN_ERROR
+    UNKNOWN_ERROR,
+    NOT_AUTHENTICATED,
+    FIGHT_COMPLETED
 }

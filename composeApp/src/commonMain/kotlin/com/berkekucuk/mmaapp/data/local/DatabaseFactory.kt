@@ -11,6 +11,7 @@ import com.berkekucuk.mmaapp.data.local.dao.FighterDao
 import com.berkekucuk.mmaapp.data.local.dao.ProfileDao
 import com.berkekucuk.mmaapp.data.local.dao.RankingDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
+import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.ProfileEntity
 import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
@@ -24,9 +25,10 @@ import kotlinx.coroutines.IO
         WeightClassEntity::class,
         FighterEntity::class,
         ProfileEntity::class,
-        SyncedYearEntity::class
+        SyncedYearEntity::class,
+        FightNotificationEntity::class
     ],
-    version = 8
+    version = 10
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.components
+package com.berkekucuk.mmaapp.core.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

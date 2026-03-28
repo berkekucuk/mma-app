@@ -14,19 +14,25 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -36,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
-import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
@@ -95,7 +101,7 @@ fun FightDetailScreen(
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val coroutineScope = rememberCoroutineScope()
 
-    val onRetry = remember(onAction) { { onAction(FightDetailUiAction.OnRetry) } }
+    val onErrorShown = remember(onAction) { { onAction(FightDetailUiAction.OnErrorShown) } }
     val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }
     val onBackClick = remember(onAction) { { onAction(FightDetailUiAction.OnBackClicked) } }
     val onRedCornerClick = remember(onAction, fight) {
@@ -114,17 +120,47 @@ fun FightDetailScreen(
         }
     }
 
+    val isRetryableError = state.error == FightDetailError.NETWORK_ERROR || state.error == FightDetailError.UNKNOWN_ERROR
     val errorMessage = when (state.error) {
         FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> ""
+        FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
+        FightDetailError.FIGHT_COMPLETED -> strings.errorFightCompleted
+        else -> null
     }
-    ErrorSnackbarEffect(
-        error = state.error,
+    SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
-        onRetry = onRetry,
+        duration = if (isRetryableError) SnackbarDuration.Indefinite else SnackbarDuration.Short,
+        actionLabel = if (isRetryableError) strings.retry else null,
+        onAction = if (isRetryableError) onRefresh else null,
+        onDismiss = if (!isRetryableError) onErrorShown else null,
     )
+
+    val showNotificationDialog = remember { mutableStateOf(false) }
+    val onNotificationDialogDismiss = remember { { showNotificationDialog.value = false } }
+    val onNotificationConfirmed = remember(onAction) {
+        {
+            showNotificationDialog.value = false
+            onAction(FightDetailUiAction.OnNotificationClicked)
+        }
+    }
+    if (showNotificationDialog.value) {
+        AlertDialog(
+            onDismissRequest = onNotificationDialogDismiss,
+            text = { Text(if (state.isNotificationEnabled) strings.fightNotificationRemoveDialogMessage else strings.fightNotificationDialogMessage) },
+            confirmButton = {
+                TextButton(onClick = onNotificationConfirmed) {
+                    Text(strings.dialogAccept)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onNotificationDialogDismiss) {
+                    Text(strings.dialogCancel)
+                }
+            },
+        )
+    }
 
     Scaffold(
         modifier = Modifier
@@ -137,7 +173,7 @@ fun FightDetailScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier.padding(bottom = navBarBottomPadding),
                 snackbar = { snackbarData ->
-                    AppErrorSnackbar(
+                    ErrorSnackbar(
                         snackbarData = snackbarData,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )
@@ -157,9 +193,9 @@ fun FightDetailScreen(
                         }
                     },
                     actions = {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { showNotificationDialog.value = true }) {
                             Icon(
-                                imageVector = Icons.Outlined.Notifications,
+                                imageVector = if (state.isNotificationEnabled) Icons.Filled.Notifications else Icons.Outlined.Notifications,
                                 contentDescription = null,
                             )
                         }

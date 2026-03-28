@@ -24,7 +24,7 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppTypography
 
 @Composable
-fun AppErrorSnackbar(
+fun ErrorSnackbar(
     snackbarData: SnackbarData,
     modifier: Modifier = Modifier,
 ) {

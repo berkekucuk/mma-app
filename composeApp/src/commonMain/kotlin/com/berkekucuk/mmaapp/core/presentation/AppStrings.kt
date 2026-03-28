@@ -116,7 +116,13 @@ data class AppStrings(
     val errorNetwork: String,
     val errorNetwork2: String,
     val errorUnknown: String,
+    val errorPleaseSignIn: String,
+    val errorFightCompleted: String,
     val retry: String,
+    val dialogAccept: String,
+    val dialogCancel: String,
+    val fightNotificationDialogMessage: String,
+    val fightNotificationRemoveDialogMessage: String,
     // Settings Screen
     val settingsTitle: String,
     val settingsSectionLanguage: String,

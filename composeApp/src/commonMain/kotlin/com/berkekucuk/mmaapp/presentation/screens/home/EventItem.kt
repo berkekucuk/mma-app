@@ -26,7 +26,7 @@ import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
-import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
+import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 
 @Composable
 fun EventItem(

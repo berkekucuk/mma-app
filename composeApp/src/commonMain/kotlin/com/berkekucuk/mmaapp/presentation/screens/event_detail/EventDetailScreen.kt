@@ -40,10 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
-import com.berkekucuk.mmaapp.presentation.components.AppErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
-import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbarEffect
-import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
+import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -102,13 +102,13 @@ fun EventDetailScreen(
     val errorMessage = when (state.error) {
         EventDetailError.NETWORK_ERROR -> strings.errorNetwork2
         EventDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> ""
+        null -> null
     }
-    ErrorSnackbarEffect(
-        error = state.error,
+    SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
-        onRetry = onRefresh,
+        actionLabel = strings.retry,
+        onAction = onRefresh,
     )
 
     Scaffold(
@@ -122,7 +122,7 @@ fun EventDetailScreen(
                 hostState = snackbarHostState,
                 modifier = Modifier.padding(bottom = navBarBottomPadding),
                 snackbar = { snackbarData ->
-                    AppErrorSnackbar(
+                    ErrorSnackbar(
                         snackbarData = snackbarData,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     )
