@@ -10,7 +10,7 @@ import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
 import com.berkekucuk.mmaapp.core.utils.formatDateOfBirth
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
-import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
+import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 import kotlin.time.Clock
 
 @Composable

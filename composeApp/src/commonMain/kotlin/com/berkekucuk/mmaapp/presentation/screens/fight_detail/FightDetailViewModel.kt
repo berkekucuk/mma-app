@@ -40,6 +40,7 @@ class FightDetailViewModel(
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
     private var notificationObserverJob: Job? = null
+    private var refreshJob: Job? = null
 
     init {
         if (fighterId != null) {
@@ -176,13 +177,16 @@ class FightDetailViewModel(
     }
 
     private fun onRefresh() {
+        refreshJob?.cancel()
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true, error = null) }
+
             val result = if (fighterId != null) {
                 fighterRepository.syncFighter(fighterId)
             } else {
                 eventRepository.syncEventById(eventId = eventId)
             }
+
             result.onSuccess {
                 _state.value.fight?.let { currentFight ->
                     syncFighters(currentFight, knownFighterId = fighterId)

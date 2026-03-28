@@ -43,7 +43,7 @@ import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
-import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
+import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 

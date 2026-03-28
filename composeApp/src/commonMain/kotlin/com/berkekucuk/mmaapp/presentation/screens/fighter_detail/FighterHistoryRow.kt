@@ -26,7 +26,7 @@ import com.berkekucuk.mmaapp.core.utils.toYear
 import com.berkekucuk.mmaapp.domain.enums.Result
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
-import com.berkekucuk.mmaapp.presentation.components.rememberLocalizedDateStrings
+import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 
 @Composable
 fun FightHistoryRow(
