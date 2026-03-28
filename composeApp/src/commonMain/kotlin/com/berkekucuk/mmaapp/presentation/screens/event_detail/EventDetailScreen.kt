@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -203,6 +204,7 @@ fun EventDetailScreen(
                         listState = mainCardListState,
                         eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek),
                         eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null },
+                        isLive = state.event?.status == EventStatus.LIVE,
                         extraBottomPadding = navBarBottomPadding,
                     )
                     1 -> FightsContainer(
@@ -214,6 +216,7 @@ fun EventDetailScreen(
                         listState = prelimsListState,
                         eventDate = state.event?.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek),
                         eventVenueAndLocation = listOfNotNull(state.event?.venue, state.event?.location).joinToString(", ").ifEmpty { null },
+                        isLive = state.event?.status == EventStatus.LIVE,
                         extraBottomPadding = navBarBottomPadding,
                     )
                 }

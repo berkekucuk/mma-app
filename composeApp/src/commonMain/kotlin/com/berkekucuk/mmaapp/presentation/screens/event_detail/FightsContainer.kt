@@ -35,6 +35,7 @@ fun FightsContainer(
     listState: LazyListState,
     eventDate: String?,
     eventVenueAndLocation: String?,
+    isLive: Boolean = false,
     extraBottomPadding: Dp = 0.dp,
 ) {
     ListContainer(
@@ -49,7 +50,8 @@ fun FightsContainer(
             Column {
                 EventInfoCard(
                     date = eventDate,
-                    venueAndLocation = eventVenueAndLocation
+                    venueAndLocation = eventVenueAndLocation,
+                    isLive = isLive
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }

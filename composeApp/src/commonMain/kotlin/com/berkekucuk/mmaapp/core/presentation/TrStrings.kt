@@ -9,6 +9,7 @@ val TrStrings = AppStrings(
     emptyEventsForYear = { "$it yılına ait etkinlik bulunamadı" },
     toBeAnnounced = "AÇIKLANACAK",
     tba = "tba",
+    liveEvent = "Canlı Etkinlik",
     selectYear = "Yıl Seçin",
     weightClassBout = { it },
     contentDescriptionFlag = "Bayrak",

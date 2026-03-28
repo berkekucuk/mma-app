@@ -9,6 +9,7 @@ val EnStrings = AppStrings(
     emptyEventsForYear = { "No events available for $it" },
     toBeAnnounced = "TO BE ANNOUNCED",
     tba = "tba",
+    liveEvent = "Live Event",
     selectYear = "Select Year",
     weightClassBout = { "$it Bout" },
     contentDescriptionFlag = "Flag",
