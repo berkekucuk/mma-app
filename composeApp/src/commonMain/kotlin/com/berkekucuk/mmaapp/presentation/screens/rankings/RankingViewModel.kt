@@ -37,13 +37,13 @@ class RankingViewModel(
     fun onAction(action: RankingUiAction) {
         when (action) {
             is RankingUiAction.OnWeightClassClicked -> navigateTo(RankingNavigationEvent.ToRankingDetail(action.weightClassId))
-            is RankingUiAction.OnRefresh -> syncRankings()
+            is RankingUiAction.OnRefresh -> syncRankings(isRefreshing = true)
         }
     }
 
-    private fun syncRankings() {
+    private fun syncRankings(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true, error = null) }
+            _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
             repository.syncWeightClasses()
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
