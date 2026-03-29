@@ -82,8 +82,8 @@ fun App() {
                     onNavigateToEventDetail = { eventId ->
                         rootNavController.navigate(Route.EventDetail(eventId))
                     },
-                    onNavigateToRankingDetail = { weightClassId, weightClassName ->
-                        rootNavController.navigate(Route.RankingDetail(weightClassId, weightClassName))
+                    onNavigateToRankingDetail = { weightClassId ->
+                        rootNavController.navigate(Route.RankingDetail(weightClassId))
                     },
                     onNavigateToProfileEdit = {
                         rootNavController.navigate(Route.ProfileEdit)

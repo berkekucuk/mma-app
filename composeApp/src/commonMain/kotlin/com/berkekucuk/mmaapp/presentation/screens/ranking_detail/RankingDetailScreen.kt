@@ -34,7 +34,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -106,49 +105,43 @@ fun RankingDetailScreen(
             }
         }
     ) { innerPadding ->
-        LoadingContent(
-            isLoading = state.isLoading,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+        ListContainer(
+            isRefreshing = state.isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.padding(innerPadding),
+            contentPadding = PaddingValues(top = 8.dp),
+            verticalSpacing = 0.dp,
+            extraBottomPadding = navBarBottomPadding,
         ) {
-            ListContainer(
-                isRefreshing = state.isRefreshing,
-                onRefresh = onRefresh,
-                contentPadding = PaddingValues(top = 8.dp),
-                verticalSpacing = 0.dp,
-                extraBottomPadding = navBarBottomPadding,
-            ) {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(AppColors.fightItemBackground)
-                    ) {
-                        state.rankedFighters.forEachIndexed { index, ranking ->
-                            ranking.fighter?.let { fighter ->
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 12.dp)
-                                ) {
-                                    RankedFighterRow(
-                                        rankNumber = ranking.rankNumber,
-                                        isChampion = ranking.rankNumber == 0,
-                                        name = fighter.name,
-                                        record = fighter.record.toString(),
-                                        imageUrl = fighter.imageUrl,
-                                        countryCode = fighter.countryCode,
-                                        onFighterClicked = { onFighterClicked(fighter.fighterId) }
-                                    )
+            item {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(AppColors.fightItemBackground)
+                ) {
+                    state.rankedFighters.forEachIndexed { index, ranking ->
+                        ranking.fighter?.let { fighter ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp)
+                            ) {
+                                RankedFighterRow(
+                                    rankNumber = ranking.rankNumber,
+                                    isChampion = ranking.rankNumber == 0,
+                                    name = fighter.name,
+                                    record = fighter.record.toString(),
+                                    imageUrl = fighter.imageUrl,
+                                    countryCode = fighter.countryCode,
+                                    onFighterClicked = { onFighterClicked(fighter.fighterId) }
+                                )
 
-                                    if (index < state.rankedFighters.lastIndex) {
-                                        HorizontalDivider(
-                                            color = AppColors.dividerColor,
-                                            thickness = 0.8.dp,
-                                        )
-                                    }
+                                if (index < state.rankedFighters.lastIndex) {
+                                    HorizontalDivider(
+                                        color = AppColors.dividerColor,
+                                        thickness = 0.8.dp,
+                                    )
                                 }
                             }
                         }

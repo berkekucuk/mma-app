@@ -29,21 +29,21 @@ class RankingViewModel(
         viewModelScope.launch {
             repository.getAllWeightClasses()
                 .collect { weightClasses ->
-                    _state.update { it.copy(weightClasses = weightClasses, isLoading = false) }
+                    _state.update { it.copy(weightClasses = weightClasses) }
                 }
         }
     }
 
     fun onAction(action: RankingUiAction) {
         when (action) {
-            is RankingUiAction.OnWeightClassClicked -> navigateTo(RankingNavigationEvent.ToRankingDetail(action.weightClassId, action.weightClassName))
-            is RankingUiAction.OnRefresh -> syncRankings(isRefreshing = true)
+            is RankingUiAction.OnWeightClassClicked -> navigateTo(RankingNavigationEvent.ToRankingDetail(action.weightClassId))
+            is RankingUiAction.OnRefresh -> syncRankings()
         }
     }
 
-    private fun syncRankings(isRefreshing: Boolean = false) {
+    private fun syncRankings() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
+            _state.update { it.copy(isRefreshing = true, error = null) }
             repository.syncWeightClasses()
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }

@@ -13,7 +13,7 @@ fun RankingContainer(
     weightClasses: List<WeightClass>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onWeightClassClicked: (String, String) -> Unit,
+    onWeightClassClicked: (String) -> Unit,
     listState: LazyListState
 ) {
     val strings = LocalAppStrings.current
@@ -32,7 +32,7 @@ fun RankingContainer(
                 WeightClassCard(
                     weightClassName = displayName,
                     champion = champion,
-                    onWeightClassClicked = { onWeightClassClicked(weightClass.id, displayName) }
+                    onWeightClassClicked = { onWeightClassClicked(weightClass.id) }
                 )
             }
         }

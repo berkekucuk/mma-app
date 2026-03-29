@@ -28,7 +28,7 @@ import androidx.compose.animation.ExitTransition
 @Composable
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
-    onNavigateToRankingDetail: (String, String) -> Unit,
+    onNavigateToRankingDetail: (String) -> Unit,
     onNavigateToProfileEdit: () -> Unit,
     onNavigateToFighterSearch: () -> Unit,
     onNavigateToSettings: () -> Unit,

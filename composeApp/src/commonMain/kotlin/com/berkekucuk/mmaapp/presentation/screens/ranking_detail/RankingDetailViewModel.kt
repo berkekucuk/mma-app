@@ -21,8 +21,7 @@ class RankingDetailViewModel(
 
     private val route = savedStateHandle.toRoute<Route.RankingDetail>()
     private val weightClassId = route.weightClassId
-    private val weightClassName = route.weightClassName
-    private val _state = MutableStateFlow(RankingDetailUiState(weightClassId = weightClassId, weightClassName = weightClassName))
+    private val _state = MutableStateFlow(RankingDetailUiState(weightClassId = weightClassId))
     val state: StateFlow<RankingDetailUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<RankingDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
@@ -35,12 +34,7 @@ class RankingDetailViewModel(
         viewModelScope.launch {
             repository.getWeightClassById(weightClassId)
                 .collect { weightClass ->
-                    _state.update {
-                        it.copy(
-                            rankedFighters = weightClass?.rankings ?: emptyList(),
-                            isLoading = false
-                        )
-                    }
+                    _state.update { it.copy(rankedFighters = weightClass?.rankings ?: emptyList()) }
                 }
         }
     }

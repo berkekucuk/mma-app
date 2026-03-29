@@ -34,20 +34,19 @@ import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
-import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RankingsScreenRoot(
     viewModel: RankingViewModel = koinViewModel(),
-    onNavigateToRankingDetail: (String, String) -> Unit
+    onNavigateToRankingDetail: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is RankingNavigationEvent.ToRankingDetail -> onNavigateToRankingDetail(event.weightClassId, event.weightClassName)
+                is RankingNavigationEvent.ToRankingDetail -> onNavigateToRankingDetail(event.weightClassId)
             }
         }
     }
@@ -73,7 +72,7 @@ fun RankingScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val onRefresh = remember(onAction) { { onAction(RankingUiAction.OnRefresh) } }
-    val onWeightClassClicked = remember(onAction) { { weightClassId: String, weightClassName: String -> onAction(RankingUiAction.OnWeightClassClicked(weightClassId, weightClassName)) } }
+    val onWeightClassClicked = remember(onAction) { { weightClassId: String -> onAction(RankingUiAction.OnWeightClassClicked(weightClassId)) } }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -136,35 +135,29 @@ fun RankingScreen(
             }
         }
     ) { innerPadding ->
-        LoadingContent(
-            isLoading = state.isLoading,
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AppColors.pagerBackground),
-                beyondViewportPageCount = 1
-            ) { page ->
-                when (page) {
-                    0 -> RankingContainer(
-                        weightClasses = state.weightClasses.filter { !it.isWomens },
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                        onWeightClassClicked = onWeightClassClicked,
-                        listState = mensListState
-                    )
-                    1 -> RankingContainer(
-                        weightClasses = state.weightClasses.filter { it.isWomens },
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                        onWeightClassClicked = onWeightClassClicked,
-                        listState = womensListState
-                    )
-                }
+                .background(AppColors.pagerBackground),
+            beyondViewportPageCount = 1
+        ) { page ->
+            when (page) {
+                0 -> RankingContainer(
+                    weightClasses = state.weightClasses.filter { !it.isWomens },
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = onRefresh,
+                    onWeightClassClicked = onWeightClassClicked,
+                    listState = mensListState
+                )
+                1 -> RankingContainer(
+                    weightClasses = state.weightClasses.filter { it.isWomens },
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = onRefresh,
+                    onWeightClassClicked = onWeightClassClicked,
+                    listState = womensListState
+                )
             }
         }
     }
