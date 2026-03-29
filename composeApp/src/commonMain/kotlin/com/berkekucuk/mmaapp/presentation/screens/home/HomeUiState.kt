@@ -4,7 +4,6 @@ import com.berkekucuk.mmaapp.domain.model.Event
 
 data class HomeUiState(
     val isLoading: Boolean = true,
-    val isYearLoading: Boolean = false,
     val isRefreshingUpcomingTab: Boolean = false,
     val isRefreshingCompletedTab: Boolean = false,
     val selectedYear: Int = 0,

@@ -81,12 +81,7 @@ class HomeViewModel(
                     eventRepository.getCompletedEventsByYear(year)
                 }
                 .collect { events ->
-                    _state.update { state ->
-                        state.copy(
-                            completedEvents = events,
-                            isYearLoading = if (state.isYearLoading && events.isNotEmpty()) false else state.isYearLoading,
-                        )
-                    }
+                    _state.update { it.copy(completedEvents = events) }
                 }
         }
     }
@@ -115,18 +110,18 @@ class HomeViewModel(
 
     private fun onYearSelected(year: Int) {
         if (_state.value.selectedYear == year) return
-        _state.update { it.copy(selectedYear = year, isYearLoading = true, error = null)}
+        _state.update { it.copy(selectedYear = year, isRefreshingCompletedTab = true, error = null) }
         viewModelScope.launch {
             eventRepository.syncEventsByYear(year)
                 .onSuccess {
-                    _state.update { it.copy(isYearLoading = false) }
+                    _state.update { it.copy(isRefreshingCompletedTab = false) }
                 }
                 .onFailure { e ->
                     val isSynced = eventRepository.isYearSynced(year)
                     val errorType = if (!isSynced) {
                         if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
                     } else null
-                    _state.update { it.copy(isYearLoading = false, error = errorType) }
+                    _state.update { it.copy(isRefreshingCompletedTab = false, error = errorType) }
                 }
         }
     }
@@ -147,13 +142,17 @@ class HomeViewModel(
     private fun onRefreshCompletedTab() {
         val selectedYear = _state.value.selectedYear
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshingCompletedTab = true) }
+            _state.update { it.copy(isRefreshingCompletedTab = true, error = null) }
             eventRepository.syncEventsByYear(selectedYear, forceRefresh = true)
                 .onSuccess {
                     _state.update { it.copy(isRefreshingCompletedTab = false, error = null) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isRefreshingCompletedTab = false) }
+                .onFailure { e ->
+                    val isSynced = eventRepository.isYearSynced(selectedYear)
+                    val errorType = if (!isSynced) {
+                        if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
+                    } else null
+                    _state.update { it.copy(isRefreshingCompletedTab = false, error = errorType) }
                 }
         }
     }

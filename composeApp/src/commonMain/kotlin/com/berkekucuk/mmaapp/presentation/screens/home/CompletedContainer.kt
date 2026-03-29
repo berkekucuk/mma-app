@@ -1,15 +1,12 @@
 package com.berkekucuk.mmaapp.presentation.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -17,13 +14,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,7 +28,6 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,23 +38,11 @@ fun CompletedContainer(
     onEventClick: (String) -> Unit,
     availableYears: List<Int>,
     selectedYear: Int?,
-    isYearLoading: Boolean,
     onYearSelected: (Int) -> Unit,
     listState: LazyListState
 ) {
     val strings = LocalAppStrings.current
     var expanded by rememberSaveable { mutableStateOf(false) }
-
-    var showEmptyMessage by remember { mutableStateOf(false) }
-
-    LaunchedEffect(isYearLoading, completedEvents) {
-        if (!isYearLoading && completedEvents.isEmpty()) {
-            delay(150)
-            showEmptyMessage = true
-        } else {
-            showEmptyMessage = false
-        }
-    }
 
     ListContainer(
         isRefreshing = isRefreshing,
@@ -130,43 +111,15 @@ fun CompletedContainer(
             }
         }
 
-        if (isYearLoading) {
-            item(contentType = "Loader") {
-                Box(
-                    modifier = Modifier
-                        .fillParentMaxSize()
-                        .background(AppColors.pagerBackground),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = AppColors.ufcRed)
-                }
-            }
-        } else if (completedEvents.isEmpty()) {
-            if (showEmptyMessage) {
-                item(contentType = "EmptyState") {
-                    Box(
-                        modifier = Modifier.fillParentMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = strings.emptyEventsForYear(selectedYear.toString()),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-        } else {
-            items(
-                items = completedEvents,
-                key = { it.eventId },
-                contentType = { "EventItem" }
-            ) { event ->
-                EventItem(
-                    event = event,
-                    onClick = { onEventClick(event.eventId) }
-                )
-            }
+        items(
+            items = completedEvents,
+            key = { it.eventId },
+            contentType = { "EventItem" }
+        ) { event ->
+            EventItem(
+                event = event,
+                onClick = { onEventClick(event.eventId) }
+            )
         }
     }
 }

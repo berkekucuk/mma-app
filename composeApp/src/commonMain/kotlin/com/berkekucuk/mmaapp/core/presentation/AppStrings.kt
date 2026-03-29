@@ -6,8 +6,6 @@ data class AppStrings(
     val eventsTitle: String,
     val tabUpcoming: String,
     val tabCompleted: String,
-    val emptyUpcomingEvents: String,
-    val emptyEventsForYear: (String) -> String,
     val toBeAnnounced: String,
     val tba: String,
     val liveEvent: String,

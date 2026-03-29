@@ -193,7 +193,6 @@ fun HomeScreen(
                         onEventClick = onEventClicked,
                         availableYears = state.availableYears,
                         selectedYear = state.selectedYear,
-                        isYearLoading = state.isYearLoading,
                         onYearSelected = onYearSelected,
                         listState = completedListState,
                     )
