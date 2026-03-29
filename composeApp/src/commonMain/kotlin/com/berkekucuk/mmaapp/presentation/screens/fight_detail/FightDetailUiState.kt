@@ -5,7 +5,6 @@ import com.berkekucuk.mmaapp.domain.model.Fighter
 import kotlin.time.Instant
 
 data class FightDetailUiState(
-    val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val eventName: String? = null,
     val eventDate: Instant? = null,

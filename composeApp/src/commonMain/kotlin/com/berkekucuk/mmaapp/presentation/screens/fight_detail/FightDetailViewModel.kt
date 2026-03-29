@@ -60,7 +60,6 @@ class FightDetailViewModel(
                         it.copy(
                             fight = fight,
                             eventDate = event.datetimeUtc,
-                            isLoading = false,
                             eventName = event.name
                         )
                     }
@@ -83,7 +82,6 @@ class FightDetailViewModel(
                             fight = fight,
                             eventName = fight?.eventName,
                             eventDate = fight?.eventDate,
-                            isLoading = false,
                         )
                     }
                     if (fight != null) {

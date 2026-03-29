@@ -47,7 +47,6 @@ import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
-import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -227,65 +226,59 @@ fun FightDetailScreen(
             }
         },
     ) { innerPadding ->
-        LoadingContent(
-            isLoading = state.isLoading,
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-        ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(AppColors.pagerBackground),
-                beyondViewportPageCount = 1,
-            ) { page ->
-                when (page) {
-                    0 -> ListContainer(
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                        contentPadding = PaddingValues(top = 8.dp),
-                        verticalSpacing = 8.dp,
-                        extraBottomPadding = navBarBottomPadding,
-                    ) {
-                        item(contentType = "FightDetailContainer") {
-                            FightDetailContainer(
-                                redCorner = fight?.redCorner,
-                                blueCorner = fight?.blueCorner,
-                                eventDate = state.eventDate,
-                            )
-                        }
-                        if (hasMetaInfo) {
-                            item(contentType = "FightMetaCard") {
-                                FightMetaCard(fight = fight)
-                            }
-                        }
-                        if (!eventId.isNullOrBlank() && displayTitle != null) {
-                            item(contentType = "EventLink") {
-                                EventLinkRow(
-                                    eventName = displayTitle,
-                                    isBackNavigation = cameFromEvent,
-                                    onClick = onEventLinkClick,
-                                )
-                            }
+                .padding(innerPadding)
+                .background(AppColors.pagerBackground),
+            beyondViewportPageCount = 1,
+        ) { page ->
+            when (page) {
+                0 -> ListContainer(
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = onRefresh,
+                    contentPadding = PaddingValues(top = 8.dp),
+                    verticalSpacing = 8.dp,
+                    extraBottomPadding = navBarBottomPadding,
+                ) {
+                    item(contentType = "FightDetailContainer") {
+                        FightDetailContainer(
+                            redCorner = fight?.redCorner,
+                            blueCorner = fight?.blueCorner,
+                            eventDate = state.eventDate,
+                        )
+                    }
+                    if (hasMetaInfo) {
+                        item(contentType = "FightMetaCard") {
+                            FightMetaCard(fight = fight)
                         }
                     }
-                    1 -> ListContainer(
-                        isRefreshing = state.isRefreshing,
-                        onRefresh = onRefresh,
-                        contentPadding = PaddingValues(top = 8.dp),
-                        verticalSpacing = 8.dp,
-                        extraBottomPadding = navBarBottomPadding,
-                    ) {
-                        if (fight != null) {
-                            item(contentType = "RadarChart") {
-                                FighterRadarChart(
-                                    redCorner = fight.redCorner,
-                                    blueCorner = fight.blueCorner,
-                                    redFighterFull = state.redFighter,
-                                    blueFighterFull = state.blueFighter,
-                                )
-                            }
+                    if (!eventId.isNullOrBlank() && displayTitle != null) {
+                        item(contentType = "EventLink") {
+                            EventLinkRow(
+                                eventName = displayTitle,
+                                isBackNavigation = cameFromEvent,
+                                onClick = onEventLinkClick,
+                            )
+                        }
+                    }
+                }
+                1 -> ListContainer(
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = onRefresh,
+                    contentPadding = PaddingValues(top = 8.dp),
+                    verticalSpacing = 8.dp,
+                    extraBottomPadding = navBarBottomPadding,
+                ) {
+                    if (fight != null) {
+                        item(contentType = "RadarChart") {
+                            FighterRadarChart(
+                                redCorner = fight.redCorner,
+                                blueCorner = fight.blueCorner,
+                                redFighterFull = state.redFighter,
+                                blueFighterFull = state.blueFighter,
+                            )
                         }
                     }
                 }
