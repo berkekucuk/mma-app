@@ -7,9 +7,11 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.AppTypography
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorBox
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -71,7 +73,8 @@ fun ProfileEditScreen(
                 title = {
                     Text(
                         text = strings.profileEditTitle,
-                        style = AppTypography.titleLarge,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Normal,
                     )
                 },
                 navigationIcon = {
@@ -104,7 +107,8 @@ fun ProfileEditScreen(
                 ) {
                     Text(
                         text = strings.profileEditPersonalInfo,
-                        style = AppTypography.titleMedium,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
                         color = AppColors.textSecondary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -112,8 +116,8 @@ fun ProfileEditScreen(
                     OutlinedTextField(
                         value = state.fullName,
                         onValueChange = onFullNameChanged,
-                        textStyle = AppTypography.bodyMedium,
-                        label = { Text(strings.profileEditFullName, style = AppTypography.bodyMedium) },
+                        textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
+                        label = { Text(strings.profileEditFullName, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = AppColors.textPrimary,
                             unfocusedTextColor = AppColors.textPrimary,
@@ -137,8 +141,8 @@ fun ProfileEditScreen(
                     OutlinedTextField(
                         value = state.username,
                         onValueChange = onUsernameChanged,
-                        textStyle = AppTypography.bodyMedium,
-                        label = { Text(strings.profileEditUsernameLabel, style = AppTypography.bodyMedium) },
+                        textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
+                        label = { Text(strings.profileEditUsernameLabel, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = AppColors.textPrimary,
                             unfocusedTextColor = AppColors.textPrimary,

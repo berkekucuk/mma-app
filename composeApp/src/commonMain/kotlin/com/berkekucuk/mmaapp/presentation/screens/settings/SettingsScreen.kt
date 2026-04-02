@@ -21,10 +21,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
-import com.berkekucuk.mmaapp.core.presentation.AppTypography
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
@@ -55,7 +57,7 @@ fun SettingsScreen(
                     title = {
                         Text(
                             text = strings.settingsTitle,
-                            style = AppTypography.titleLarge,
+                            style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Normal),
                         )
                     },
                     navigationIcon = {

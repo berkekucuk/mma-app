@@ -73,7 +73,7 @@ fun EventInfoCard(
             Text(
                 text = date ?: strings.tba,
                 color = AppColors.textPrimary,
-                fontSize = 13.sp,
+                fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -91,7 +91,7 @@ fun EventInfoCard(
                 Text(
                     text = strings.liveEvent,
                     color = AppColors.winnerFrame,
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

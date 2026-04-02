@@ -12,9 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.AppTypography
 
 @Composable
 fun ErrorBox(
@@ -39,7 +40,8 @@ fun ErrorBox(
         Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = message,
-            style = AppTypography.labelMedium,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
             color = AppColors.loseColor2
         )
     }
