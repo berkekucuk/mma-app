@@ -95,16 +95,16 @@ class FightDetailViewModel(
     private fun observeNotificationStatus(fightId: String) {
         if (notificationObserverJob != null) return
         notificationObserverJob = viewModelScope.launch {
-            val authState = authRepository.authState.first { it !is AuthState.Loading }
-            if (authState is AuthState.Authenticated) {
-                profileRepository.observeFightNotificationStatus(fightId, authState.userId)
+            val userId = getAuthenticatedUserId()
+            if (userId != null) {
+                profileRepository.observeFightNotificationStatus(fightId, userId)
                     .collect { isEnabled -> _state.update { it.copy(isNotificationEnabled = isEnabled) } }
             }
         }
         viewModelScope.launch {
-            val authState = authRepository.authState.first { it !is AuthState.Loading }
-            if (authState is AuthState.Authenticated) {
-                profileRepository.syncFightNotificationStatus(fightId, authState.userId)
+            val userId = getAuthenticatedUserId()
+            if (userId != null) {
+                profileRepository.syncFightNotificationStatus(fightId, userId)
             }
         }
     }
@@ -156,25 +156,33 @@ class FightDetailViewModel(
 
     private fun onNotificationClicked() {
         viewModelScope.launch {
-            val authState = authRepository.authState.first { it !is AuthState.Loading }
-            if (authState !is AuthState.Authenticated) {
+            // Check if user is authenticated
+            val userId = getAuthenticatedUserId()
+            if (userId == null) {
                 _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
                 return@launch
             }
 
+            // Retrieve fight data and notification state
             val fight = _state.value.fight
-            if (fight != null && (fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank())) {
+            val isFightCompleted = fight != null && (fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank())
+            val isNotificationEnabled = _state.value.isNotificationEnabled
+            
+            // Prevent adding notifications to completed fights (only allow removal)
+            if (isFightCompleted && !isNotificationEnabled) {
                 _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
                 return@launch
             }
 
+            // Get fight ID and toggle notification
             val fightId = fight?.fightId ?: return@launch
-            val isNotificationEnabled = _state.value.isNotificationEnabled
             val result = if (isNotificationEnabled) {
-                profileRepository.removeFightNotification(fightId, authState.userId)
+                profileRepository.removeFightNotification(fightId, userId)
             } else {
-                profileRepository.addFightNotification(fightId, authState.userId)
+                profileRepository.addFightNotification(fightId, userId)
             }
+            
+            // Handle operation failure
             result.onFailure {
                 _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
             }
@@ -211,5 +219,10 @@ class FightDetailViewModel(
         viewModelScope.launch {
             _navigation.emit(event)
         }
+    }
+
+    private suspend fun getAuthenticatedUserId(): String? {
+        val authState = authRepository.authState.first { it !is AuthState.Loading }
+        return if (authState is AuthState.Authenticated) authState.userId else null
     }
 }
