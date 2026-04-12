@@ -1,12 +1,12 @@
 package com.berkekucuk.mmaapp.data.remote.api
 
-import com.berkekucuk.mmaapp.data.remote.dto.ProfileDto
+import com.berkekucuk.mmaapp.data.remote.dto.UserDto
 
-interface ProfileRemoteDataSource {
+interface UserRemoteDataSource {
 
-    suspend fun fetchProfile(userId: String): ProfileDto
+    suspend fun fetchUser(userId: String): UserDto
 
-    suspend fun updateProfile(userId: String, fullName: String, username: String)
+    suspend fun updateUser(userId: String, fullName: String, username: String)
 
     suspend fun isFightNotificationEnabled(fightId: String, userId: String): Boolean
 
