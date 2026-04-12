@@ -19,22 +19,23 @@ import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassSupabaseAPI
-import com.berkekucuk.mmaapp.data.remote.api.ProfileRemoteDataSource
-import com.berkekucuk.mmaapp.data.remote.api.ProfileSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.UserSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.WeightClassRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.AuthRepositoryImpl
-import com.berkekucuk.mmaapp.data.repository.ProfileRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.UserRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
-import com.berkekucuk.mmaapp.domain.repository.ProfileRepository
+import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
+import com.berkekucuk.mmaapp.presentation.screens.menu.MenuViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditViewModel
@@ -83,7 +84,7 @@ val appModule = module {
     }
 
     single {
-        get<AppDatabase>().rankingsDao()
+        get<AppDatabase>().rankingDao()
     }
 
     single {
@@ -91,7 +92,7 @@ val appModule = module {
     }
 
     single {
-        get<AppDatabase>().profileDao()
+        get<AppDatabase>().userDao()
     }
 
     // remote data source
@@ -107,8 +108,8 @@ val appModule = module {
         FighterSupabaseAPI(get())
     }
 
-    single<ProfileRemoteDataSource> {
-        ProfileSupabaseAPI(client = get())
+    single<UserRemoteDataSource> {
+        UserSupabaseAPI(client = get())
     }
 
     single<DeviceTokenRemoteDataSource> {
@@ -152,8 +153,8 @@ val appModule = module {
         )
     }
 
-    single<ProfileRepository> {
-        ProfileRepositoryImpl(
+    single<UserRepository> {
+        UserRepositoryImpl(
             remoteDataSource = get(),
             dao = get()
         )
@@ -179,7 +180,7 @@ val appModule = module {
             eventRepository = get(),
             fighterRepository = get(),
             authRepository = get(),
-            profileRepository = get(),
+            userRepository = get(),
             savedStateHandle = get()
         )
     }
@@ -211,15 +212,21 @@ val appModule = module {
 
     viewModel {
         ProfileViewModel(
-            authRepository = get(),
-            profileRepository = get()
+            userRepository = get(),
+            savedStateHandle = get()
+        )
+    }
+
+    viewModel {
+        MenuViewModel(
+            authRepository = get()
         )
     }
 
     viewModel {
         ProfileEditViewModel(
-            authRepository = get(),
-            profileRepository = get()
+            userRepository = get(),
+            savedStateHandle = get()
         )
     }
 }

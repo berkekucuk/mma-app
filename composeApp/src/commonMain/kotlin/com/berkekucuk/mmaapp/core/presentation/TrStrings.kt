@@ -113,7 +113,7 @@ val TrStrings = AppStrings(
     settingsSectionOdds = "Bahis Formatı",
     navFights = "Dövüşler",
     navRankings = "Sıralamalar",
-    navProfile = "Profil",
+    navMenu = "Menü",
     weightClassDisplayName = { id ->
         when (id.uppercase()) {
             "SW" -> "Kadınlar Saman Siklet"

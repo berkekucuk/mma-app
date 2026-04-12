@@ -113,7 +113,7 @@ val EnStrings = AppStrings(
     settingsSectionOdds = "Odds Format",
     navFights = "Fights",
     navRankings = "Rankings",
-    navProfile = "Profile",
+    navMenu = "Menu",
     weightClassDisplayName = { id ->
         when (id.uppercase()) {
             "SW" -> "Women's Strawweight"

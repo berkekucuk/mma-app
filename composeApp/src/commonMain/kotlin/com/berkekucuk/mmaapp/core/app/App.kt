@@ -28,6 +28,7 @@ import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreen
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
 import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
@@ -85,8 +86,11 @@ fun App() {
                     onNavigateToRankingDetail = { weightClassId ->
                         rootNavController.navigate(Route.RankingDetail(weightClassId))
                     },
-                    onNavigateToProfileEdit = {
-                        rootNavController.navigate(Route.ProfileEdit)
+                    onNavigateToProfile = { userId ->
+                        rootNavController.navigate(Route.Profile(userId))
+                    },
+                    onNavigateToProfileEdit = { userId ->
+                        rootNavController.navigate(Route.ProfileEdit(userId))
                     },
                     onNavigateToFighterSearch = {
                         rootNavController.navigate(Route.FighterSearch)
@@ -149,6 +153,17 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 ProfileEditScreenRoot(
+                    onBackClick = { rootNavController.navigateUp() }
+                )
+            }
+
+            composable<Route.Profile>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) {
+                ProfileScreenRoot(
                     onBackClick = { rootNavController.navigateUp() }
                 )
             }

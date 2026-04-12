@@ -1,7 +1,7 @@
 package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.SportsMma
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -15,5 +15,5 @@ data class TopLevelRoute<T : Route>(
 val bottomNavItems = listOf(
     TopLevelRoute("Fights", Route.Home, Icons.Filled.SportsMma),
     TopLevelRoute("Rankings", Route.Rankings, Icons.Filled.Star),
-    TopLevelRoute("Profile", Route.Profile, Icons.Filled.Person)
+    TopLevelRoute("Menu", Route.Menu, Icons.Filled.Menu)
 )

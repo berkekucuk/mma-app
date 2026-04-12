@@ -21,7 +21,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.menu.MenuScreenRoot
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 
@@ -29,7 +29,8 @@ import androidx.compose.animation.ExitTransition
 fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToRankingDetail: (String) -> Unit,
-    onNavigateToProfileEdit: () -> Unit,
+    onNavigateToProfile: (String) -> Unit,
+    onNavigateToProfileEdit: (String) -> Unit,
     onNavigateToFighterSearch: () -> Unit,
     onNavigateToSettings: () -> Unit,
 ) {
@@ -56,7 +57,7 @@ fun MainScreenWrapper(
                         val label = when (item.route) {
                             Route.Home -> strings.navFights
                             Route.Rankings -> strings.navRankings
-                            Route.Profile -> strings.navProfile
+                            Route.Menu -> strings.navMenu
                             else -> item.name
                         }
 
@@ -122,9 +123,10 @@ fun MainScreenWrapper(
                 )
             }
 
-            composable<Route.Profile> {
-                ProfileScreenRoot(
-                    onNavigateToEdit = onNavigateToProfileEdit
+            composable<Route.Menu> {
+                MenuScreenRoot(
+                    onNavigateToProfile = onNavigateToProfile,
+                    onNavigateToProfileEdit = onNavigateToProfileEdit,
                 )
             }
         }
