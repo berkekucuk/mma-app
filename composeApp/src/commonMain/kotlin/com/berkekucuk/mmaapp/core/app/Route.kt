@@ -6,8 +6,9 @@ sealed interface Route {
     @Serializable data object MainGraph : Route
     @Serializable data object Home : Route
     @Serializable data object Rankings : Route
-    @Serializable data object Profile : Route
-    @Serializable data object ProfileEdit : Route
+    @Serializable data object Menu : Route
+    @Serializable data class Profile(val userId: String) : Route
+    @Serializable data class ProfileEdit(val userId: String) : Route
     @Serializable data class EventDetail(val eventId: String, val fromFightDetail: Boolean = false) : Route
     @Serializable data class FightDetail(val eventId: String, val fightId: String, val fighterId: String? = null) : Route
     @Serializable data class FighterDetail(val fighterId: String) : Route

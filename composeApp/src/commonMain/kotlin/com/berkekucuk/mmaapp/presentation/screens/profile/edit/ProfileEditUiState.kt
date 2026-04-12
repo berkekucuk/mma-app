@@ -5,7 +5,6 @@ data class ProfileEditUiState(
     val username: String = "",
     val originalFullName: String = "",
     val originalUsername: String = "",
-    val isInitializing: Boolean = false,
     val isSaving: Boolean = false,
     val error: ProfileEditError? = null
 )

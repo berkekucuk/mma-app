@@ -19,45 +19,45 @@ class Converters {
         return value?.let { json.encodeToString(it) }
     }
 
-    private inline fun <reified T> decode(jsonString: String?): T? {
-        if (jsonString.isNullOrEmpty()) return null
+    private inline fun <reified T> decode(value: String?): T? {
+        if (value.isNullOrEmpty()) return null
         return try {
-            json.decodeFromString<T>(jsonString)
+            json.decodeFromString<T>(value)
         } catch (e: Exception) {
             null
         }
     }
 
-    private inline fun <reified T> encodeList(list: List<T>?): String {
-        return json.encodeToString(list ?: emptyList())
+    private inline fun <reified T> encodeList(value: List<T>?): String {
+        return json.encodeToString(value ?: emptyList())
     }
 
-    private inline fun <reified T> decodeList(jsonString: String?): List<T> {
-        if (jsonString.isNullOrEmpty()) return emptyList()
+    private inline fun <reified T> decodeList(value: String?): List<T> {
+        if (value.isNullOrEmpty()) return emptyList()
         return try {
-            json.decodeFromString(jsonString)
+            json.decodeFromString(value)
         } catch (e: Exception) {
             emptyList()
         }
     }
 
     @TypeConverter
-    fun fromFightsList(fights: List<FightDto>?): String = encodeList(fights)
+    fun fromFightsList(value: List<FightDto>?): String = encodeList(value)
 
     @TypeConverter
-    fun toFightsList(fightsString: String?): List<FightDto> = decodeList(fightsString)
+    fun toFightsList(value: String?): List<FightDto> = decodeList(value)
 
     @TypeConverter
-    fun fromFighter(value: FighterDto?): String? = encode(value)
+    fun fromFighterList(value: List<FighterDto>?): String = encodeList(value)
 
     @TypeConverter
-    fun toFighter(value: String?): FighterDto? = decode(value)
+    fun toFighterList(value: String?): List<FighterDto> = decodeList(value)
 
     @TypeConverter
     fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.fromEpochMilliseconds(it) }
 
     @TypeConverter
-    fun toTimestamp(date: Instant?): Long? = date?.toEpochMilliseconds()
+    fun toTimestamp(value: Instant?): Long? = value?.toEpochMilliseconds()
 
     @TypeConverter
     fun fromRecord(value: RecordDto?): String? = encode(value)
@@ -72,7 +72,7 @@ class Converters {
     fun toMeasurement(value: String?): MeasurementDto? = decode(value)
 
     @TypeConverter
-    fun fromRankingsList(rankings: List<RankedFighterDto>?): String = encodeList(rankings)
+    fun fromRankingsList(value: List<RankedFighterDto>?): String = encodeList(value)
 
     @TypeConverter
     fun toRankingsList(value: String?): List<RankedFighterDto> = decodeList(value)

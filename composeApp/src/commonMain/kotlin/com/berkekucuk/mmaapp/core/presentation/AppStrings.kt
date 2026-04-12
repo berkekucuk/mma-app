@@ -130,7 +130,7 @@ data class AppStrings(
     // Bottom Nav
     val navFights: String,
     val navRankings: String,
-    val navProfile: String,
+    val navMenu: String,
     // Enum display names
     val weightClassDisplayName: (String) -> String,
     val resultDisplayName: (String) -> String,

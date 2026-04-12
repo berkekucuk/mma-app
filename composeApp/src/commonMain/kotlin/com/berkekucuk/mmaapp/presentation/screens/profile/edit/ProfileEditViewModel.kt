@@ -1,26 +1,27 @@
 package com.berkekucuk.mmaapp.presentation.screens.profile.edit
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.berkekucuk.mmaapp.domain.model.AuthState
-import com.berkekucuk.mmaapp.domain.repository.AuthRepository
-import com.berkekucuk.mmaapp.domain.repository.ProfileRepository
+import androidx.navigation.toRoute
+import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ProfileEditViewModel(
-    private val authRepository: AuthRepository,
-    private val profileRepository: ProfileRepository
+    private val userRepository: UserRepository,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    private val route = savedStateHandle.toRoute<Route.ProfileEdit>()
+    private val userId: String = route.userId
 
     private val _state = MutableStateFlow(ProfileEditUiState())
     val state: StateFlow<ProfileEditUiState> = _state.asStateFlow()
@@ -32,24 +33,22 @@ class ProfileEditViewModel(
     private val knownTakenUsernames = mutableSetOf<String>()
 
     init {
-        observeProfile()
+        loadUser()
     }
 
-    private fun observeProfile() {
+    private fun loadUser() {
         viewModelScope.launch {
-            _state.update { it.copy(isInitializing = true) }
-
-            val authState = authRepository.authState.filterIsInstance<AuthState.Authenticated>().first()
-            val profile = profileRepository.getProfile(authState.userId).filterNotNull().first()
-
-            _state.update {
-                it.copy(
-                    fullName = profile.fullName ?: "",
-                    username = profile.username ?: "",
-                    originalFullName = profile.fullName ?: "",
-                    originalUsername = profile.username ?: "",
-                    isInitializing = false
-                )
+            userRepository.getUser(userId)
+                .collect { user ->
+                _state.update {
+                    it.copy(
+                        fullName = user?.fullName ?: "",
+                        username = user?.username ?: "",
+                        originalFullName = user?.fullName ?: "",
+                        originalUsername = user?.username ?: "",
+                        error = null,
+                    )
+                }
             }
         }
     }
@@ -116,33 +115,26 @@ class ProfileEditViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isSaving = true) }
 
-            val authState = authRepository.authState.first { it !is AuthState.Loading }
+            val result = userRepository.updateUser(
+                userId = userId,
+                fullName = fullName,
+                username = username
+            )
 
-            if (authState is AuthState.Authenticated) {
-                val result = profileRepository.updateProfile(
-                    userId = authState.userId,
-                    fullName = fullName,
-                    username = username
-                )
-
-                result.onSuccess {
-                    _state.update { it.copy(isSaving = false) }
-                    navigateTo(ProfileEditNavigationEvent.Back)
-                }.onFailure { e ->
-                    val errorType = when (e) {
-                        is PostgrestRestException -> {
-                            if (e.code == "23505") {
-                                knownTakenUsernames.add(username)
-                                ProfileEditError.USERNAME_TAKEN
-                            }
-                            else ProfileEditError.UNKNOWN_ERROR
-                        }
-                        else -> ProfileEditError.NETWORK_ERROR
+            result.onSuccess {
+                _state.update { it.copy(isSaving = false) }
+                navigateTo(ProfileEditNavigationEvent.Back)
+            }.onFailure { e ->
+                val errorType = when (e) {
+                    is PostgrestRestException -> {
+                        if (e.code == "23505") {
+                            knownTakenUsernames.add(username)
+                            ProfileEditError.USERNAME_TAKEN
+                        } else ProfileEditError.UNKNOWN_ERROR
                     }
-                    _state.update { it.copy(isSaving = false, error = errorType) }
+                    else -> ProfileEditError.NETWORK_ERROR
                 }
-            }else {
-                _state.update { it.copy(isSaving = false, error = ProfileEditError.UNKNOWN_ERROR) }
+                _state.update { it.copy(isSaving = false, error = errorType) }
             }
         }
     }

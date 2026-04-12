@@ -8,12 +8,12 @@ import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.local.dao.FighterDao
-import com.berkekucuk.mmaapp.data.local.dao.ProfileDao
+import com.berkekucuk.mmaapp.data.local.dao.UserDao
 import com.berkekucuk.mmaapp.data.local.dao.RankingDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
-import com.berkekucuk.mmaapp.data.local.entity.ProfileEntity
+import com.berkekucuk.mmaapp.data.local.entity.UserEntity
 import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
 import com.berkekucuk.mmaapp.data.local.entity.WeightClassEntity
 import kotlinx.coroutines.Dispatchers
@@ -24,19 +24,19 @@ import kotlinx.coroutines.IO
         EventEntity::class,
         WeightClassEntity::class,
         FighterEntity::class,
-        ProfileEntity::class,
+        UserEntity::class,
         SyncedYearEntity::class,
         FightNotificationEntity::class
     ],
-    version = 10
+    version = 12
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
-    abstract fun rankingsDao(): RankingDao
+    abstract fun rankingDao(): RankingDao
     abstract fun fighterDao(): FighterDao
-    abstract fun profileDao(): ProfileDao
+    abstract fun userDao(): UserDao
 }
 
 @Suppress("KotlinNoActualForExpect")

@@ -1,0 +1,8 @@
+package com.berkekucuk.mmaapp.presentation.screens.menu
+
+import com.berkekucuk.mmaapp.domain.model.AuthState
+
+data class MenuUiState(
+    val authState: AuthState = AuthState.Loading,
+    val userId: String? = null,
+)

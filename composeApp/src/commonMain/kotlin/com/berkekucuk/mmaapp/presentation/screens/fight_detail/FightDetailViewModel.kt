@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
-import com.berkekucuk.mmaapp.domain.repository.ProfileRepository
+import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.model.Fight
@@ -26,7 +26,7 @@ class FightDetailViewModel(
     private val eventRepository: EventRepository,
     private val fighterRepository: FighterRepository,
     private val authRepository: AuthRepository,
-    private val profileRepository: ProfileRepository,
+    private val userRepository: UserRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -97,14 +97,14 @@ class FightDetailViewModel(
         notificationObserverJob = viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId != null) {
-                profileRepository.observeFightNotificationStatus(fightId, userId)
+                userRepository.observeFightNotificationStatus(fightId, userId)
                     .collect { isEnabled -> _state.update { it.copy(isNotificationEnabled = isEnabled) } }
             }
         }
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId != null) {
-                profileRepository.syncFightNotificationStatus(fightId, userId)
+                userRepository.syncFightNotificationStatus(fightId, userId)
             }
         }
     }
@@ -177,9 +177,9 @@ class FightDetailViewModel(
             // Get fight ID and toggle notification
             val fightId = fight?.fightId ?: return@launch
             val result = if (isNotificationEnabled) {
-                profileRepository.removeFightNotification(fightId, userId)
+                userRepository.removeFightNotification(fightId, userId)
             } else {
-                profileRepository.addFightNotification(fightId, userId)
+                userRepository.addFightNotification(fightId, userId)
             }
             
             // Handle operation failure

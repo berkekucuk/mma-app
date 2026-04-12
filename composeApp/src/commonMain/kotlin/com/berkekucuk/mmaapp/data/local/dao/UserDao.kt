@@ -5,23 +5,23 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
-import com.berkekucuk.mmaapp.data.local.entity.ProfileEntity
+import com.berkekucuk.mmaapp.data.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ProfileDao {
+interface UserDao {
+
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun getUserById(userId: String): Flow<UserEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProfile(profile: ProfileEntity)
+    suspend fun insertUser(user: UserEntity)
 
-    @Query("SELECT * FROM profiles WHERE id = :userId")
-    fun getProfileById(userId: String): Flow<ProfileEntity?>
+    @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
+    suspend fun updateUser(userId: String, fullName: String, username: String)
 
     @Query("SELECT COUNT(*) > 0 FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
     fun observeIsFightNotificationEnabled(fightId: String, userId: String): Flow<Boolean>
-
-    @Query("UPDATE profiles SET username = :username, full_name = :fullName WHERE id = :userId")
-    suspend fun updateProfile(userId: String, fullName: String, username: String)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFightNotification(entity: FightNotificationEntity)
