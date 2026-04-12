@@ -219,7 +219,8 @@ val appModule = module {
 
     viewModel {
         MenuViewModel(
-            authRepository = get()
+            authRepository = get(),
+            userRepository = get(),
         )
     }
 
