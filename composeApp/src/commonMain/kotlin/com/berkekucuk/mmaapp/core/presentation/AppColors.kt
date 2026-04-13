@@ -98,11 +98,11 @@ val DarkColorScheme = AppColorScheme(
 
 val LightColorScheme = AppColorScheme(
     topBarBackground = Color(0xFFFFFFFF),
-    pagerBackground = Color(0xFFF5F5F5),
-    dropdownMenuBackground = Color(0xFFE0E0E0),
-    textPrimary = Color(0xFF1A1A1A),
-    textSecondary = Color(0xFF5F6368),
-    dateColor = Color(0xFF757575),
+    pagerBackground = Color(0xFFF8F6F3),
+    dropdownMenuBackground = Color(0xFFEBE7E2),
+    textPrimary = Color(0xFF1C1917),
+    textSecondary = Color(0xFF78716C),
+    dateColor = Color(0xFFA8A29E),
     ufcRed = Color(0xFFD20909),
     winnerFrame = Color(0xFF2E8B42),
     upcomingColor = Color(0xFF9E9E9E),
@@ -116,35 +116,35 @@ val LightColorScheme = AppColorScheme(
     noContestColor = Color(0xFFF9D03B),
     noContestColor2 = Color(0xFFF57F17),
     fightItemBackground = Color(0xFFFFFFFF),
-    dividerColor = Color(0xFFE0E0E0),
-    cardHeaderBackground = Color(0xFFEEEEEE),
-    cardBorder = Color(0xFFE0E0E0),
+    dividerColor = Color(0xFFE5E0DA),
+    cardHeaderBackground = Color(0xFFF0ECE8),
+    cardBorder = Color(0xFFE8E3DD),
     fighterBarBackground = Brush.verticalGradient(
-        colors = listOf(Color(0xFFE0E0E0), Color(0xFFF5F5F5))
+        colors = listOf(Color(0xFFEBE7E2), Color(0xFFF8F6F3))
     ),
-    loginGradientTop = Color(0xFFFFEBEE),
-    loginGradientMid1 = Color(0xFFFAFAFA),
-    loginGradientMid2 = Color(0xFFF5F5F5),
-    loginGradientBottom = Color(0xFFEEEEEE),
-    loginGlowWarm = Color(0xFFFCE4EC),
-    loginDivider = Color(0xFFE0E0E0),
-    loginDividerText = Color(0xFF757575),
-    loginSubtitle = Color(0xFF5F6368),
-    loginButtonBackground = Color(0xFF1A1A1A),
+    loginGradientTop = Color(0xFFFFF8F7),
+    loginGradientMid1 = Color(0xFFFBF9F7),
+    loginGradientMid2 = Color(0xFFF5F2EE),
+    loginGradientBottom = Color(0xFFEFEBE6),
+    loginGlowWarm = Color(0xFFFEF2F2),
+    loginDivider = Color(0xFFE5E0DA),
+    loginDividerText = Color(0xFF78716C),
+    loginSubtitle = Color(0xFF78716C),
+    loginButtonBackground = Color(0xFF1C1917),
     loginButtonContent = Color.White,
     eventDetailTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFEBEE), Color(0xFFFFCDD2), Color(0xFFEF9A9A))
+        colors = listOf(Color(0xFFFFF5F5), Color(0xFFFEE2E2), Color(0xFFFECACA))
     ),
     eventsTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFF5F5F5), Color(0xFFEEEEEE))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
     ),
     rankingTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFF3E5F5), Color(0xFFE1BEE7), Color(0xFFCE93D8))
+        colors = listOf(Color(0xFFF5F0F0), Color(0xFFEDE5E5), Color(0xFFE8DCDC))
     ),
     rankingChampionBadge = Brush.horizontalGradient(
-        colors = listOf(Color(0xFFFBC02D), Color(0xFFF57F17))
+        colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))
     ),
-    rankingWeightClassAccent = Color(0xFFE0E0E0)
+    rankingWeightClassAccent = Color(0xFFD6D3CD)
 )
 
 val LocalAppColors = staticCompositionLocalOf<AppColorScheme> {
