@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
@@ -40,6 +39,7 @@ import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import androidx.compose.ui.unit.dp
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -106,7 +106,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
         snackbarHost = {
             SnackbarHost(
@@ -121,7 +121,7 @@ fun HomeScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.eventsTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.eventsTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
@@ -137,21 +137,21 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = null,
-                                tint = AppColors.textPrimary,
+                                tint = AppTheme.colors.textPrimary,
                             )
                         }
                         IconButton(onClick = onNavigateToSettings) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = null,
-                                tint = AppColors.textPrimary,
+                                tint = AppTheme.colors.textPrimary,
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        titleContentColor = AppColors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior
                 )
@@ -175,7 +175,7 @@ fun HomeScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(AppColors.pagerBackground),
+                    .background(AppTheme.colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {

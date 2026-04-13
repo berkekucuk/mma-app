@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
@@ -101,7 +101,7 @@ fun FighterDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         snackbarHost = {
             SnackbarHost(
@@ -117,7 +117,7 @@ fun FighterDetailScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.fighterBarBackground)
+                modifier = Modifier.background(AppTheme.colors.fighterBarBackground)
             ){
                 MediumTopAppBar(
                     title = {
@@ -139,8 +139,8 @@ fun FighterDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary,
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior,
                 )
@@ -163,7 +163,7 @@ fun FighterDetailScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(AppColors.pagerBackground),
+                    .background(AppTheme.colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 val fighter = state.fighter

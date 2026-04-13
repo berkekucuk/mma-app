@@ -23,7 +23,7 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
@@ -43,7 +43,7 @@ fun FighterImage(
     val badgeAlignment = if (alignment == Alignment.Start) Alignment.BottomEnd else Alignment.BottomStart
 
     val isWinner = result?.equals("WIN", ignoreCase = true) == true
-    val borderModifier = if (isWinner) Modifier.border(1.5.dp, AppColors.winnerFrame, CircleShape) else Modifier
+    val borderModifier = if (isWinner) Modifier.border(1.5.dp, AppTheme.colors.winnerFrame, CircleShape) else Modifier
 
     val imageRequest = remember(imageUrl) {
         ImageRequest.Builder(context)
@@ -92,7 +92,7 @@ fun FighterImage(
                     .align(boxAlignment)
                     .size(width = flagWidth, height = flagHeight)
                     .clip(RoundedCornerShape(2.dp))
-                    .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
+                    .border(0.5.dp, AppTheme.colors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -105,8 +105,8 @@ fun FighterImage(
                     .align(badgeAlignment)
                     .offset(y = badgeOffset)
                     .size(badgeSize)
-                    .background(AppColors.winnerFrame, CircleShape)
-                    .border(1.dp, AppColors.topBarBackground, CircleShape),
+                    .background(AppTheme.colors.winnerFrame, CircleShape)
+                    .border(1.dp, AppTheme.colors.topBarBackground, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

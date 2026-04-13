@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
@@ -48,12 +48,12 @@ fun RankedFighterRow(
                 modifier = Modifier
                     .size(26.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(AppColors.rankingChampionBadge),
+                    .background(AppTheme.colors.rankingChampionBadge),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = rankLabel,
-                    color = AppColors.pagerBackground,
+                    color = AppTheme.colors.pagerBackground,
                     fontSize = 12.sp,
                     fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,
@@ -67,7 +67,7 @@ fun RankedFighterRow(
             ) {
                 Text(
                     text = rankLabel,
-                    color = AppColors.textSecondary,
+                    color = AppTheme.colors.textSecondary,
                     fontSize = 14.sp,
                     fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,

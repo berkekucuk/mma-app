@@ -19,11 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuScreenRoot
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 
 @Composable
 fun MainScreenWrapper(
@@ -40,13 +40,13 @@ fun MainScreenWrapper(
     val strings = LocalAppStrings.current
 
     Scaffold(
-        containerColor = AppColors.topBarBackground,
+        containerColor = AppTheme.colors.topBarBackground,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         bottomBar = {
             Column {
                 HorizontalDivider(color = Color.Black, thickness = 1.dp)
                 NavigationBar(
-                    containerColor = AppColors.topBarBackground,
+                    containerColor = AppTheme.colors.topBarBackground,
                     tonalElevation = 0.dp
                 ) {
                     bottomNavItems.forEach { item ->
@@ -86,8 +86,8 @@ fun MainScreenWrapper(
                             },
                             alwaysShowLabel = true,
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = AppColors.ufcRed,
-                                selectedTextColor = AppColors.ufcRed,
+                                selectedIconColor = AppTheme.colors.ufcRed,
+                                selectedTextColor = AppTheme.colors.ufcRed,
                                 indicatorColor = Color.Transparent,
                                 unselectedIconColor = Color.Gray,
                                 unselectedTextColor = Color.Gray

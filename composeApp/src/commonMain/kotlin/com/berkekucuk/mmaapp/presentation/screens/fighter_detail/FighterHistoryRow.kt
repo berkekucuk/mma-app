@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toShortDate
 import com.berkekucuk.mmaapp.core.utils.toYear
@@ -42,21 +42,21 @@ fun FightHistoryRow(
     val result = fighter?.result
 
     val badgeColor = when (result) {
-        Result.PENDING -> AppColors.upcomingColor
-        Result.WIN -> AppColors.winColor
-        Result.LOSS -> AppColors.loseColor
-        Result.DRAW -> AppColors.drawColor
-        Result.NO_CONTEST -> AppColors.noContestColor
-        else -> AppColors.cardBorder
+        Result.PENDING -> AppTheme.colors.upcomingColor
+        Result.WIN -> AppTheme.colors.winColor
+        Result.LOSS -> AppTheme.colors.loseColor
+        Result.DRAW -> AppTheme.colors.drawColor
+        Result.NO_CONTEST -> AppTheme.colors.noContestColor
+        else -> AppTheme.colors.cardBorder
     }
 
     val badgeScriptColor = when(result) {
-        Result.PENDING -> AppColors.upcomingColor2
-        Result.WIN -> AppColors.winColor2
-        Result.LOSS -> AppColors.loseColor2
-        Result.DRAW -> AppColors.drawColor2
-        Result.NO_CONTEST -> AppColors.noContestColor2
-        else -> AppColors.cardBorder
+        Result.PENDING -> AppTheme.colors.upcomingColor2
+        Result.WIN -> AppTheme.colors.winColor2
+        Result.LOSS -> AppTheme.colors.loseColor2
+        Result.DRAW -> AppTheme.colors.drawColor2
+        Result.NO_CONTEST -> AppTheme.colors.noContestColor2
+        else -> AppTheme.colors.cardBorder
     }
 
     val resultLetter = when (result) {
@@ -105,7 +105,7 @@ fun FightHistoryRow(
 
         Row(
             modifier = Modifier
-                .background(color = AppColors.fightItemBackground)
+                .background(color = AppTheme.colors.fightItemBackground)
                 .fillMaxHeight()
                 .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -127,14 +127,14 @@ fun FightHistoryRow(
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = year ?: "",
-                    color = AppColors.textPrimary,
+                    color = AppTheme.colors.textPrimary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                 )
                 if (shortDate != null) {
                     Text(
                         text = shortDate,
-                        color = AppColors.textSecondary,
+                        color = AppTheme.colors.textSecondary,
                         fontSize = 12.sp,
                     )
                 }

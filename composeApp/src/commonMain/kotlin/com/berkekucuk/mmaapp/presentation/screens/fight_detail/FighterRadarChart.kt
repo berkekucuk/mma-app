@@ -30,7 +30,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.Participant
@@ -83,7 +83,7 @@ fun FighterRadarChart(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(AppTheme.colors.fightItemBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -155,7 +155,7 @@ private fun RadarCornerItem(color: Color, name: String) {
         }
         Text(
             text = name,
-            color = AppColors.textSecondary,
+            color = AppTheme.colors.textSecondary,
             fontSize = 11.sp,
         )
     }

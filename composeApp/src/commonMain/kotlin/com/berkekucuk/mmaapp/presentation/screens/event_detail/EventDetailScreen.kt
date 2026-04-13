@@ -37,7 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
@@ -116,7 +116,7 @@ fun EventDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         snackbarHost = {
             SnackbarHost(
@@ -132,7 +132,7 @@ fun EventDetailScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.eventDetailTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.eventDetailTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
@@ -150,7 +150,7 @@ fun EventDetailScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = 14.sp,
-                                    color = AppColors.textSecondary,
+                                    color = AppTheme.colors.textSecondary,
                                 )
                             }
                         }
@@ -166,8 +166,8 @@ fun EventDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary,
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior
                 )
@@ -191,7 +191,7 @@ fun EventDetailScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(AppColors.pagerBackground),
+                    .background(AppTheme.colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {

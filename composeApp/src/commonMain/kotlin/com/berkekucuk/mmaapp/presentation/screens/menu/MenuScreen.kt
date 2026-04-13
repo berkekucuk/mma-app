@@ -21,7 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import io.github.jan.supabase.SupabaseClient
@@ -77,13 +77,13 @@ fun MenuScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         topBar = {
             TopAppBar(
                 title = { Text(text = "Menu") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.topBarBackground,
-                    titleContentColor = AppColors.textPrimary,
+                    containerColor = AppTheme.colors.topBarBackground,
+                    titleContentColor = AppTheme.colors.textPrimary,
                 )
             )
         }
@@ -98,14 +98,14 @@ fun MenuScreen(
         ) {
             Text(
                 text = "Sign in and continue from here",
-                color = AppColors.textSecondary,
+                color = AppTheme.colors.textSecondary,
                 modifier = Modifier.fillMaxWidth()
             )
 
             when (state.authState) {
                 AuthState.Loading -> {
                     Spacer(modifier = Modifier.height(12.dp))
-                    CircularProgressIndicator(color = AppColors.ufcRed)
+                    CircularProgressIndicator(color = AppTheme.colors.ufcRed)
                 }
 
                 AuthState.Unauthenticated -> {

@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 
 @Composable
 fun SettingsOptionRow(
@@ -33,7 +33,7 @@ fun SettingsOptionRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (isSelected) AppColors.winnerFrame else AppColors.textPrimary,
+            color = if (isSelected) AppTheme.colors.winnerFrame else AppTheme.colors.textPrimary,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             modifier = Modifier.weight(1f),
         )
@@ -41,7 +41,7 @@ fun SettingsOptionRow(
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = null,
-                tint = AppColors.winnerFrame,
+                tint = AppTheme.colors.winnerFrame,
                 modifier = Modifier.size(18.dp),
             )
         }

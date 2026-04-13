@@ -28,7 +28,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorBox
 import org.koin.compose.viewmodel.koinViewModel
@@ -83,7 +83,7 @@ fun ProfileEditScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         topBar = {
             TopAppBar(
                 title = {
@@ -102,10 +102,10 @@ fun ProfileEditScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.topBarBackground,
-                    scrolledContainerColor = AppColors.topBarBackground,
-                    navigationIconContentColor = AppColors.textPrimary,
-                    titleContentColor = AppColors.textPrimary,
+                    containerColor = AppTheme.colors.topBarBackground,
+                    scrolledContainerColor = AppTheme.colors.topBarBackground,
+                    navigationIconContentColor = AppTheme.colors.textPrimary,
+                    titleContentColor = AppTheme.colors.textPrimary,
                 )
             )
         },
@@ -120,7 +120,7 @@ fun ProfileEditScreen(
                 text = strings.profileEditPersonalInfo,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = AppColors.textSecondary,
+                color = AppTheme.colors.textSecondary,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
@@ -130,17 +130,17 @@ fun ProfileEditScreen(
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
                 label = { Text(strings.profileEditFullName, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppColors.textPrimary,
-                    unfocusedTextColor = AppColors.textPrimary,
-                    errorTextColor = AppColors.textPrimary,
-                    focusedBorderColor = AppColors.winnerFrame,
-                    unfocusedBorderColor = AppColors.cardBorder,
-                    errorBorderColor = AppColors.ufcRed,
-                    focusedLabelColor = AppColors.textPrimary,
-                    unfocusedLabelColor = AppColors.textSecondary,
-                    errorLabelColor = AppColors.ufcRed,
-                    cursorColor = AppColors.textPrimary,
-                    errorCursorColor = AppColors.ufcRed
+                    focusedTextColor = AppTheme.colors.textPrimary,
+                    unfocusedTextColor = AppTheme.colors.textPrimary,
+                    errorTextColor = AppTheme.colors.textPrimary,
+                    focusedBorderColor = AppTheme.colors.winnerFrame,
+                    unfocusedBorderColor = AppTheme.colors.cardBorder,
+                    errorBorderColor = AppTheme.colors.ufcRed,
+                    focusedLabelColor = AppTheme.colors.textPrimary,
+                    unfocusedLabelColor = AppTheme.colors.textSecondary,
+                    errorLabelColor = AppTheme.colors.ufcRed,
+                    cursorColor = AppTheme.colors.textPrimary,
+                    errorCursorColor = AppTheme.colors.ufcRed
                 ),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -155,17 +155,17 @@ fun ProfileEditScreen(
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
                 label = { Text(strings.profileEditUsernameLabel, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppColors.textPrimary,
-                    unfocusedTextColor = AppColors.textPrimary,
-                    errorTextColor = AppColors.textPrimary,
-                    focusedBorderColor = AppColors.winnerFrame,
-                    unfocusedBorderColor = AppColors.cardBorder,
-                    errorBorderColor = AppColors.ufcRed,
-                    focusedLabelColor = AppColors.textPrimary,
-                    unfocusedLabelColor = AppColors.textSecondary,
-                    errorLabelColor = AppColors.ufcRed,
-                    cursorColor = AppColors.textPrimary,
-                    errorCursorColor = AppColors.ufcRed
+                    focusedTextColor = AppTheme.colors.textPrimary,
+                    unfocusedTextColor = AppTheme.colors.textPrimary,
+                    errorTextColor = AppTheme.colors.textPrimary,
+                    focusedBorderColor = AppTheme.colors.winnerFrame,
+                    unfocusedBorderColor = AppTheme.colors.cardBorder,
+                    errorBorderColor = AppTheme.colors.ufcRed,
+                    focusedLabelColor = AppTheme.colors.textPrimary,
+                    unfocusedLabelColor = AppTheme.colors.textSecondary,
+                    errorLabelColor = AppTheme.colors.ufcRed,
+                    cursorColor = AppTheme.colors.textPrimary,
+                    errorCursorColor = AppTheme.colors.ufcRed
                 ),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),

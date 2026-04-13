@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Record
 
@@ -29,7 +29,7 @@ fun FighterRecordCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AppColors.fightItemBackground)
+            .background(AppTheme.colors.fightItemBackground)
             .padding(vertical = 10.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
@@ -37,17 +37,17 @@ fun FighterRecordCard(
         StatItem(
             value = record.wins.toString(),
             label = strings.fighterDetailRecordWins,
-            valueColor = AppColors.winColor,
+            valueColor = AppTheme.colors.winColor,
         )
         StatItem(
             value = record.losses.toString(),
             label = strings.fighterDetailRecordLosses,
-            valueColor = AppColors.loseColor,
+            valueColor = AppTheme.colors.loseColor,
         )
         StatItem(
             value = record.draws.toString(),
             label = strings.fighterDetailRecordDraws,
-            valueColor = AppColors.textSecondary,
+            valueColor = AppTheme.colors.textSecondary,
         )
     }
 }
@@ -72,7 +72,7 @@ private fun StatItem(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = AppColors.textSecondary,
+            color = AppTheme.colors.textSecondary,
         )
     }
 }

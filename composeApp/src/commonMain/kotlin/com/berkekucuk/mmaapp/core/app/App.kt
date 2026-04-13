@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -11,18 +12,23 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
+import com.berkekucuk.mmaapp.core.presentation.DarkColorScheme
 import com.berkekucuk.mmaapp.core.presentation.EnStrings
+import com.berkekucuk.mmaapp.core.presentation.LightColorScheme
+import com.berkekucuk.mmaapp.core.presentation.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
+import com.berkekucuk.mmaapp.core.presentation.ThemeMode
 import com.berkekucuk.mmaapp.core.presentation.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
 import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
+import com.berkekucuk.mmaapp.core.storage.ThemeStorage
 import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
@@ -61,17 +67,39 @@ fun App() {
     }
     val oddsFormat by oddsFormatState
 
+    val themeStorage: ThemeStorage = koinInject()
+    val themeModeState = remember {
+        mutableStateOf(
+            try {
+                ThemeMode.valueOf(themeStorage.load())
+            }
+            catch (_: Exception) {
+                ThemeMode.SYSTEM
+            }
+        )
+    }
+    val themeMode by themeModeState
+
+    val isSystemDark = isSystemInDarkTheme()
+
+    val colorScheme = when(themeMode) {
+        ThemeMode.SYSTEM -> if (isSystemDark) DarkColorScheme else LightColorScheme
+        ThemeMode.DARK -> DarkColorScheme
+        ThemeMode.LIGHT -> LightColorScheme
+    }
+
     CompositionLocalProvider(
         LocalAppStrings provides strings,
         LocalMeasurementUnit provides measurementUnit,
         LocalOddsFormat provides oddsFormat,
+        LocalAppColors provides colorScheme
     ) {
         NavHost(
             navController = rootNavController,
             startDestination = Route.MainGraph,
             modifier = Modifier
                 .fillMaxSize()
-                .background(AppColors.pagerBackground)
+                .background(AppTheme.colors.pagerBackground)
         ) {
             composable<Route.MainGraph>(
                 enterTransition = NavTransitions.slideFromLeft,
@@ -215,6 +243,11 @@ fun App() {
                     onOddsFormatChange = {
                         oddsFormatState.value = it
                         oddsFormatStorage.save(it.name)
+                    },
+                    currentThemeMode = themeMode,
+                    onThemeModeChange = {
+                        themeModeState.value = it
+                        themeStorage.save(it.name)
                     },
                 )
             }
