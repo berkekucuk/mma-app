@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 data class AppColorScheme(
     val topBarBackground: Color,
@@ -43,7 +45,8 @@ data class AppColorScheme(
     val eventsTopBarGradient: Brush,
     val rankingTopBarGradient: Brush,
     val rankingChampionBadge: Brush,
-    val rankingWeightClassAccent: Color
+    val rankingWeightClassAccent: Color,
+    val cardShadowElevation: Dp
 )
 val DarkColorScheme = AppColorScheme(
     topBarBackground = Color(0xFF1A1A1A),
@@ -93,7 +96,8 @@ val DarkColorScheme = AppColorScheme(
     rankingChampionBadge = Brush.horizontalGradient(
         colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))
     ),
-    rankingWeightClassAccent = Color(0xFF3A3A3A)
+    rankingWeightClassAccent = Color(0xFF3A3A3A),
+    cardShadowElevation = 0.dp
 )
 
 val LightColorScheme = AppColorScheme(
@@ -102,7 +106,7 @@ val LightColorScheme = AppColorScheme(
     dropdownMenuBackground = Color(0xFFEBE7E2),
     textPrimary = Color(0xFF1C1917),
     textSecondary = Color(0xFF78716C),
-    dateColor = Color(0xFFA8A29E),
+    dateColor = Color(0xFF6B7280),
     ufcRed = Color(0xFFD20909),
     winnerFrame = Color(0xFF2E8B42),
     upcomingColor = Color(0xFF9E9E9E),
@@ -133,7 +137,7 @@ val LightColorScheme = AppColorScheme(
     loginButtonBackground = Color(0xFF1C1917),
     loginButtonContent = Color.White,
     eventDetailTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFF5F5), Color(0xFFFEE2E2), Color(0xFFFECACA))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
     ),
     eventsTopBarGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
@@ -144,7 +148,8 @@ val LightColorScheme = AppColorScheme(
     rankingChampionBadge = Brush.horizontalGradient(
         colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))
     ),
-    rankingWeightClassAccent = Color(0xFFD6D3CD)
+    rankingWeightClassAccent = Color(0xFFD6D3CD),
+    cardShadowElevation = 6.dp
 )
 
 val LocalAppColors = staticCompositionLocalOf<AppColorScheme> {

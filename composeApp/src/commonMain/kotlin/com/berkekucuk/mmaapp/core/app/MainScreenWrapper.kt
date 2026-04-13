@@ -44,7 +44,7 @@ fun MainScreenWrapper(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         bottomBar = {
             Column {
-                HorizontalDivider(color = Color.Black, thickness = 1.dp)
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.5.dp)
                 NavigationBar(
                     containerColor = AppTheme.colors.topBarBackground,
                     tonalElevation = 0.dp

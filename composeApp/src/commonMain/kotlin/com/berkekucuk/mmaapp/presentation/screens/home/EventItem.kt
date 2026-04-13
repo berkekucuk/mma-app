@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -59,14 +60,20 @@ fun EventItem(
             repeatMode = RepeatMode.Reverse
         )
     )
+    val cardShape = RoundedCornerShape(12.dp)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .shadow(
+                elevation = AppTheme.colors.cardShadowElevation,
+                shape = cardShape,
+                clip = false
+            )
             .clickable { onClick(event.eventId) },
-        border = BorderStroke(1.dp, AppTheme.colors.cardBorder),
+        shape = cardShape,
+        border = BorderStroke(0.5.dp, AppTheme.colors.cardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
