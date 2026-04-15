@@ -221,6 +221,7 @@ val appModule = module {
         MenuViewModel(
             authRepository = get(),
             userRepository = get(),
+            notificationStorage = get()
         )
     }
 

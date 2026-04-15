@@ -3,8 +3,9 @@ package com.berkekucuk.mmaapp.presentation.screens.menu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.domain.model.AuthState
-import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
+import com.berkekucuk.mmaapp.core.storage.NotificationStorage
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,9 +20,10 @@ import kotlinx.coroutines.launch
 class MenuViewModel(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val notificationStorage: NotificationStorage
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(MenuUiState())
+    private val _state = MutableStateFlow(MenuUiState(notificationsEnabled = notificationStorage.load()))
     val state: StateFlow<MenuUiState> = _state.asStateFlow()
 
     private val _navigation = MutableSharedFlow<MenuNavigationEvent>()
@@ -77,6 +79,12 @@ class MenuViewModel(
                 _state.value.userId?.let { userId ->
                     navigateTo(MenuNavigationEvent.ToProfileEdit(userId))
                 }
+            }
+            MenuUiAction.OnNotificationsClicked -> {
+                notificationStorage.openNotificationSettings()
+            }
+            MenuUiAction.OnResumeCheckSettings -> {
+                _state.update { it.copy(notificationsEnabled = notificationStorage.load()) }
             }
             MenuUiAction.OnSettingsClicked -> {
                 navigateTo(MenuNavigationEvent.ToSettings)
