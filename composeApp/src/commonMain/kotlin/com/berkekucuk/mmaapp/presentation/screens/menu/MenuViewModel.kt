@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,44 +29,39 @@ class MenuViewModel(
 
     init {
         observeAuthState()
-        observeProfile()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeAuthState() {
         viewModelScope.launch {
             authRepository.authState
-                .collect { authState ->
-                _state.update {
-                    it.copy(
-                        authState = authState,
-                        userId = if (authState is AuthState.Authenticated) {
-                            authState.userId
-                        } else { null }
-                    )
-                }
-            }
-        }
-    }
+                .flatMapLatest { authState ->
+                    val userId = (authState as? AuthState.Authenticated)?.userId
 
-    private fun observeProfile() {
-        viewModelScope.launch {
-            authRepository.authState
-                .map { it as? AuthState.Authenticated }
-                .distinctUntilChangedBy { it?.userId }
-                .collectLatest { authenticated ->
-                    if (authenticated == null) {
-                        _state.update { it.copy(avatarUrl = null) }
-                        return@collectLatest
+                    // 1. First, reflect the Auth state to the UI state
+                    _state.update { it.copy(authState = authState, userId = userId) }
+
+                    if (userId != null) {
+                        // 2. If user exists, start the sync operation (run in background)
+                        launch { userRepository.syncUser(userId) }
+
+                        // 3. Return the User Flow (flatMapLatest will start collecting it)
+                        userRepository.getUser(userId)
+                    } else {
+                        // 4. If there is no user, return a flow emitting null and clear the state
+                        _state.update { it.copy(avatarUrl = null, name = null, username = null) }
+                        flowOf(null)
                     }
-
-                    userRepository.syncUser(authenticated.userId)
-
-                    userRepository.getUser(authenticated.userId)
-                        .collect { user ->
-                            _state.update { state ->
-                                state.copy(avatarUrl = user?.avatarUrl)
-                            }
-                        }
+                }
+                .collect { user ->
+                    // 5. Update the UI whenever user data changes (from Local DB)
+                    _state.update { state ->
+                        state.copy(
+                            avatarUrl = user?.avatarUrl,
+                            name = user?.fullName,
+                            username = user?.username
+                        )
+                    }
                 }
         }
     }
@@ -82,6 +77,9 @@ class MenuViewModel(
                 _state.value.userId?.let { userId ->
                     navigateTo(MenuNavigationEvent.ToProfileEdit(userId))
                 }
+            }
+            MenuUiAction.OnSettingsClicked -> {
+                navigateTo(MenuNavigationEvent.ToSettings)
             }
             MenuUiAction.OnSignOutClicked -> {
                 viewModelScope.launch {
