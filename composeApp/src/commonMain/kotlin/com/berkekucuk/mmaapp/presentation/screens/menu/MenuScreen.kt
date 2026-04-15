@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,11 +28,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
@@ -96,6 +101,19 @@ fun MenuScreen(
 
     val (showSignInSheet, setShowSignInSheet) = remember { mutableStateOf(false) }
 
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                onAction(MenuUiAction.OnResumeCheckSettings)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val onSignInClick = remember(setShowSignInSheet) { { setShowSignInSheet(true) } }
     val onDismissSignIn = remember(setShowSignInSheet) { { setShowSignInSheet(false) } }
     val onStartSignIn = remember(setShowSignInSheet, onStartGoogleSignIn) {
@@ -107,6 +125,7 @@ fun MenuScreen(
 
     val onProfileClick = remember(onAction) { { onAction(MenuUiAction.OnOpenProfileClicked) } }
     val onProfileEditClick = remember(onAction) { { onAction(MenuUiAction.OnOpenProfileEditClicked) } }
+    val onNotificationsClick = remember(onAction) { { onAction(MenuUiAction.OnNotificationsClicked) } }
     val onSettingsClick = remember(onAction) { { onAction(MenuUiAction.OnSettingsClicked) } }
     val onSignOutClick = remember(onAction) { { onAction(MenuUiAction.OnSignOutClicked) } }
     val onDummyClick = remember { { } }
@@ -163,9 +182,10 @@ fun MenuScreen(
             )
             HorizontalDivider(color = AppColors.dividerColor)
             MenuItemRow(
-                icon = Icons.Filled.Notifications,
+                icon = if (state.notificationsEnabled) Icons.Filled.Notifications else Icons.Filled.NotificationsOff,
                 title = strings.menuItemNotifications,
-                onClick = onDummyClick
+                subtitle = if (state.notificationsEnabled) null else strings.menuNotificationsDisabled,
+                onClick = onNotificationsClick
             )
             HorizontalDivider(color = AppColors.dividerColor)
             MenuItemRow(

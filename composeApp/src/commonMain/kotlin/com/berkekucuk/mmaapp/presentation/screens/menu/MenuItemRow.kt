@@ -25,6 +25,7 @@ import com.berkekucuk.mmaapp.core.presentation.AppColors
 fun MenuItemRow(
     icon: ImageVector,
     title: String,
+    subtitle: String? = null,
     tint: Color = AppColors.textPrimary,
     onClick: () -> Unit,
 ) {
@@ -47,11 +48,23 @@ fun MenuItemRow(
             tint = tint,
             modifier = Modifier.size(26.dp),
         )
-        Text(
+        androidx.compose.foundation.layout.Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
                 text = title,
                 color = tint,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
-        )
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    color = AppColors.textSecondary,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+        }
     }
 }

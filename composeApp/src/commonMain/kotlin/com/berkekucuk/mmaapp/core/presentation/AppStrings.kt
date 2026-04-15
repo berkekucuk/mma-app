@@ -134,10 +134,10 @@ data class AppStrings(
     val menuItemNotifications: String,
     val menuItemSettings: String,
     val menuSignInButton: String,
-    val menuSignInSyncPrompt: String,
     val menuSignInTerms: String,
     val menuProfileSettings: String,
     val menuSignInWithGoogle: String,
+    val menuNotificationsDisabled: String,
     // Bottom Nav
     val navFights: String,
     val navRankings: String,

@@ -40,7 +40,7 @@ fun UnauthenticatedTopHeader(onSignInClick: () -> Unit) {
         )
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
-                text = strings.menuSignInSyncPrompt,
+                text = strings.menuSignInPrompt,
                 color = AppColors.textPrimary,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
