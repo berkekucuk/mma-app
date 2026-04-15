@@ -38,7 +38,7 @@ import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewMo
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
-import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditViewModel
+import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditViewModel
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel

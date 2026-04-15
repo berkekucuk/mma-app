@@ -30,7 +30,7 @@ import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailSc
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
-import com.berkekucuk.mmaapp.presentation.screens.profile.edit.ProfileEditScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 
 @Composable

@@ -22,6 +22,10 @@ object AppColors {
     val drawColor2 = Color(0xFFC5DEFD)
     val noContestColor = Color(0xFFF9D03B)
     val noContestColor2 = Color(0xFFFBECB6)
+    val signInButton = Color(0xFF4CAF50)
+    val googleSignInButtonText = Color(0xFF1F1F1F)
+    val white = Color.White
+    val black = Color.Black
     val fightItemBackground = Color(0xFF171C1F)
     val dividerColor = Color(0xFF2C2C2C)
     val cardHeaderBackground = Color(0xFF20232A)
@@ -29,16 +33,6 @@ object AppColors {
     val fighterBarBackground = Brush.verticalGradient(
         colors = listOf(Color(0xFF2C2C2C), Color(0xFF1A1A1A))
     )
-    val loginGradientTop = Color(0xFF1A0A0A)
-    val loginGradientMid1 = Color(0xFF120808)
-    val loginGradientMid2 = Color(0xFF0D0D12)
-    val loginGradientBottom = Color(0xFF0A0A10)
-    val loginGlowWarm = Color(0xFF1A0F20)
-    val loginDivider = Color(0xFF1F1F1F)
-    val loginDividerText = Color(0xFF3A3A3A)
-    val loginSubtitle = Color(0xFF6B6B6B)
-    val loginButtonBackground = Color.White
-    val loginButtonContent = Color(0xFF1A1A1A)
 
     // Events Screen
     val eventDetailTopBarGradient = Brush.verticalGradient(

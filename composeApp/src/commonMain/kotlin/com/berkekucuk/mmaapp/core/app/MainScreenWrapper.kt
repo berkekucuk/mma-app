@@ -113,7 +113,6 @@ fun MainScreenWrapper(
                 HomeScreenRoot(
                     onNavigateToEventDetail = onNavigateToEventDetail,
                     onNavigateToFighterSearch = onNavigateToFighterSearch,
-                    onNavigateToSettings = onNavigateToSettings,
                 )
             }
 
@@ -127,6 +126,7 @@ fun MainScreenWrapper(
                 MenuScreenRoot(
                     onNavigateToProfile = onNavigateToProfile,
                     onNavigateToProfileEdit = onNavigateToProfileEdit,
+                    onNavigateToSettings = onNavigateToSettings,
                 )
             }
         }

@@ -127,6 +127,17 @@ data class AppStrings(
     val settingsSectionLanguage: String,
     val settingsSectionMeasurements: String,
     val settingsSectionOdds: String,
+    // Menu Screen
+    val menuSignInPrompt: String,
+    val menuTitle: String,
+    val menuItemUsers: String,
+    val menuItemNotifications: String,
+    val menuItemSettings: String,
+    val menuSignInButton: String,
+    val menuSignInSyncPrompt: String,
+    val menuSignInTerms: String,
+    val menuProfileSettings: String,
+    val menuSignInWithGoogle: String,
     // Bottom Nav
     val navFights: String,
     val navRankings: String,

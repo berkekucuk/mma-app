@@ -10,7 +10,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,7 +46,6 @@ fun HomeScreenRoot(
     viewModel: HomeViewModel = koinViewModel(),
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToFighterSearch: () -> Unit,
-    onNavigateToSettings: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -63,7 +61,6 @@ fun HomeScreenRoot(
     HomeScreen(
         state = uiState,
         onAction = viewModel::onAction,
-        onNavigateToSettings = onNavigateToSettings,
     )
 }
 
@@ -72,7 +69,6 @@ fun HomeScreenRoot(
 fun HomeScreen(
     state: HomeUiState,
     onAction: (HomeUiAction) -> Unit,
-    onNavigateToSettings: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val tabs = listOf(strings.tabUpcoming, strings.tabCompleted)
@@ -136,13 +132,6 @@ fun HomeScreen(
                         IconButton(onClick = onSearchClicked) {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = null,
-                                tint = AppColors.textPrimary,
-                            )
-                        }
-                        IconButton(onClick = onNavigateToSettings) {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
                                 contentDescription = null,
                                 tint = AppColors.textPrimary,
                             )
