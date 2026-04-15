@@ -1,5 +1,6 @@
-package com.berkekucuk.mmaapp.presentation.screens.profile.edit
+package com.berkekucuk.mmaapp.presentation.screens.profile_edit
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -85,29 +87,33 @@ fun ProfileEditScreen(
             .fillMaxSize(),
         containerColor = AppColors.pagerBackground,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = strings.profileEditTitle,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Normal,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClicked) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = strings.contentDescriptionBack,
+            Column(
+                modifier = Modifier.background(AppColors.eventsTopBarGradient)
+            ){
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = strings.profileEditTitle,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Normal,
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.topBarBackground,
-                    scrolledContainerColor = AppColors.topBarBackground,
-                    navigationIconContentColor = AppColors.textPrimary,
-                    titleContentColor = AppColors.textPrimary,
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClicked) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = strings.contentDescriptionBack,
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        scrolledContainerColor = Color.Transparent,
+                        navigationIconContentColor = AppColors.textPrimary,
+                        titleContentColor = AppColors.textPrimary,
+                    )
                 )
-            )
+            }
         },
     ) { innerPadding ->
         Column(

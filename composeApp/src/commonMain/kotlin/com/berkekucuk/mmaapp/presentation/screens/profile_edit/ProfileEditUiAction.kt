@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.screens.profile.edit
+package com.berkekucuk.mmaapp.presentation.screens.profile_edit
 
 sealed interface ProfileEditUiAction {
     data class OnFullNameChanged(val value: String) : ProfileEditUiAction

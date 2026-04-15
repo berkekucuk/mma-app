@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.screens.profile.edit
+package com.berkekucuk.mmaapp.presentation.screens.profile_edit
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
