@@ -129,10 +129,13 @@ data class AppStrings(
     val settingsSectionLanguage: String,
     val settingsSectionMeasurements: String,
     val settingsSectionOdds: String,
-    // Menu Screen / Notifications
+    // Menu Screen
+    val menuSignInPrompt: String,
+    val menuTitle: String,
     val menuItemUsers: String,
     val menuItemNotifications: String,
     val menuItemSettings: String,
+    val menuSignInButton: String,
     val menuSignInTerms: String,
     val menuProfileSettings: String,
     val menuSignInWithGoogle: String,

@@ -113,6 +113,16 @@ val TrStrings = AppStrings(
     settingsSectionLanguage = "Dil",
     settingsSectionMeasurements = "Ölçüm Birimi",
     settingsSectionOdds = "Bahis Formatı",
+    menuSignInPrompt = "Favori dövüşçülerinizi takip etmek ve gerçek zamanlı etkinlik bildirimleri almak için giriş yapın.",
+    menuTitle = "Menü",
+    menuItemUsers = "Kullanıcılar",
+    menuItemNotifications = "Bildirimler",
+    menuItemSettings = "Ayarlar",
+    menuSignInButton = "Giriş yap",
+    menuSignInTerms = "Giriş yaparak Kullanım Şartları ve Gizlilik Politikası'nı kabul etmiş olursunuz",
+    menuProfileSettings = "Profil Ayarları",
+    menuSignInWithGoogle = "Google ile giriş yap",
+    menuNotificationsDisabled = "Bildirimleri kapattınız",
     navFights = "Dövüşler",
     navRankings = "Sıralamalar",
     navMenu = "Menü",
@@ -157,11 +167,4 @@ val TrStrings = AppStrings(
             }
         }.joinToString("")
     },
-    menuItemUsers = "Kullanıcılar",
-    menuItemNotifications = "Bildirimler",
-    menuItemSettings = "Ayarlar",
-    menuSignInTerms = "Giriş yaparak Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.",
-    menuProfileSettings = "Profil Ayarları",
-    menuSignInWithGoogle = "Google ile Giriş Yap",
-    menuNotificationsDisabled = "Bildirimler kapalı. Lütfen ayarlardan açın.",
 )

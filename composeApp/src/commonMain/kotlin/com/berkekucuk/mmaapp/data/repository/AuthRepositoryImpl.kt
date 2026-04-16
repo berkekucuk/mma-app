@@ -21,7 +21,8 @@ class AuthRepositoryImpl(
 
     init {
         scope.launch {
-            supabaseClient.auth.sessionStatus.collect { status ->
+            supabaseClient.auth.sessionStatus
+                .collect { status ->
                 if (status is SessionStatus.Authenticated) {
                     registerDeviceToken(status.session.user?.id ?: "")
                 }
