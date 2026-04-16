@@ -10,10 +10,10 @@ import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -27,6 +27,7 @@ class FightDetailViewModel(
     private val fighterRepository: FighterRepository,
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
+    private val notificationStorage: NotificationStorage,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -39,8 +40,8 @@ class FightDetailViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
-    private var notificationObserverJob: Job? = null
-    private var refreshJob: Job? = null
+    private var isObservingNotifications = false
+    private var isPendingNotificationRequest = false
 
     init {
         if (fighterId != null) {
@@ -93,8 +94,10 @@ class FightDetailViewModel(
     }
 
     private fun observeNotificationStatus(fightId: String) {
-        if (notificationObserverJob != null) return
-        notificationObserverJob = viewModelScope.launch {
+        if (isObservingNotifications) return
+        isObservingNotifications = true
+
+         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId != null) {
                 userRepository.observeFightNotificationStatus(fightId, userId)
@@ -126,14 +129,16 @@ class FightDetailViewModel(
             if (sync) {
                 fighterRepository.syncFighter(fighterId)
                     .onFailure { e ->
-                    val errorType = when (e) {
-                        is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
-                        else -> FightDetailError.NETWORK_ERROR
+                        val errorType = when (e) {
+                            is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
+                            else -> FightDetailError.NETWORK_ERROR
+                        }
+                        _state.update { it.copy(error = errorType) }
                     }
-                    _state.update { it.copy(error = errorType) }
-                }
             }
-            fighterRepository.getFighterById(fighterId).collect(onUpdate)
+
+            val fighter = fighterRepository.getFighterById(fighterId).first()
+            onUpdate(fighter)
         }
     }
 
@@ -151,46 +156,82 @@ class FightDetailViewModel(
             is FightDetailUiAction.OnEventClicked -> navigateTo(FightDetailNavigationEvent.ToEventDetail(action.eventId))
             is FightDetailUiAction.OnNotificationClicked -> onNotificationClicked()
             is FightDetailUiAction.OnErrorShown -> _state.update { it.copy(error = null) }
+            is FightDetailUiAction.OnResume -> {
+                if (isPendingNotificationRequest && notificationStorage.load()) {
+                    isPendingNotificationRequest = false
+                    onNotificationClicked()
+                }
+            }
         }
     }
 
     private fun onNotificationClicked() {
         viewModelScope.launch {
-            // Check if user is authenticated
             val userId = getAuthenticatedUserId()
             if (userId == null) {
                 _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
                 return@launch
             }
 
-            // Retrieve fight data and notification state
-            val fight = _state.value.fight
-            val isFightCompleted = fight != null && (fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank())
+            val fight = _state.value.fight ?: return@launch
             val isNotificationEnabled = _state.value.isNotificationEnabled
-            
-            // Prevent adding notifications to completed fights (only allow removal)
-            if (isFightCompleted && !isNotificationEnabled) {
-                _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
-                return@launch
-            }
+            if (!canToggleNotification(fight, isNotificationEnabled)) return@launch
 
-            // Get fight ID and toggle notification
-            val fightId = fight?.fightId ?: return@launch
-            val result = if (isNotificationEnabled) {
-                userRepository.removeFightNotification(fightId, userId)
+            if (isNotificationEnabled) {
+                removeNotification(fight.fightId, userId)
             } else {
-                userRepository.addFightNotification(fightId, userId)
-            }
-            
-            // Handle operation failure
-            result.onFailure {
-                _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
+                enableNotificationWithPermissionCheck(fight.fightId, userId)
             }
         }
     }
 
+    private fun canToggleNotification(fight: Fight, isNotificationEnabled: Boolean): Boolean {
+        val isFightCompleted = fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank()
+
+        if (isFightCompleted && !isNotificationEnabled) {
+            _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
+            return false
+        }
+        return true
+    }
+
+    private suspend fun removeNotification(fightId: String, userId: String) {
+        userRepository.removeFightNotification(fightId, userId)
+            .onFailure {
+                _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
+            }
+    }
+
+    private suspend fun enableNotificationWithPermissionCheck(fightId: String, userId: String) {
+        if (!notificationStorage.load()) {
+            handleMissingPermission()
+            return
+        }
+
+        userRepository.addFightNotification(fightId, userId)
+            .onFailure {
+            _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
+        }
+    }
+
+    private fun handleMissingPermission() {
+        isPendingNotificationRequest = true
+        if (notificationStorage.hasRequestedPermission()) {
+            notificationStorage.openNotificationSettings()
+        } else {
+            notificationStorage.setRequestedPermission(true)
+            navigateTo(FightDetailNavigationEvent.RequestNotificationPermission)
+        }
+    }
+
+    private suspend fun getAuthenticatedUserId(): String? {
+        val authState = authRepository.authState.first { it !is AuthState.Loading }
+        return if (authState is AuthState.Authenticated) authState.userId else null
+    }
+
     private fun onRefresh() {
-        refreshJob?.cancel()
+        if (_state.value.isRefreshing) return
+
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true, error = null) }
 
@@ -219,10 +260,5 @@ class FightDetailViewModel(
         viewModelScope.launch {
             _navigation.emit(event)
         }
-    }
-
-    private suspend fun getAuthenticatedUserId(): String? {
-        val authState = authRepository.authState.first { it !is AuthState.Loading }
-        return if (authState is AuthState.Authenticated) authState.userId else null
     }
 }

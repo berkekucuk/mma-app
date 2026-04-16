@@ -4,4 +4,6 @@ interface NotificationStorage {
     fun save(isEnabled: Boolean)
     fun load(): Boolean
     fun openNotificationSettings()
+    fun hasRequestedPermission(): Boolean
+    fun setRequestedPermission(requested: Boolean)
 }

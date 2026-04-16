@@ -20,4 +20,12 @@ class IosNotificationStorage : NotificationStorage {
             UIApplication.sharedApplication.openURL(url)
         }
     }
+
+    override fun hasRequestedPermission(): Boolean {
+        return platform.Foundation.NSUserDefaults.standardUserDefaults.boolForKey("has_requested_permission")
+    }
+
+    override fun setRequestedPermission(requested: Boolean) {
+        platform.Foundation.NSUserDefaults.standardUserDefaults.setBool(requested, "has_requested_permission")
+    }
 }
