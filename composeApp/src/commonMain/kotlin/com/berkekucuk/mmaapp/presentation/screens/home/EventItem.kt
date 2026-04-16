@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
@@ -59,14 +60,20 @@ fun EventItem(
             repeatMode = RepeatMode.Reverse
         )
     )
+    val cardShape = RoundedCornerShape(12.dp)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .shadow(
+                elevation = AppTheme.colors.cardShadowElevation,
+                shape = cardShape,
+                clip = false
+            )
             .clickable { onClick(event.eventId) },
-        border = BorderStroke(1.dp, AppColors.cardBorder),
+        shape = cardShape,
+        border = BorderStroke(0.5.dp, AppTheme.colors.cardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
@@ -75,12 +82,12 @@ fun EventItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppColors.cardHeaderBackground)
+                    .background(AppTheme.colors.cardHeaderBackground)
                     .padding(10.dp)
             ) {
                 Text(
                     text = event.name,
-                    color = AppColors.textPrimary,
+                    color = AppTheme.colors.textPrimary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -93,7 +100,7 @@ fun EventItem(
                 ) {
                     Text(
                         text = event.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek) ?: strings.tba,
-                        color = AppColors.dateColor,
+                        color = AppTheme.colors.dateColor,
                         fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -105,12 +112,12 @@ fun EventItem(
                                 .size(7.dp)
                                 .alpha(dotAlpha)
                                 .clip(CircleShape)
-                                .background(AppColors.winnerFrame)
+                                .background(AppTheme.colors.winnerFrame)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = strings.liveEvent,
-                            color = AppColors.winnerFrame,
+                            color = AppTheme.colors.winnerFrame,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
@@ -130,12 +137,12 @@ fun EventItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .background(AppColors.fightItemBackground),
+                        .background(AppTheme.colors.fightItemBackground),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
                         text = strings.toBeAnnounced,
-                        color = AppColors.textPrimary,
+                        color = AppTheme.colors.textPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )

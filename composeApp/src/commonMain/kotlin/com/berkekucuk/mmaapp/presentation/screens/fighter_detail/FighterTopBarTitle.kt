@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.presentation.components.FighterImage
 
 @Composable
@@ -36,7 +36,7 @@ fun FighterTopBarTitle(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge,
-                color = AppColors.textPrimary,
+                color = AppTheme.colors.textPrimary,
             )
             if (!nickname.isNullOrBlank()) {
                 Text(
@@ -44,7 +44,7 @@ fun FighterTopBarTitle(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.textSecondary,
+                    color = AppTheme.colors.textSecondary,
                 )
             }
         }

@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
@@ -92,7 +92,7 @@ fun RankingScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
         snackbarHost = {
             SnackbarHost(
@@ -107,7 +107,7 @@ fun RankingScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.rankingTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.rankingTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
@@ -121,7 +121,7 @@ fun RankingScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        titleContentColor = AppColors.textPrimary
+                        titleContentColor = AppTheme.colors.textPrimary
                     ),
                     scrollBehavior = scrollBehavior
                 )
@@ -140,7 +140,7 @@ fun RankingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(AppColors.pagerBackground),
+                .background(AppTheme.colors.pagerBackground),
             beyondViewportPageCount = 1
         ) { page ->
             when (page) {

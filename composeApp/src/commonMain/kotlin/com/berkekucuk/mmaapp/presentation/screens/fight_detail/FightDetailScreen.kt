@@ -40,7 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
@@ -165,7 +165,7 @@ fun FightDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         snackbarHost = {
             SnackbarHost(
@@ -180,7 +180,7 @@ fun FightDetailScreen(
             )
         },
         topBar = {
-            Column(modifier = Modifier.background(AppColors.eventDetailTopBarGradient)) {
+            Column(modifier = Modifier.background(AppTheme.colors.eventDetailTopBarGradient)) {
                 TopAppBar(
                     title = {},
                     navigationIcon = {
@@ -202,9 +202,9 @@ fun FightDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        actionIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary,
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        actionIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior,
                 )
@@ -231,7 +231,7 @@ fun FightDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(AppColors.pagerBackground),
+                .background(AppTheme.colors.pagerBackground),
             beyondViewportPageCount = 1,
         ) { page ->
             when (page) {

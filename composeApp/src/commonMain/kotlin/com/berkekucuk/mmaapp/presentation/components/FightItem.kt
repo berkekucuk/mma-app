@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fight
 
@@ -28,7 +28,7 @@ import com.berkekucuk.mmaapp.domain.model.Fight
 fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = AppColors.fightItemBackground,
+    backgroundColor: Color = AppTheme.colors.fightItemBackground,
     onClick: (() -> Unit)? = null,
     onRedCornerClick: (() -> Unit)? = null,
     onBlueCornerClick: (() -> Unit)? = null,
@@ -80,7 +80,7 @@ fun FightItem(
             ) {
                 Text(
                     text = headerText,
-                    color = AppColors.textSecondary,
+                    color = AppTheme.colors.textSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                 )
@@ -110,7 +110,7 @@ fun FightItem(
                 ) {
                     Text(
                         text = "VS",
-                        color = AppColors.textSecondary,
+                        color = AppTheme.colors.textSecondary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                     )

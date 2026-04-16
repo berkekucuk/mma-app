@@ -25,13 +25,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
+import com.berkekucuk.mmaapp.core.presentation.ThemeMode
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +42,8 @@ fun SettingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onMeasurementUnitChange: (MeasurementUnit) -> Unit,
     onOddsFormatChange: (OddsFormat) -> Unit,
+    currentThemeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val currentLanguage = strings.language
@@ -48,10 +52,10 @@ fun SettingsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.eventsTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.eventsTopBarGradient)
             ){
                 TopAppBar(
                     title = {
@@ -71,8 +75,8 @@ fun SettingsScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary,
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary,
                     ),
                 )
             }
@@ -92,7 +96,7 @@ fun SettingsScreen(
                     isSelected = currentLanguage == AppLanguage.EN,
                     onClick = { onLanguageChange(AppLanguage.EN) },
                 )
-                HorizontalDivider(color = AppColors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "Türkçe",
                     isSelected = currentLanguage == AppLanguage.TR,
@@ -108,7 +112,7 @@ fun SettingsScreen(
                     isSelected = currentMeasurementUnit == MeasurementUnit.METRIC,
                     onClick = { onMeasurementUnitChange(MeasurementUnit.METRIC) },
                 )
-                HorizontalDivider(color = AppColors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "Imperial (ft/in)",
                     isSelected = currentMeasurementUnit == MeasurementUnit.IMPERIAL,
@@ -124,13 +128,36 @@ fun SettingsScreen(
                     isSelected = currentOddsFormat == OddsFormat.DECIMAL,
                     onClick = { onOddsFormatChange(OddsFormat.DECIMAL) },
                 )
-                HorizontalDivider(color = AppColors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "American",
                     isSelected = currentOddsFormat == OddsFormat.AMERICAN,
                     onClick = { onOddsFormatChange(OddsFormat.AMERICAN) },
                 )
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            SettingsSection(title = if(currentLanguage == AppLanguage.EN) "Theme" else "Tema Modu") {
+                SettingsOptionRow(
+                    label = if(currentLanguage == AppLanguage.EN) "System Default" else "Sistem Varsayılanı",
+                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.SYSTEM,
+                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.SYSTEM) },
+                )
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                SettingsOptionRow(
+                    label = if(currentLanguage == AppLanguage.EN) "Light Mode" else "Açık Tema",
+                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.LIGHT,
+                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.LIGHT) },
+                )
+                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                SettingsOptionRow(
+                    label = if(currentLanguage == AppLanguage.EN) "Dark Mode" else "Koyu Tema",
+                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.DARK,
+                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.DARK) },
+                )
+            }
+
         }
     }
 }

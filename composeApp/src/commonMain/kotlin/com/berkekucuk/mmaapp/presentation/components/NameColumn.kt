@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 
 @Composable
@@ -51,14 +51,14 @@ fun NameColumn(
     val resultUpper = result?.uppercase()
 
     val nameColor = when (resultUpper) {
-        "WIN" -> AppColors.textPrimary
-        "LOSS" -> AppColors.textSecondary
-        else -> AppColors.textPrimary
+        "WIN" -> AppTheme.colors.textPrimary
+        "LOSS" -> AppTheme.colors.textSecondary
+        else -> AppTheme.colors.textPrimary
     }
 
     val recordColor: Color = when (resultUpper) {
-        "WIN" -> AppColors.winnerFrame
-        else -> AppColors.textSecondary
+        "WIN" -> AppTheme.colors.winnerFrame
+        else -> AppTheme.colors.textSecondary
     }
 
     val recordIcon: ImageVector? = when (resultUpper) {

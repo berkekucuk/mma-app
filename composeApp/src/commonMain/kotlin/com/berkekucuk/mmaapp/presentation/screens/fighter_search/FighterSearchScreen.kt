@@ -40,7 +40,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -91,11 +91,11 @@ fun FighterSearchScreen(
     }
 
     Scaffold(
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.rankingTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.rankingTopBarGradient)
             ){
                 TopAppBar(
                     navigationIcon = {
@@ -103,7 +103,7 @@ fun FighterSearchScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = strings.contentDescriptionBack,
-                                tint = AppColors.textPrimary,
+                                tint = AppTheme.colors.textPrimary,
                             )
                         }
                     },
@@ -116,17 +116,17 @@ fun FighterSearchScreen(
                             },
                             singleLine = true,
                             textStyle = TextStyle(
-                                color = AppColors.textPrimary,
+                                color = AppTheme.colors.textPrimary,
                                 fontSize = 18.sp,
                             ),
-                            cursorBrush = SolidColor(AppColors.ufcRed),
+                            cursorBrush = SolidColor(AppTheme.colors.ufcRed),
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                             decorationBox = { innerTextField ->
                                 Box {
                                     if (state.query.isEmpty()) {
                                         Text(
                                             text = strings.fighterSearchPlaceholder,
-                                            color = AppColors.textSecondary,
+                                            color = AppTheme.colors.textSecondary,
                                             fontSize = 18.sp,
                                         )
                                     }
@@ -144,7 +144,7 @@ fun FighterSearchScreen(
                                 Icon(
                                     imageVector = Icons.Default.Clear,
                                     contentDescription = null,
-                                    tint = AppColors.textSecondary,
+                                    tint = AppTheme.colors.textSecondary,
                                 )
                             }
                         }
@@ -152,8 +152,8 @@ fun FighterSearchScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary
                     ),
                 )
             }

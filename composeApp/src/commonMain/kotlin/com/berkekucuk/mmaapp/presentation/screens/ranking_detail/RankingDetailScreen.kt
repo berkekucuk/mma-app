@@ -31,7 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
@@ -74,11 +74,11 @@ fun RankingDetailScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppColors.pagerBackground,
+        containerColor = AppTheme.colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.rankingTopBarGradient)
+                modifier = Modifier.background(AppTheme.colors.rankingTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
@@ -98,8 +98,8 @@ fun RankingDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary
+                        navigationIconContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = AppTheme.colors.textPrimary
                     )
                 )
             }
@@ -118,7 +118,7 @@ fun RankingDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
-                        .background(AppColors.fightItemBackground)
+                        .background(AppTheme.colors.fightItemBackground)
                 ) {
                     state.rankedFighters.forEachIndexed { index, ranking ->
                         ranking.fighter?.let { fighter ->
@@ -139,7 +139,7 @@ fun RankingDetailScreen(
 
                                 if (index < state.rankedFighters.lastIndex) {
                                     HorizontalDivider(
-                                        color = AppColors.dividerColor,
+                                        color = AppTheme.colors.dividerColor,
                                         thickness = 0.8.dp,
                                     )
                                 }

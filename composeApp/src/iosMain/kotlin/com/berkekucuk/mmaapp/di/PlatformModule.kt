@@ -24,4 +24,7 @@ actual val platformModule = module {
     single<OddsFormatStorage> {
         IosOddsFormatStorage()
     }
+    single<ThemeStorage> {
+        IosThemeStorage()
+    }
 }

@@ -12,7 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.AppTheme
 
 @Composable
 fun SettingsSection(
@@ -23,14 +23,14 @@ fun SettingsSection(
         text = title,
         fontSize = 16.sp,
         fontWeight = FontWeight.Medium,
-        color = AppColors.textSecondary,
+        color = AppTheme.colors.textSecondary,
         modifier = Modifier.padding(bottom = 16.dp),
     )
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(AppTheme.colors.fightItemBackground)
     ) {
         content()
     }
