@@ -1,0 +1,53 @@
+package com.berkekucuk.mmaapp.core.presentation.colors
+
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+
+data class AppColors(
+    val topBarBackground: Color,
+    val pagerBackground: Color,
+    val dropdownMenuBackground: Color,
+    val textPrimary: Color,
+    val textSecondary: Color,
+    val dateColor: Color,
+    val ufcRed: Color,
+    val winnerFrame: Color,
+    val upcomingColor: Color,
+    val upcomingColor2: Color,
+    val winColor: Color,
+    val winColor2: Color,
+    val loseColor: Color,
+    val loseColor2: Color,
+    val drawColor: Color,
+    val drawColor2: Color,
+    val noContestColor: Color,
+    val noContestColor2: Color,
+    val fightItemBackground: Color,
+    val dividerColor: Color,
+    val cardHeaderBackground: Color,
+    val cardBorder: Color,
+    val fighterBarBackground: Brush,
+    val loginGradientTop: Color,
+    val loginGradientMid1: Color,
+    val loginGradientMid2: Color,
+    val loginGradientBottom: Color,
+    val loginGlowWarm: Color,
+    val loginDivider: Color,
+    val loginDividerText: Color,
+    val loginSubtitle: Color,
+    val loginButtonBackground: Color,
+    val loginButtonContent: Color,
+    val eventDetailTopBarGradient: Brush,
+    val eventsTopBarGradient: Brush,
+    val rankingTopBarGradient: Brush,
+    val rankingChampionBadge: Brush,
+    val rankingWeightClassAccent: Color,
+    val radarGrid: Color,
+    val radarLabel: Color,
+    val radarRed: Color,
+    val radarRedFill: Color,
+    val radarBlue: Color,
+    val radarBlueFill: Color,
+    val cardShadowElevation: Dp
+)

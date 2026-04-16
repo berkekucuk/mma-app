@@ -8,6 +8,6 @@ class IosThemeStorage : ThemeStorage {
     }
 
     override fun load(): String {
-        return NSUserDefaults.standardUserDefaults.stringForKey("theme_mode") ?: "SYSTEM"
+        return NSUserDefaults.standardUserDefaults.stringForKey("theme_mode") ?: "DARK"
     }
 }

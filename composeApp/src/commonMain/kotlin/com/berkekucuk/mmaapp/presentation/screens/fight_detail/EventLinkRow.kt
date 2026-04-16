@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 
 @Composable
 fun EventLinkRow(
@@ -29,11 +29,13 @@ fun EventLinkRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val colors = LocalAppColors.current
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppTheme.colors.fightItemBackground)
+            .background(colors.fightItemBackground)
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -43,12 +45,12 @@ fun EventLinkRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null,
-                tint = AppTheme.colors.textSecondary,
+                tint = colors.textSecondary,
             )
         }
         Text(
             text = eventName,
-            color = AppTheme.colors.textPrimary,
+            color = colors.textPrimary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier.weight(1f),
@@ -58,7 +60,7 @@ fun EventLinkRow(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = AppTheme.colors.textSecondary,
+                tint = colors.textSecondary,
             )
         }
     }

@@ -28,9 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
@@ -64,6 +64,7 @@ fun RankingScreen(
     onAction: (RankingUiAction) -> Unit
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val tabs = listOf(strings.tabMens, strings.tabWomens)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val mensListState = rememberLazyListState()
@@ -92,7 +93,7 @@ fun RankingScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
         snackbarHost = {
             SnackbarHost(
@@ -107,7 +108,7 @@ fun RankingScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppTheme.colors.rankingTopBarGradient)
+                modifier = Modifier.background(colors.rankingTopBarGradient)
             ) {
                 TopAppBar(
                     title = {
@@ -121,7 +122,7 @@ fun RankingScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        titleContentColor = AppTheme.colors.textPrimary
+                        titleContentColor = colors.textPrimary
                     ),
                     scrollBehavior = scrollBehavior
                 )
@@ -140,7 +141,7 @@ fun RankingScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(AppTheme.colors.pagerBackground),
+                .background(colors.pagerBackground),
             beyondViewportPageCount = 1
         ) { page ->
             when (page) {

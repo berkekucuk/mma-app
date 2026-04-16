@@ -28,8 +28,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorBox
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -66,6 +66,7 @@ fun ProfileEditScreen(
     val onSaveClicked = remember(onAction) { { onAction(ProfileEditUiAction.OnSaveClicked) } }
 
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val errorMessage = when (state.error) {
         ProfileEditError.NETWORK_ERROR -> strings.errorNetwork
         ProfileEditError.USERNAME_TAKEN -> strings.profileEditErrorUsernameTaken
@@ -83,7 +84,7 @@ fun ProfileEditScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         topBar = {
             TopAppBar(
                 title = {
@@ -102,10 +103,10 @@ fun ProfileEditScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppTheme.colors.topBarBackground,
-                    scrolledContainerColor = AppTheme.colors.topBarBackground,
-                    navigationIconContentColor = AppTheme.colors.textPrimary,
-                    titleContentColor = AppTheme.colors.textPrimary,
+                    containerColor = colors.topBarBackground,
+                    scrolledContainerColor = colors.topBarBackground,
+                    navigationIconContentColor = colors.textPrimary,
+                    titleContentColor = colors.textPrimary,
                 )
             )
         },
@@ -120,7 +121,7 @@ fun ProfileEditScreen(
                 text = strings.profileEditPersonalInfo,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = AppTheme.colors.textSecondary,
+                color = colors.textSecondary,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
 
@@ -130,17 +131,17 @@ fun ProfileEditScreen(
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
                 label = { Text(strings.profileEditFullName, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppTheme.colors.textPrimary,
-                    unfocusedTextColor = AppTheme.colors.textPrimary,
-                    errorTextColor = AppTheme.colors.textPrimary,
-                    focusedBorderColor = AppTheme.colors.winnerFrame,
-                    unfocusedBorderColor = AppTheme.colors.cardBorder,
-                    errorBorderColor = AppTheme.colors.ufcRed,
-                    focusedLabelColor = AppTheme.colors.textPrimary,
-                    unfocusedLabelColor = AppTheme.colors.textSecondary,
-                    errorLabelColor = AppTheme.colors.ufcRed,
-                    cursorColor = AppTheme.colors.textPrimary,
-                    errorCursorColor = AppTheme.colors.ufcRed
+                    focusedTextColor = colors.textPrimary,
+                    unfocusedTextColor = colors.textPrimary,
+                    errorTextColor = colors.textPrimary,
+                    focusedBorderColor = colors.winnerFrame,
+                    unfocusedBorderColor = colors.cardBorder,
+                    errorBorderColor = colors.ufcRed,
+                    focusedLabelColor = colors.textPrimary,
+                    unfocusedLabelColor = colors.textSecondary,
+                    errorLabelColor = colors.ufcRed,
+                    cursorColor = colors.textPrimary,
+                    errorCursorColor = colors.ufcRed
                 ),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
@@ -155,17 +156,17 @@ fun ProfileEditScreen(
                 textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
                 label = { Text(strings.profileEditUsernameLabel, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = AppTheme.colors.textPrimary,
-                    unfocusedTextColor = AppTheme.colors.textPrimary,
-                    errorTextColor = AppTheme.colors.textPrimary,
-                    focusedBorderColor = AppTheme.colors.winnerFrame,
-                    unfocusedBorderColor = AppTheme.colors.cardBorder,
-                    errorBorderColor = AppTheme.colors.ufcRed,
-                    focusedLabelColor = AppTheme.colors.textPrimary,
-                    unfocusedLabelColor = AppTheme.colors.textSecondary,
-                    errorLabelColor = AppTheme.colors.ufcRed,
-                    cursorColor = AppTheme.colors.textPrimary,
-                    errorCursorColor = AppTheme.colors.ufcRed
+                    focusedTextColor = colors.textPrimary,
+                    unfocusedTextColor = colors.textPrimary,
+                    errorTextColor = colors.textPrimary,
+                    focusedBorderColor = colors.winnerFrame,
+                    unfocusedBorderColor = colors.cardBorder,
+                    errorBorderColor = colors.ufcRed,
+                    focusedLabelColor = colors.textPrimary,
+                    unfocusedLabelColor = colors.textSecondary,
+                    errorLabelColor = colors.ufcRed,
+                    cursorColor = colors.textPrimary,
+                    errorCursorColor = colors.ufcRed
                 ),
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),

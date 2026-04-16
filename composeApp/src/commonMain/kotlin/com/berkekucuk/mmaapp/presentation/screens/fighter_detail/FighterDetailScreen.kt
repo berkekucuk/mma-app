@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -73,6 +73,7 @@ fun FighterDetailScreen(
     onAction: (FighterDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val tabs = listOf(strings.tabOverview, strings.tabFights)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val snackbarHostState = remember { SnackbarHostState() }
@@ -101,7 +102,7 @@ fun FighterDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         snackbarHost = {
             SnackbarHost(
@@ -117,7 +118,7 @@ fun FighterDetailScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(AppTheme.colors.fighterBarBackground)
+                modifier = Modifier.background(colors.fighterBarBackground)
             ){
                 MediumTopAppBar(
                     title = {
@@ -139,8 +140,8 @@ fun FighterDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppTheme.colors.textPrimary,
-                        titleContentColor = AppTheme.colors.textPrimary,
+                        navigationIconContentColor = colors.textPrimary,
+                        titleContentColor = colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior,
                 )
@@ -163,7 +164,7 @@ fun FighterDetailScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(AppTheme.colors.pagerBackground),
+                    .background(colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 val fighter = state.fighter

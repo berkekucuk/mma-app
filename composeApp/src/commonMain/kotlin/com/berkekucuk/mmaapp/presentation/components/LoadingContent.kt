@@ -11,7 +11,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 
 @Composable
 fun LoadingContent(
@@ -19,6 +19,8 @@ fun LoadingContent(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val colors = LocalAppColors.current
+
     AnimatedContent(
         targetState = isLoading,
         transitionSpec = {
@@ -32,7 +34,7 @@ fun LoadingContent(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = AppTheme.colors.ufcRed)
+                CircularProgressIndicator(color = colors.ufcRed)
             }
         } else {
             content()

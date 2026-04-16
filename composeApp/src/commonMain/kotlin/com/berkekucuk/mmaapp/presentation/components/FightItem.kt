@@ -20,15 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fight
 
 @Composable
 fun FightItem(
     fight: Fight,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = AppTheme.colors.fightItemBackground,
+    backgroundColor: Color = LocalAppColors.current.fightItemBackground,
     onClick: (() -> Unit)? = null,
     onRedCornerClick: (() -> Unit)? = null,
     onBlueCornerClick: (() -> Unit)? = null,
@@ -48,6 +48,7 @@ fun FightItem(
     }
 
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val weightClassLabel = strings.weightClassBout(strings.weightClassDisplayName(fight.weightClassId))
 
     val headerText = remember(methodText, weightClassLabel) {
@@ -80,7 +81,7 @@ fun FightItem(
             ) {
                 Text(
                     text = headerText,
-                    color = AppTheme.colors.textSecondary,
+                    color = colors.textSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                 )
@@ -110,7 +111,7 @@ fun FightItem(
                 ) {
                     Text(
                         text = "VS",
-                        color = AppTheme.colors.textSecondary,
+                        color = colors.textSecondary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                     )

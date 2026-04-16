@@ -40,8 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -83,6 +83,7 @@ fun FightDetailScreen(
     onAction: (FightDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val eventId = state.fight?.eventId
     val displayTitle = state.eventName ?: state.fight?.eventName
     val fight = state.fight
@@ -165,7 +166,7 @@ fun FightDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
         snackbarHost = {
             SnackbarHost(
@@ -180,7 +181,7 @@ fun FightDetailScreen(
             )
         },
         topBar = {
-            Column(modifier = Modifier.background(AppTheme.colors.eventDetailTopBarGradient)) {
+            Column(modifier = Modifier.background(colors.eventDetailTopBarGradient)) {
                 TopAppBar(
                     title = {},
                     navigationIcon = {
@@ -202,9 +203,9 @@ fun FightDetailScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppTheme.colors.textPrimary,
-                        actionIconContentColor = AppTheme.colors.textPrimary,
-                        titleContentColor = AppTheme.colors.textPrimary,
+                        titleContentColor = colors.textPrimary,
+                        navigationIconContentColor = colors.textPrimary,
+                        actionIconContentColor = colors.textPrimary,
                     ),
                     scrollBehavior = scrollBehavior,
                 )
@@ -231,7 +232,7 @@ fun FightDetailScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(AppTheme.colors.pagerBackground),
+                .background(colors.pagerBackground),
             beyondViewportPageCount = 1,
         ) { page ->
             when (page) {

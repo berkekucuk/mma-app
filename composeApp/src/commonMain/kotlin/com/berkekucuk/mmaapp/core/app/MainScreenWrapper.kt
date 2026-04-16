@@ -19,11 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuScreenRoot
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 @Composable
 fun MainScreenWrapper(
@@ -38,15 +38,16 @@ fun MainScreenWrapper(
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
 
     Scaffold(
-        containerColor = AppTheme.colors.topBarBackground,
+        containerColor = colors.topBarBackground,
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         bottomBar = {
             Column {
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.5.dp)
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.5.dp)
                 NavigationBar(
-                    containerColor = AppTheme.colors.topBarBackground,
+                    containerColor = colors.topBarBackground,
                     tonalElevation = 0.dp
                 ) {
                     bottomNavItems.forEach { item ->
@@ -86,11 +87,11 @@ fun MainScreenWrapper(
                             },
                             alwaysShowLabel = true,
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = AppTheme.colors.ufcRed,
-                                selectedTextColor = AppTheme.colors.ufcRed,
+                                selectedIconColor = colors.ufcRed,
+                                selectedTextColor = colors.ufcRed,
                                 indicatorColor = Color.Transparent,
-                                unselectedIconColor = Color.Gray,
-                                unselectedTextColor = Color.Gray
+                                unselectedIconColor = colors.textSecondary,
+                                unselectedTextColor = colors.textSecondary
                             )
                         )
                     }

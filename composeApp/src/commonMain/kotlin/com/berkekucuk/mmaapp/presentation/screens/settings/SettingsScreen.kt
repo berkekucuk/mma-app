@@ -25,14 +25,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
 import com.berkekucuk.mmaapp.core.presentation.ThemeMode
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,16 +46,17 @@ fun SettingsScreen(
     onThemeModeChange: (ThemeMode) -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val currentLanguage = strings.language
     val currentMeasurementUnit = LocalMeasurementUnit.current
     val currentOddsFormat = LocalOddsFormat.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         topBar = {
             Column(
-                modifier = Modifier.background(AppTheme.colors.eventsTopBarGradient)
+                modifier = Modifier.background(colors.eventsTopBarGradient)
             ){
                 TopAppBar(
                     title = {
@@ -75,8 +76,8 @@ fun SettingsScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppTheme.colors.textPrimary,
-                        titleContentColor = AppTheme.colors.textPrimary,
+                        navigationIconContentColor = colors.textPrimary,
+                        titleContentColor = colors.textPrimary,
                     ),
                 )
             }
@@ -96,7 +97,7 @@ fun SettingsScreen(
                     isSelected = currentLanguage == AppLanguage.EN,
                     onClick = { onLanguageChange(AppLanguage.EN) },
                 )
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "Türkçe",
                     isSelected = currentLanguage == AppLanguage.TR,
@@ -112,7 +113,7 @@ fun SettingsScreen(
                     isSelected = currentMeasurementUnit == MeasurementUnit.METRIC,
                     onClick = { onMeasurementUnitChange(MeasurementUnit.METRIC) },
                 )
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "Imperial (ft/in)",
                     isSelected = currentMeasurementUnit == MeasurementUnit.IMPERIAL,
@@ -128,7 +129,7 @@ fun SettingsScreen(
                     isSelected = currentOddsFormat == OddsFormat.DECIMAL,
                     onClick = { onOddsFormatChange(OddsFormat.DECIMAL) },
                 )
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = "American",
                     isSelected = currentOddsFormat == OddsFormat.AMERICAN,
@@ -140,21 +141,15 @@ fun SettingsScreen(
             
             SettingsSection(title = if(currentLanguage == AppLanguage.EN) "Theme" else "Tema Modu") {
                 SettingsOptionRow(
-                    label = if(currentLanguage == AppLanguage.EN) "System Default" else "Sistem Varsayılanı",
-                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.SYSTEM,
-                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.SYSTEM) },
-                )
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
                     label = if(currentLanguage == AppLanguage.EN) "Light Mode" else "Açık Tema",
-                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.LIGHT,
-                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.LIGHT) },
+                    isSelected = currentThemeMode == ThemeMode.LIGHT,
+                    onClick = { onThemeModeChange(ThemeMode.LIGHT) },
                 )
-                HorizontalDivider(color = AppTheme.colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
                 SettingsOptionRow(
                     label = if(currentLanguage == AppLanguage.EN) "Dark Mode" else "Koyu Tema",
-                    isSelected = currentThemeMode == com.berkekucuk.mmaapp.core.presentation.ThemeMode.DARK,
-                    onClick = { onThemeModeChange(com.berkekucuk.mmaapp.core.presentation.ThemeMode.DARK) },
+                    isSelected = currentThemeMode == ThemeMode.DARK,
+                    onClick = { onThemeModeChange(ThemeMode.DARK) },
                 )
             }
 

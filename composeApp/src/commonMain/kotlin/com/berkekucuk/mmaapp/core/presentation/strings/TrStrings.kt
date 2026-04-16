@@ -1,4 +1,6 @@
-package com.berkekucuk.mmaapp.core.presentation
+package com.berkekucuk.mmaapp.core.presentation.strings
+
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 val TrStrings = AppStrings(
     language = AppLanguage.TR,
@@ -155,4 +157,11 @@ val TrStrings = AppStrings(
             }
         }.joinToString("")
     },
+    menuItemUsers = "Kullanıcılar",
+    menuItemNotifications = "Bildirimler",
+    menuItemSettings = "Ayarlar",
+    menuSignInTerms = "Giriş yaparak Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.",
+    menuProfileSettings = "Profil Ayarları",
+    menuSignInWithGoogle = "Google ile Giriş Yap",
+    menuNotificationsDisabled = "Bildirimler kapalı. Lütfen ayarlardan açın.",
 )

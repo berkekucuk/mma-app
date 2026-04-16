@@ -1,7 +1,6 @@
 package com.berkekucuk.mmaapp.core.app
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -13,18 +12,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.DarkColorScheme
-import com.berkekucuk.mmaapp.core.presentation.EnStrings
-import com.berkekucuk.mmaapp.core.presentation.LightColorScheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.DarkColors
+import com.berkekucuk.mmaapp.core.presentation.strings.EnStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LightColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
 import com.berkekucuk.mmaapp.core.presentation.ThemeMode
-import com.berkekucuk.mmaapp.core.presentation.TrStrings
+import com.berkekucuk.mmaapp.core.presentation.strings.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
 import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
@@ -42,30 +40,19 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailSc
 @Composable
 fun App() {
     val rootNavController = rememberNavController()
+
     val languageStorage: LanguageStorage = koinInject()
     val languageState = remember {
         mutableStateOf(
-            try { AppLanguage.valueOf(languageStorage.load()) } catch (_: Exception) { AppLanguage.EN }
+            try {
+                AppLanguage.valueOf(languageStorage.load())
+            } catch (_: Exception) {
+                AppLanguage.EN
+            }
         )
     }
     val language by languageState
     val strings = if (language == AppLanguage.EN) EnStrings else TrStrings
-
-    val measurementUnitStorage: MeasurementUnitStorage = koinInject()
-    val measurementUnitState = remember {
-        mutableStateOf(
-            try { MeasurementUnit.valueOf(measurementUnitStorage.load()) } catch (_: Exception) { MeasurementUnit.METRIC }
-        )
-    }
-    val measurementUnit by measurementUnitState
-
-    val oddsFormatStorage: OddsFormatStorage = koinInject()
-    val oddsFormatState = remember {
-        mutableStateOf(
-            try { OddsFormat.valueOf(oddsFormatStorage.load()) } catch (_: Exception) { OddsFormat.DECIMAL }
-        )
-    }
-    val oddsFormat by oddsFormatState
 
     val themeStorage: ThemeStorage = koinInject()
     val themeModeState = remember {
@@ -74,32 +61,52 @@ fun App() {
                 ThemeMode.valueOf(themeStorage.load())
             }
             catch (_: Exception) {
-                ThemeMode.SYSTEM
+                ThemeMode.DARK
             }
         )
     }
     val themeMode by themeModeState
-
-    val isSystemDark = isSystemInDarkTheme()
-
-    val colorScheme = when(themeMode) {
-        ThemeMode.SYSTEM -> if (isSystemDark) DarkColorScheme else LightColorScheme
-        ThemeMode.DARK -> DarkColorScheme
-        ThemeMode.LIGHT -> LightColorScheme
+    val colors = when(themeMode) {
+        ThemeMode.DARK -> DarkColors
+        ThemeMode.LIGHT -> LightColors
     }
+
+    val measurementUnitStorage: MeasurementUnitStorage = koinInject()
+    val measurementUnitState = remember {
+        mutableStateOf(
+            try {
+                MeasurementUnit.valueOf(measurementUnitStorage.load())
+            } catch (_: Exception) {
+                MeasurementUnit.METRIC
+            }
+        )
+    }
+    val measurementUnit by measurementUnitState
+
+    val oddsFormatStorage: OddsFormatStorage = koinInject()
+    val oddsFormatState = remember {
+        mutableStateOf(
+            try {
+                OddsFormat.valueOf(oddsFormatStorage.load())
+            } catch (_: Exception) {
+                OddsFormat.DECIMAL
+            }
+        )
+    }
+    val oddsFormat by oddsFormatState
 
     CompositionLocalProvider(
         LocalAppStrings provides strings,
         LocalMeasurementUnit provides measurementUnit,
         LocalOddsFormat provides oddsFormat,
-        LocalAppColors provides colorScheme
+        LocalAppColors provides colors
     ) {
         NavHost(
             navController = rootNavController,
             startDestination = Route.MainGraph,
             modifier = Modifier
                 .fillMaxSize()
-                .background(AppTheme.colors.pagerBackground)
+                .background(colors.pagerBackground)
         ) {
             composable<Route.MainGraph>(
                 enterTransition = NavTransitions.slideFromLeft,

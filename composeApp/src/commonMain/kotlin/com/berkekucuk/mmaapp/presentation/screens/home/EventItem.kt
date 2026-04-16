@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.domain.enums.EventStatus
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.FightItem
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toUserFriendlyDate
 import com.berkekucuk.mmaapp.core.utils.rememberLocalizedDateStrings
 
@@ -49,6 +49,7 @@ fun EventItem(
 ) {
     val mainFight = event.mainFight
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val dateStrings = rememberLocalizedDateStrings()
     val isLive = event.status == EventStatus.LIVE
     val infiniteTransition = rememberInfiniteTransition()
@@ -67,13 +68,13 @@ fun EventItem(
             .fillMaxWidth()
             .height(160.dp)
             .shadow(
-                elevation = AppTheme.colors.cardShadowElevation,
+                elevation = colors.cardShadowElevation,
                 shape = cardShape,
                 clip = false
             )
             .clickable { onClick(event.eventId) },
         shape = cardShape,
-        border = BorderStroke(0.5.dp, AppTheme.colors.cardBorder),
+        border = BorderStroke(0.5.dp, colors.cardBorder),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(
@@ -82,12 +83,12 @@ fun EventItem(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(AppTheme.colors.cardHeaderBackground)
+                    .background(colors.cardHeaderBackground)
                     .padding(10.dp)
             ) {
                 Text(
                     text = event.name,
-                    color = AppTheme.colors.textPrimary,
+                    color = colors.textPrimary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -100,7 +101,7 @@ fun EventItem(
                 ) {
                     Text(
                         text = event.datetimeUtc?.toUserFriendlyDate(dateStrings.months, dateStrings.daysOfWeek) ?: strings.tba,
-                        color = AppTheme.colors.dateColor,
+                        color = colors.dateColor,
                         fontSize = 12.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -112,12 +113,12 @@ fun EventItem(
                                 .size(7.dp)
                                 .alpha(dotAlpha)
                                 .clip(CircleShape)
-                                .background(AppTheme.colors.winnerFrame)
+                                .background(colors.winnerFrame)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = strings.liveEvent,
-                            color = AppTheme.colors.winnerFrame,
+                            color = colors.winnerFrame,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             maxLines = 1,
@@ -137,12 +138,12 @@ fun EventItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
-                        .background(AppTheme.colors.fightItemBackground),
+                        .background(colors.fightItemBackground),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
                         text = strings.toBeAnnounced,
-                        color = AppTheme.colors.textPrimary,
+                        color = colors.textPrimary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )

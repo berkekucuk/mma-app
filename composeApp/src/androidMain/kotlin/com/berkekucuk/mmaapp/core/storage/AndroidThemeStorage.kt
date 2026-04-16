@@ -12,6 +12,6 @@ class AndroidThemeStorage(context: Context) : ThemeStorage {
         }
     }
     override fun load(): String {
-        return prefs.getString("theme_mode", "SYSTEM") ?: "SYSTEM"
+        return prefs.getString("theme_mode", "DARK") ?: "DARK"
     }
 }

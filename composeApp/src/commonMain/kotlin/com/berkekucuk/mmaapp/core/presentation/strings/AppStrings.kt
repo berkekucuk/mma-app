@@ -1,4 +1,6 @@
-package com.berkekucuk.mmaapp.core.presentation
+package com.berkekucuk.mmaapp.core.presentation.strings
+
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 data class AppStrings(
     val language: AppLanguage,
@@ -127,6 +129,14 @@ data class AppStrings(
     val settingsSectionLanguage: String,
     val settingsSectionMeasurements: String,
     val settingsSectionOdds: String,
+    // Menu Screen / Notifications
+    val menuItemUsers: String,
+    val menuItemNotifications: String,
+    val menuItemSettings: String,
+    val menuSignInTerms: String,
+    val menuProfileSettings: String,
+    val menuSignInWithGoogle: String,
+    val menuNotificationsDisabled: String,
     // Bottom Nav
     val navFights: String,
     val navRankings: String,
@@ -136,4 +146,3 @@ data class AppStrings(
     val resultDisplayName: (String) -> String,
     val toUpperCase: (String) -> String,
 )
-

@@ -19,9 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 
 @Composable
@@ -34,7 +34,9 @@ fun RankedFighterRow(
     countryCode: String? = null,
     onFighterClicked: () -> Unit
 ) {
-    val rankLabel = if (isChampion) LocalAppStrings.current.rankingsChampionRankLabel else rankNumber.toString()
+    val colors = LocalAppColors.current
+    val strings = LocalAppStrings.current
+    val rankLabel = if (isChampion) strings.rankingsChampionRankLabel else rankNumber.toString()
 
     Row(
         modifier = Modifier
@@ -48,12 +50,12 @@ fun RankedFighterRow(
                 modifier = Modifier
                     .size(26.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(AppTheme.colors.rankingChampionBadge),
+                    .background(colors.rankingChampionBadge),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = rankLabel,
-                    color = AppTheme.colors.pagerBackground,
+                    color = colors.pagerBackground,
                     fontSize = 12.sp,
                     fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,
@@ -67,7 +69,7 @@ fun RankedFighterRow(
             ) {
                 Text(
                     text = rankLabel,
-                    color = AppTheme.colors.textSecondary,
+                    color = colors.textSecondary,
                     fontSize = 14.sp,
                     fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,

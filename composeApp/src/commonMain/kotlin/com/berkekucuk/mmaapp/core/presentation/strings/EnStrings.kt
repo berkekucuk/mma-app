@@ -1,4 +1,6 @@
-package com.berkekucuk.mmaapp.core.presentation
+package com.berkekucuk.mmaapp.core.presentation.strings
+
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,
@@ -147,4 +149,11 @@ val EnStrings = AppStrings(
         }
     },
     toUpperCase = { it.uppercase() },
+    menuItemUsers = "Users",
+    menuItemNotifications = "Notifications",
+    menuItemSettings = "Settings",
+    menuSignInTerms = "By signing in, you agree to our Terms of Service and Privacy Policy.",
+    menuProfileSettings = "Profile Settings",
+    menuSignInWithGoogle = "Sign in with Google",
+    menuNotificationsDisabled = "Notifications are disabled. Please enable them in settings.",
 )

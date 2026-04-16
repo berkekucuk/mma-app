@@ -21,8 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppTheme
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
@@ -74,16 +74,17 @@ fun MenuScreen(
     onStartGoogleSignIn: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppTheme.colors.pagerBackground,
+        containerColor = colors.pagerBackground,
         topBar = {
             TopAppBar(
                 title = { Text(text = "Menu") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppTheme.colors.topBarBackground,
-                    titleContentColor = AppTheme.colors.textPrimary,
+                    containerColor = colors.topBarBackground,
+                    titleContentColor = colors.textPrimary,
                 )
             )
         }
@@ -98,14 +99,14 @@ fun MenuScreen(
         ) {
             Text(
                 text = "Sign in and continue from here",
-                color = AppTheme.colors.textSecondary,
+                color = colors.textSecondary,
                 modifier = Modifier.fillMaxWidth()
             )
 
             when (state.authState) {
                 AuthState.Loading -> {
                     Spacer(modifier = Modifier.height(12.dp))
-                    CircularProgressIndicator(color = AppTheme.colors.ufcRed)
+                    CircularProgressIndicator(color = colors.ufcRed)
                 }
 
                 AuthState.Unauthenticated -> {
