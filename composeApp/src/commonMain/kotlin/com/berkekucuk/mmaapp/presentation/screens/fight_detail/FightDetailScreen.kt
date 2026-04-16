@@ -30,6 +30,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,9 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.core.utils.NotificationPermissionHandler
+import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -57,6 +63,18 @@ fun FightDetailScreenRoot(
     onBackClick: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
+    val showPermissionRequest = remember { mutableStateOf(false) }
+
+    NotificationPermissionHandler(
+        trigger = showPermissionRequest.value,
+        onResult = { isGranted ->
+            showPermissionRequest.value = false
+            if (isGranted) {
+                viewModel.onAction(FightDetailUiAction.OnNotificationClicked)
+            }
+        },
+        onDismiss = { showPermissionRequest.value = false }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
@@ -64,6 +82,9 @@ fun FightDetailScreenRoot(
                 is FightDetailNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
                 is FightDetailNavigationEvent.Back -> onBackClick()
                 is FightDetailNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
+                is FightDetailNavigationEvent.RequestNotificationPermission -> {
+                    showPermissionRequest.value = true
+                }
             }
         }
     }
@@ -100,6 +121,8 @@ fun FightDetailScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val coroutineScope = rememberCoroutineScope()
+    
+    OnResumeEffect { onAction(FightDetailUiAction.OnResume) }
 
     val onErrorShown = remember(onAction) { { onAction(FightDetailUiAction.OnErrorShown) } }
     val onRefresh = remember(onAction) { { onAction(FightDetailUiAction.OnRefresh) } }

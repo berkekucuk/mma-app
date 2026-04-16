@@ -181,6 +181,7 @@ val appModule = module {
             fighterRepository = get(),
             authRepository = get(),
             userRepository = get(),
+            notificationStorage = get(),
             savedStateHandle = get()
         )
     }

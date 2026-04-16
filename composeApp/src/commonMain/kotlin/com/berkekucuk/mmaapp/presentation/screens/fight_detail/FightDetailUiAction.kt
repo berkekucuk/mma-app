@@ -7,4 +7,5 @@ sealed interface FightDetailUiAction {
     data class OnEventClicked(val eventId: String): FightDetailUiAction
     data object OnNotificationClicked: FightDetailUiAction
     data object OnErrorShown: FightDetailUiAction
+    data object OnResume: FightDetailUiAction
 }
