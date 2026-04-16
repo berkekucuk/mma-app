@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 @Composable
 fun UnauthenticatedTopHeader(onSignInClick: () -> Unit) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,21 +37,21 @@ fun UnauthenticatedTopHeader(onSignInClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = null,
-            tint = AppColors.textPrimary,
+            tint = colors.textPrimary,
             modifier = Modifier.size(28.dp).padding(top = 4.dp)
         )
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
                 text = strings.menuSignInPrompt,
-                color = AppColors.textPrimary,
+                color = colors.textPrimary,
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
             )
             Button(
                 onClick = onSignInClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = AppColors.signInButton,
-                    contentColor = AppColors.black
+                    containerColor = colors.signInButton,
+                    contentColor = colors.black
                 ),
                 shape = RoundedCornerShape(24.dp)
             ) {

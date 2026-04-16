@@ -1,4 +1,6 @@
-package com.berkekucuk.mmaapp.core.presentation
+package com.berkekucuk.mmaapp.core.presentation.strings
+
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,

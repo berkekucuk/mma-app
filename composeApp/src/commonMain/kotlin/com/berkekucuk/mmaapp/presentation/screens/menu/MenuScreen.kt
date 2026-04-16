@@ -37,9 +37,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.presentation.components.GoogleSignInButton
 import io.github.jan.supabase.SupabaseClient
@@ -98,6 +98,7 @@ fun MenuScreen(
     onStartGoogleSignIn: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
 
     val (showSignInSheet, setShowSignInSheet) = remember { mutableStateOf(false) }
 
@@ -132,7 +133,7 @@ fun MenuScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = AppColors.pagerBackground,
+        containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
         topBar = {
             TopAppBar(
@@ -145,8 +146,8 @@ fun MenuScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AppColors.topBarBackground,
-                    titleContentColor = AppColors.textPrimary,
+                    containerColor = colors.topBarBackground,
+                    titleContentColor = colors.textPrimary,
                 )
             )
         }
@@ -174,35 +175,35 @@ fun MenuScreen(
                 }
             }
 
-            HorizontalDivider(color = AppColors.dividerColor)
+            HorizontalDivider(color = colors.dividerColor)
             MenuItemRow(
                 icon = Icons.Filled.Person,
                 title = strings.menuItemUsers,
                 onClick = onDummyClick
             )
-            HorizontalDivider(color = AppColors.dividerColor)
+            HorizontalDivider(color = colors.dividerColor)
             MenuItemRow(
                 icon = if (state.notificationsEnabled) Icons.Filled.Notifications else Icons.Filled.NotificationsOff,
                 title = strings.menuItemNotifications,
                 subtitle = if (state.notificationsEnabled) null else strings.menuNotificationsDisabled,
                 onClick = onNotificationsClick
             )
-            HorizontalDivider(color = AppColors.dividerColor)
+            HorizontalDivider(color = colors.dividerColor)
             MenuItemRow(
                 icon = Icons.Filled.Settings,
                 title = strings.menuItemSettings,
                 onClick = onSettingsClick
             )
-            HorizontalDivider(color = AppColors.dividerColor)
+            HorizontalDivider(color = colors.dividerColor)
 
             Spacer(modifier = Modifier.weight(1f))
 
             if (state.authState is AuthState.Authenticated) {
-                HorizontalDivider(color = AppColors.dividerColor)
+                HorizontalDivider(color = colors.dividerColor)
                 MenuItemRow(
                     icon = Icons.AutoMirrored.Filled.Logout,
                     title = strings.profileSignOut,
-                    tint = AppColors.loseColor,
+                    tint = colors.loseColor,
                     onClick = onSignOutClick,
                 )
             }
@@ -215,7 +216,7 @@ fun MenuScreen(
         ModalBottomSheet(
             onDismissRequest = onDismissSignIn,
             sheetState = sheetState,
-            containerColor = AppColors.dropdownMenuBackground
+            containerColor = colors.dropdownMenuBackground
         ) {
             Column(
                 modifier = Modifier
@@ -225,7 +226,7 @@ fun MenuScreen(
             ) {
                 Text(
                     text = strings.menuSignInButton,
-                    color = AppColors.textPrimary,
+                    color = colors.textPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -240,7 +241,7 @@ fun MenuScreen(
 
                 Text(
                     text = strings.menuSignInTerms,
-                    color = AppColors.textSecondary,
+                    color = colors.textSecondary,
                     fontSize = 13.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()

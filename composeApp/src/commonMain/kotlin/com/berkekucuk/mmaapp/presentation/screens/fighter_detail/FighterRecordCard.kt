@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Record
 
 @Composable
@@ -25,11 +25,13 @@ fun FighterRecordCard(
     record: Record,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
             .padding(vertical = 10.dp, horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
@@ -37,17 +39,17 @@ fun FighterRecordCard(
         StatItem(
             value = record.wins.toString(),
             label = strings.fighterDetailRecordWins,
-            valueColor = AppColors.winColor,
+            valueColor = colors.winColor,
         )
         StatItem(
             value = record.losses.toString(),
             label = strings.fighterDetailRecordLosses,
-            valueColor = AppColors.loseColor,
+            valueColor = colors.loseColor,
         )
         StatItem(
             value = record.draws.toString(),
             label = strings.fighterDetailRecordDraws,
-            valueColor = AppColors.textSecondary,
+            valueColor = colors.drawColor,
         )
     }
 }
@@ -72,7 +74,7 @@ private fun StatItem(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = AppColors.textSecondary,
+            color = LocalAppColors.current.textSecondary,
         )
     }
 }

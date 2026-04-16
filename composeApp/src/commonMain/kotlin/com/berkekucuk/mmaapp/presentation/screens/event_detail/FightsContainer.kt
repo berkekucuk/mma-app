@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
@@ -38,6 +38,8 @@ fun FightsContainer(
     isLive: Boolean = false,
     extraBottomPadding: Dp = 0.dp,
 ) {
+    val colors = LocalAppColors.current
+
     ListContainer(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
@@ -80,7 +82,7 @@ fun FightsContainer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(AppColors.fightItemBackground)
+                        .background(colors.fightItemBackground)
                 ) {
                     fights.forEachIndexed { index, fight ->
                         FightItem(
@@ -92,7 +94,7 @@ fun FightsContainer(
                             HorizontalDivider(
                                 modifier = Modifier.fillMaxWidth(),
                                 thickness = 1.dp,
-                                color = AppColors.dividerColor
+                                color = colors.dividerColor
                             )
                         }
                     }

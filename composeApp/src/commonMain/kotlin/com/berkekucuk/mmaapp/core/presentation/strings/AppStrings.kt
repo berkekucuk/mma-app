@@ -1,4 +1,6 @@
-package com.berkekucuk.mmaapp.core.presentation
+package com.berkekucuk.mmaapp.core.presentation.strings
+
+import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 data class AppStrings(
     val language: AppLanguage,
@@ -147,4 +149,3 @@ data class AppStrings(
     val resultDisplayName: (String) -> String,
     val toUpperCase: (String) -> String,
 )
-

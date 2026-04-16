@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -26,8 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 @Composable
 fun NameColumn(
@@ -41,8 +40,7 @@ fun NameColumn(
     nameTrailingContent: @Composable (() -> Unit)? = null,
 ) {
     val strings = LocalAppStrings.current
-    val winContentDescription = strings.contentDescriptionWin
-    val lossContentDescription = strings.contentDescriptionLoss
+    val colors = LocalAppColors.current
 
     val textMeasurer = rememberTextMeasurer()
     val nameStyle = TextStyle(fontSize = nameFontSize)
@@ -50,15 +48,15 @@ fun NameColumn(
 
     val resultUpper = result?.uppercase()
 
-    val nameColor = when (resultUpper) {
-        "WIN" -> AppColors.textPrimary
-        "LOSS" -> AppColors.textSecondary
-        else -> AppColors.textPrimary
+    val nameColor = when (result?.uppercase()) {
+        "WIN" -> colors.textPrimary
+        "LOSS" -> colors.textSecondary
+        else -> colors.textPrimary
     }
 
-    val recordColor: Color = when (resultUpper) {
-        "WIN" -> AppColors.winnerFrame
-        else -> AppColors.textSecondary
+    val recordColor = when (resultUpper) {
+        "WIN" -> colors.winnerFrame
+        else -> colors.textSecondary
     }
 
     val recordIcon: ImageVector? = when (resultUpper) {
@@ -68,8 +66,8 @@ fun NameColumn(
     }
 
     val recordIconContentDescription: String? = when (resultUpper) {
-        "WIN" -> winContentDescription
-        "LOSS" -> lossContentDescription
+        "WIN" -> strings.contentDescriptionWin
+        "LOSS" -> strings.contentDescriptionLoss
         else -> null
     }
 

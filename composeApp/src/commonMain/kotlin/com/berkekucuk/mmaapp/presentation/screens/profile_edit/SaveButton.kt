@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 
 @Composable
 fun SaveButton(
@@ -23,6 +23,8 @@ fun SaveButton(
     isSaving: Boolean = false,
     enabled: Boolean = true
 ) {
+    val colors = LocalAppColors.current
+
     Button(
         onClick = onClick,
         modifier = modifier
@@ -30,23 +32,23 @@ fun SaveButton(
             .height(48.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.winnerFrame,
-            contentColor = AppColors.textPrimary,
-            disabledContainerColor = AppColors.winnerFrame.copy(alpha = 0.5f),
-            disabledContentColor = AppColors.winnerFrame.copy(alpha = 0.7f)
+            containerColor = colors.winnerFrame,
+            contentColor = colors.textPrimary,
+            disabledContainerColor = colors.winnerFrame.copy(alpha = 0.5f),
+            disabledContentColor = colors.winnerFrame.copy(alpha = 0.7f)
         ),
         enabled = enabled && !isSaving
     ) {
         if (isSaving) {
             CircularProgressIndicator(
                 modifier = Modifier.size(24.dp),
-                color = AppColors.textPrimary,
+                color = colors.textPrimary,
                 strokeWidth = 2.dp
             )
         } else {
             Text(
                 text = text,
-                color = AppColors.textPrimary,
+                color = colors.textPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )

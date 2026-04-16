@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.toAmericanOdds
 import com.berkekucuk.mmaapp.core.presentation.toDecimalOdds
 import com.berkekucuk.mmaapp.core.utils.calculateAgeAtDate
@@ -48,6 +48,7 @@ fun FightDetailContainer(
     }
 
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val measurementUnit = LocalMeasurementUnit.current
     val oddsFormat = LocalOddsFormat.current
     val showRecord = redCorner?.recordAfterFight != null || blueCorner?.recordAfterFight != null
@@ -89,7 +90,7 @@ fun FightDetailContainer(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
     ) {
         Column {
             rows.forEachIndexed { index, (leftValue, label, rightValue) ->
@@ -100,7 +101,7 @@ fun FightDetailContainer(
                 )
                 if (index < rows.lastIndex) {
                     HorizontalDivider(
-                        color = AppColors.dividerColor,
+                        color = colors.dividerColor,
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = 12.dp),
                     )
@@ -116,6 +117,8 @@ private fun StatRow(
     label: String,
     rightValue: String,
 ) {
+    val colors = LocalAppColors.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +129,7 @@ private fun StatRow(
         Text(
             text = leftValue,
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.textPrimary,
+            color = colors.textPrimary,
             textAlign = TextAlign.Start,
             modifier = Modifier.weight(1f),
         )
@@ -134,7 +137,7 @@ private fun StatRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.textSecondary,
+            color = colors.textSecondary,
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1.5f),
         )
@@ -142,7 +145,7 @@ private fun StatRow(
         Text(
             text = rightValue,
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.textPrimary,
+            color = colors.textPrimary,
             textAlign = TextAlign.End,
             modifier = Modifier.weight(1f),
         )

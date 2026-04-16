@@ -24,8 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.domain.model.RankedFighter
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 
@@ -35,12 +35,13 @@ fun WeightClassCard(
     champion: RankedFighter?,
     onWeightClassClicked: () -> Unit
 ) {
+    val colors = LocalAppColors.current
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
             .clickable { onWeightClassClicked() }
             .padding(16.dp)
     ) {
@@ -50,7 +51,7 @@ fun WeightClassCard(
                 .width(3.dp)
                 .height(48.dp)
                 .clip(RoundedCornerShape(2.dp))
-                .background(AppColors.rankingWeightClassAccent)
+                .background(colors.rankingWeightClassAccent)
         )
 
         Row(
@@ -67,7 +68,7 @@ fun WeightClassCard(
                     text = weightClassName.uppercase(),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = AppColors.textSecondary,
+                    color = colors.textSecondary,
                 )
 
                 if (champion?.fighter != null) {
@@ -85,7 +86,7 @@ fun WeightClassCard(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(AppColors.rankingChampionBadge)
+                                        .background(colors.rankingChampionBadge)
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
                                     Text(
@@ -93,7 +94,7 @@ fun WeightClassCard(
                                         fontSize = 10.sp,
                                         fontFamily = AppFonts.RobotoCondensed,
                                         fontWeight = FontWeight.Bold,
-                                        color = AppColors.pagerBackground
+                                        color = colors.pagerBackground
                                     )
                                 }
                             }
@@ -105,7 +106,7 @@ fun WeightClassCard(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = AppColors.textSecondary,
+                tint = colors.textSecondary,
                 modifier = Modifier.size(22.dp)
             )
         }

@@ -30,8 +30,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.Participant
 import kotlin.math.PI
@@ -53,6 +53,7 @@ fun FighterRadarChart(
     modifier: Modifier = Modifier,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val axisLabels = listOf(
         strings.radarLabelHeight,
         strings.radarLabelReach,
@@ -66,15 +67,15 @@ fun FighterRadarChart(
     val redData = remember(redCorner, redRates) {
         RadarData(
             values = buildRadarValues(redCorner, redRates),
-            color = Color(0xFFE53935),
-            fillColor = Color(0x40E53935),
+            color = colors.radarRed,
+            fillColor = colors.radarRedFill,
         )
     }
     val blueData = remember(blueCorner, blueRates) {
         RadarData(
             values = buildRadarValues(blueCorner, blueRates),
-            color = Color(0xFF1E88E5),
-            fillColor = Color(0x401E88E5),
+            color = colors.radarBlue,
+            fillColor = colors.radarBlueFill,
         )
     }
     val textMeasurer = rememberTextMeasurer()
@@ -83,7 +84,7 @@ fun FighterRadarChart(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -108,19 +109,19 @@ fun FighterRadarChart(
                         if (i == 0) gridPath.moveTo(x, y) else gridPath.lineTo(x, y)
                     }
                     gridPath.close()
-                    drawPath(gridPath, Color(0xFF3A3A3A), style = Stroke(width = 1f))
+                    drawPath(gridPath, colors.radarGrid, style = Stroke(width = 1f))
                 }
 
                 for (i in 0 until RADAR_AXIS_COUNT) {
                     val angle = (2 * PI / RADAR_AXIS_COUNT) * i - PI / 2
                     val x = centerX + radius * cos(angle).toFloat()
                     val y = centerY + radius * sin(angle).toFloat()
-                    drawLine(Color(0xFF3A3A3A), Offset(centerX, centerY), Offset(x, y), strokeWidth = 1f)
+                    drawLine(colors.radarGrid, Offset(centerX, centerY), Offset(x, y), strokeWidth = 1f)
                 }
 
                 drawRadarPolygon(this, centerX, centerY, radius, redData)
                 drawRadarPolygon(this, centerX, centerY, radius, blueData)
-                drawRadarLabels(this, textMeasurer, centerX, centerY, radius, axisLabels)
+                drawRadarLabels(this, textMeasurer, centerX, centerY, radius, axisLabels, colors.radarLabel)
             }
         }
         RadarCornerRow(
@@ -132,6 +133,7 @@ fun FighterRadarChart(
 
 @Composable
 private fun RadarCornerRow(redName: String, blueName: String) {
+    val colors = LocalAppColors.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -139,13 +141,14 @@ private fun RadarCornerRow(redName: String, blueName: String) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RadarCornerItem(color = Color(0xFFE53935), name = redName)
-        RadarCornerItem(color = Color(0xFF1E88E5), name = blueName)
+        RadarCornerItem(color = colors.radarRed, name = redName)
+        RadarCornerItem(color = colors.radarBlue, name = blueName)
     }
 }
 
 @Composable
 private fun RadarCornerItem(color: Color, name: String) {
+    val colors = LocalAppColors.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -155,7 +158,7 @@ private fun RadarCornerItem(color: Color, name: String) {
         }
         Text(
             text = name,
-            color = AppColors.textSecondary,
+            color = colors.textSecondary,
             fontSize = 11.sp,
         )
     }
@@ -188,10 +191,11 @@ private fun drawRadarLabels(
     centerY: Float,
     radius: Float,
     labels: List<String>,
+    labelColor: Color,
 ) {
     val labelRadius = radius * 1.18f
     val style = TextStyle(
-        color = Color(0xFF8B8E90),
+        color = labelColor,
         fontSize = 10.sp,
         fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
         textAlign = TextAlign.Center,

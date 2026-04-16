@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fighter
 
 @Composable
@@ -30,6 +30,7 @@ fun FighterInfoCard(
     weightClassDisplay: String,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val measurementUnit = LocalMeasurementUnit.current
     val unavailable = strings.fighterDetailValueUnavailable
     val rows = buildList {
@@ -52,13 +53,13 @@ fun FighterInfoCard(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
     ) {
         rows.forEachIndexed { index, (label, value) ->
             InfoRow(label = label, value = value)
             if (index < rows.lastIndex) {
                 HorizontalDivider(
-                    color = AppColors.dividerColor,
+                    color = colors.dividerColor,
                     thickness = 0.8.dp,
                     modifier = Modifier.padding(horizontal = 12.dp),
                 )
@@ -72,6 +73,8 @@ private fun InfoRow(
     label: String,
     value: String,
 ) {
+    val colors = LocalAppColors.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,12 +85,12 @@ private fun InfoRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.textSecondary,
+            color = colors.textSecondary,
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.textPrimary,
+            color = colors.textPrimary,
             textAlign = TextAlign.End,
         )
     }

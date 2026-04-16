@@ -24,8 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Event
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 
@@ -42,6 +42,7 @@ fun CompletedContainer(
     listState: LazyListState
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     var expanded by rememberSaveable { mutableStateOf(false) }
 
     ListContainer(
@@ -79,9 +80,9 @@ fun CompletedContainer(
                             true
                         ),
                         colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = AppColors.dropdownMenuBackground,
-                            selectedLabelColor = AppColors.textPrimary,
-                            selectedTrailingIconColor = AppColors.textPrimary
+                            selectedContainerColor = colors.dropdownMenuBackground,
+                            selectedLabelColor = colors.textPrimary,
+                            selectedTrailingIconColor = colors.textPrimary
                         )
                     )
 
@@ -89,14 +90,14 @@ fun CompletedContainer(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier.heightIn(max = 300.dp),
-                        containerColor = AppColors.dropdownMenuBackground
+                        containerColor = colors.dropdownMenuBackground
                     ) {
                         availableYears.forEach { year ->
                             DropdownMenuItem(
                                 text = {
                                     Text(
                                         text = year.toString(),
-                                        color = AppColors.textPrimary
+                                        color = colors.textPrimary
                                     )
                                 },
                                 onClick = {

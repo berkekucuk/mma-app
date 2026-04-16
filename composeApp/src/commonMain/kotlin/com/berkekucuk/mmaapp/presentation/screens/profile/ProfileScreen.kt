@@ -24,11 +24,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -60,6 +60,7 @@ fun ProfileScreen(
     onAction: (ProfileUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val tabs = listOf(strings.profileTabOverview, strings.profileTabPredictions)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
@@ -69,18 +70,18 @@ fun ProfileScreen(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = AppColors.pagerBackground,
+        containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
         topBar = {
             Column(
-                modifier = Modifier.background(AppColors.fighterBarBackground)
+                modifier = Modifier.background(colors.fighterBarBackground)
             ) {
                 MediumTopAppBar(
                     navigationIcon = {
                         IconButton(onClick = { onAction(ProfileUiAction.OnBackClicked) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = strings.contentDescriptionBack,
+                                contentDescription = strings.contentDescriptionBack
                             )
                         }
                     },
@@ -98,9 +99,9 @@ fun ProfileScreen(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = AppColors.textPrimary,
-                        titleContentColor = AppColors.textPrimary,
-                        actionIconContentColor = AppColors.textPrimary,
+                        navigationIconContentColor = colors.textPrimary,
+                        titleContentColor = colors.textPrimary,
+                        actionIconContentColor = colors.textPrimary
                     ),
                     scrollBehavior = scrollBehavior,
                 )
@@ -124,7 +125,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .background(AppColors.pagerBackground),
+                    .background(colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {

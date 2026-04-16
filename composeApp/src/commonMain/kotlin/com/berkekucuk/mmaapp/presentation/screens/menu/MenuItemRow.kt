@@ -19,23 +19,25 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 
 @Composable
 fun MenuItemRow(
     icon: ImageVector,
     title: String,
     subtitle: String? = null,
-    tint: Color = AppColors.textPrimary,
+    tint: Color = LocalAppColors.current.textPrimary,
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalAppColors.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = interactionSource,
-                indication = ripple(color = AppColors.white),
+                indication = ripple(color = colors.white),
                 onClick = onClick
             )
             .padding(horizontal = 20.dp, vertical = 16.dp),
@@ -60,7 +62,7 @@ fun MenuItemRow(
             if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    color = AppColors.textSecondary,
+                    color = colors.textSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                 )

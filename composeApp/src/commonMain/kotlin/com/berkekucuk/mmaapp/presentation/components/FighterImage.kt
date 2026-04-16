@@ -23,8 +23,8 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 @Composable
 fun FighterImage(
@@ -38,12 +38,14 @@ fun FighterImage(
     flagHeight: Dp = 12.dp,
 ) {
     val context = LocalPlatformContext.current
+    val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
 
     val boxAlignment = if (alignment == Alignment.Start) Alignment.BottomStart else Alignment.BottomEnd
     val badgeAlignment = if (alignment == Alignment.Start) Alignment.BottomEnd else Alignment.BottomStart
 
     val isWinner = result?.equals("WIN", ignoreCase = true) == true
-    val borderModifier = if (isWinner) Modifier.border(1.5.dp, AppColors.winnerFrame, CircleShape) else Modifier
+    val borderModifier = if (isWinner) Modifier.border(1.5.dp, colors.winnerFrame, CircleShape) else Modifier
 
     val imageRequest = remember(imageUrl) {
         ImageRequest.Builder(context)
@@ -71,8 +73,6 @@ fun FighterImage(
         }
     }
 
-    val flagContentDescription = LocalAppStrings.current.contentDescriptionFlag
-
     Box {
         AsyncImage(
             model = imageRequest,
@@ -87,12 +87,12 @@ fun FighterImage(
         if (flagRequest != null) {
             AsyncImage(
                 model = flagRequest,
-                contentDescription = flagContentDescription,
+                contentDescription = strings.contentDescriptionFlag,
                 modifier = Modifier
                     .align(boxAlignment)
                     .size(width = flagWidth, height = flagHeight)
                     .clip(RoundedCornerShape(2.dp))
-                    .border(0.5.dp, AppColors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
+                    .border(0.5.dp, colors.dropdownMenuBackground, RoundedCornerShape(2.dp)),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -105,8 +105,8 @@ fun FighterImage(
                     .align(badgeAlignment)
                     .offset(y = badgeOffset)
                     .size(badgeSize)
-                    .background(AppColors.winnerFrame, CircleShape)
-                    .border(1.dp, AppColors.topBarBackground, CircleShape),
+                    .background(colors.winnerFrame, CircleShape)
+                    .border(1.dp, colors.topBarBackground, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(

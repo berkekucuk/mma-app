@@ -20,8 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 
 @Composable
@@ -33,6 +33,7 @@ fun AuthenticatedSection(
     onProfileEditClick: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val interactionSource = remember { MutableInteractionSource() }
     
     Column {
@@ -41,7 +42,7 @@ fun AuthenticatedSection(
                 .fillMaxWidth()
                 .clickable(
                     interactionSource = interactionSource,
-                    indication = ripple(color = AppColors.white),
+                    indication = ripple(color = colors.white),
                     onClick = onProfileClick
                 )
                 .padding(horizontal = 20.dp, vertical = 14.dp),
@@ -62,12 +63,12 @@ fun AuthenticatedSection(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
-                tint = AppColors.textSecondary,
+                tint = colors.textSecondary,
                 modifier = Modifier.size(24.dp)
             )
         }
 
-        HorizontalDivider(color = AppColors.dividerColor)
+        HorizontalDivider(color = colors.dividerColor)
 
         MenuItemRow(
             icon = Icons.Filled.Edit,

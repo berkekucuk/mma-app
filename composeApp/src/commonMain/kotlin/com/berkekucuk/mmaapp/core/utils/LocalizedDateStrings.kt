@@ -3,7 +3,7 @@ package com.berkekucuk.mmaapp.core.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 
 data class LocalizedDateStrings(
     val months: List<String>,
@@ -17,7 +17,8 @@ private val TR_DAYS = listOf("Pzt", "Sal", "Çrş", "Prş", "Cum", "Cmt", "Paz")
 
 @Composable
 fun rememberLocalizedDateStrings(): LocalizedDateStrings {
-    val language = LocalAppStrings.current.language
+    val strings = LocalAppStrings.current
+    val language = strings.language
     return remember(language) {
         when (language) {
             AppLanguage.EN -> LocalizedDateStrings(months = EN_MONTHS, daysOfWeek = EN_DAYS)

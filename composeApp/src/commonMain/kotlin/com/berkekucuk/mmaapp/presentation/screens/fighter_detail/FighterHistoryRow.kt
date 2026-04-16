@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.core.utils.toShortDate
 import com.berkekucuk.mmaapp.core.utils.toYear
 import com.berkekucuk.mmaapp.domain.enums.Result
@@ -35,6 +35,7 @@ fun FightHistoryRow(
     onClick: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
     val dateStrings = rememberLocalizedDateStrings()
     val fighter = fight.participants.find { it.fighter.fighterId == fighterId }
     val opponent = fight.participants.find { it.fighter.fighterId != fighterId }
@@ -42,21 +43,21 @@ fun FightHistoryRow(
     val result = fighter?.result
 
     val badgeColor = when (result) {
-        Result.PENDING -> AppColors.upcomingColor
-        Result.WIN -> AppColors.winColor
-        Result.LOSS -> AppColors.loseColor
-        Result.DRAW -> AppColors.drawColor
-        Result.NO_CONTEST -> AppColors.noContestColor
-        else -> AppColors.cardBorder
+        Result.PENDING -> colors.upcomingColor
+        Result.WIN -> colors.winColor
+        Result.LOSS -> colors.loseColor
+        Result.DRAW -> colors.drawColor
+        Result.NO_CONTEST -> colors.noContestColor
+        else -> colors.cardBorder
     }
 
     val badgeScriptColor = when(result) {
-        Result.PENDING -> AppColors.upcomingColor2
-        Result.WIN -> AppColors.winColor2
-        Result.LOSS -> AppColors.loseColor2
-        Result.DRAW -> AppColors.drawColor2
-        Result.NO_CONTEST -> AppColors.noContestColor2
-        else -> AppColors.cardBorder
+        Result.PENDING -> colors.upcomingColor2
+        Result.WIN -> colors.winColor2
+        Result.LOSS -> colors.loseColor2
+        Result.DRAW -> colors.drawColor2
+        Result.NO_CONTEST -> colors.noContestColor2
+        else -> colors.cardBorder
     }
 
     val resultLetter = when (result) {
@@ -105,7 +106,7 @@ fun FightHistoryRow(
 
         Row(
             modifier = Modifier
-                .background(color = AppColors.fightItemBackground)
+                .background(color = colors.fightItemBackground)
                 .fillMaxHeight()
                 .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -127,14 +128,14 @@ fun FightHistoryRow(
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = year ?: "",
-                    color = AppColors.textPrimary,
+                    color = colors.textPrimary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                 )
                 if (shortDate != null) {
                     Text(
                         text = shortDate,
-                        color = AppColors.textSecondary,
+                        color = colors.textSecondary,
                         fontSize = 12.sp,
                     )
                 }

@@ -15,26 +15,28 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 
 @Composable
 fun ErrorBox(
     message: String,
     modifier: Modifier = Modifier
 ) {
+    val colors = LocalAppColors.current
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(AppColors.loseColor.copy(alpha = 0.15f))
-            .border(1.dp, AppColors.loseColor.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+            .background(colors.loseColor.copy(alpha = 0.15f))
+            .border(1.dp, colors.loseColor.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Warning,
             contentDescription = "Error Icon",
-            tint = AppColors.loseColor,
+            tint = colors.loseColor,
             modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -42,7 +44,7 @@ fun ErrorBox(
             text = message,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
-            color = AppColors.loseColor2
+            color = colors.loseColor2
         )
     }
 }

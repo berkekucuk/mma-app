@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.Fight
 
 @Composable
@@ -27,6 +27,7 @@ fun FightMetaCard(
     modifier: Modifier = Modifier,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
 
     data class MetaStat(val value: String, val label: String)
 
@@ -40,7 +41,7 @@ fun FightMetaCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(AppColors.fightItemBackground)
+            .background(colors.fightItemBackground)
             .padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
@@ -52,20 +53,20 @@ fun FightMetaCard(
                 Text(
                     text = stat.value,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.textPrimary,
+                    color = colors.textPrimary,
                     textAlign = TextAlign.Center,
                 )
                 Text(
                     text = stat.label,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = AppColors.textSecondary,
+                    color = colors.textSecondary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 4.dp),
                 )
             }
             if (index < stats.lastIndex) {
                 VerticalDivider(
-                    color = AppColors.dividerColor,
+                    color = colors.dividerColor,
                     thickness = 1.dp,
                     modifier = Modifier.height(36.dp),
                 )

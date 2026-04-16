@@ -16,8 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppColors
-import com.berkekucuk.mmaapp.core.presentation.LocalAppStrings
+import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
+import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.ic_google_logo
 import org.jetbrains.compose.resources.painterResource
@@ -28,10 +28,12 @@ fun GoogleSignInButton(
     modifier: Modifier = Modifier,
 ) {
     val strings = LocalAppStrings.current
+    val colors = LocalAppColors.current
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
-            .background(AppColors.white)
+            .background(colors.white)
             .clickable { onClick() }
             .padding(horizontal = 28.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -44,7 +46,7 @@ fun GoogleSignInButton(
         )
         Text(
             text = strings.menuSignInWithGoogle,
-            color = AppColors.googleSignInButtonText,
+            color = colors.googleSignInButtonText,
             fontSize = 17.sp,
             fontWeight = FontWeight.Medium,
         )
