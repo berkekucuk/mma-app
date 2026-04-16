@@ -19,12 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
@@ -62,7 +61,8 @@ fun SettingsScreen(
                     title = {
                         Text(
                             text = strings.settingsTitle,
-                            style = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Normal),
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
                         )
                     },
                     navigationIcon = {
@@ -91,6 +91,21 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
+            SettingsSection(title = strings.settingsSectionTheme) {
+                SettingsOptionRow(
+                    label = strings.settingsThemeLight,
+                    isSelected = currentThemeMode == ThemeMode.LIGHT,
+                    onClick = { onThemeModeChange(ThemeMode.LIGHT) },
+                )
+                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
+                SettingsOptionRow(
+                    label = strings.settingsThemeDark,
+                    isSelected = currentThemeMode == ThemeMode.DARK,
+                    onClick = { onThemeModeChange(ThemeMode.DARK) },
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+
             SettingsSection(title = strings.settingsSectionLanguage) {
                 SettingsOptionRow(
                     label = "English",
@@ -104,7 +119,6 @@ fun SettingsScreen(
                     onClick = { onLanguageChange(AppLanguage.TR) },
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             SettingsSection(title = strings.settingsSectionMeasurements) {
@@ -120,7 +134,6 @@ fun SettingsScreen(
                     onClick = { onMeasurementUnitChange(MeasurementUnit.IMPERIAL) },
                 )
             }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             SettingsSection(title = strings.settingsSectionOdds) {
@@ -136,23 +149,6 @@ fun SettingsScreen(
                     onClick = { onOddsFormatChange(OddsFormat.AMERICAN) },
                 )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            SettingsSection(title = if(currentLanguage == AppLanguage.EN) "Theme" else "Tema Modu") {
-                SettingsOptionRow(
-                    label = if(currentLanguage == AppLanguage.EN) "Light Mode" else "Açık Tema",
-                    isSelected = currentThemeMode == ThemeMode.LIGHT,
-                    onClick = { onThemeModeChange(ThemeMode.LIGHT) },
-                )
-                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
-                    label = if(currentLanguage == AppLanguage.EN) "Dark Mode" else "Koyu Tema",
-                    isSelected = currentThemeMode == ThemeMode.DARK,
-                    onClick = { onThemeModeChange(ThemeMode.DARK) },
-                )
-            }
-
         }
     }
 }

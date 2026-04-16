@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -114,9 +115,8 @@ fun RankingScreen(
                     title = {
                         Text(
                             text = strings.rankingsTitle.uppercase(),
-                            fontSize = 22.sp,
-                            fontFamily = AppFonts.RobotoCondensed,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(

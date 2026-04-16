@@ -13,7 +13,7 @@ data class TopLevelRoute<T : Route>(
 )
 
 val bottomNavItems = listOf(
-    TopLevelRoute("Fights", Route.Home, Icons.Filled.SportsMma),
+    TopLevelRoute("Events", Route.Home, Icons.Filled.SportsMma),
     TopLevelRoute("Rankings", Route.Rankings, Icons.Filled.Star),
     TopLevelRoute("Menu", Route.Menu, Icons.Filled.Menu)
 )

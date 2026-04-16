@@ -1,10 +1,14 @@
 package com.berkekucuk.mmaapp.presentation.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,19 +30,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
-import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.app_logo
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -122,12 +130,20 @@ fun HomeScreen(
             ) {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = strings.eventsTitle,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontFamily = AppFonts.RobotoCondensed,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically){
+                            Image(
+                                painter = painterResource(Res.drawable.app_logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(36.dp)
+                            )
+                            Text(
+                                text = "LINCH",
+                                modifier = Modifier.offset(x = (-4).dp),
+                                fontFamily = AppFonts.Montserrat,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
                     },
                     actions = {
                         IconButton(onClick = onSearchClicked) {

@@ -57,7 +57,6 @@ fun RankedFighterRow(
                     text = rankLabel,
                     color = colors.pagerBackground,
                     fontSize = 12.sp,
-                    fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
@@ -71,7 +70,6 @@ fun RankedFighterRow(
                     text = rankLabel,
                     color = colors.textSecondary,
                     fontSize = 14.sp,
-                    fontFamily = AppFonts.RobotoCondensed,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
