@@ -141,7 +141,7 @@ data class AppStrings(
     val menuSignInWithGoogle: String,
     val menuNotificationsDisabled: String,
     // Bottom Nav
-    val navFights: String,
+    val navEvents: String,
     val navRankings: String,
     val navMenu: String,
     // Enum display names

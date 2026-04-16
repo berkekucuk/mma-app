@@ -56,7 +56,7 @@ fun MainScreenWrapper(
                         } == true
 
                         val label = when (item.route) {
-                            Route.Home -> strings.navFights
+                            Route.Home -> strings.navEvents
                             Route.Rankings -> strings.navRankings
                             Route.Menu -> strings.navMenu
                             else -> item.name

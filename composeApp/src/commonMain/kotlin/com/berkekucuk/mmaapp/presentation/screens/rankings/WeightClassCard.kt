@@ -92,7 +92,6 @@ fun WeightClassCard(
                                     Text(
                                         text = "C",
                                         fontSize = 10.sp,
-                                        fontFamily = AppFonts.RobotoCondensed,
                                         fontWeight = FontWeight.Bold,
                                         color = colors.pagerBackground
                                     )
