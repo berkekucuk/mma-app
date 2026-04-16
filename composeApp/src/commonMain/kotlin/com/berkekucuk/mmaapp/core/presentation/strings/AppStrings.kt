@@ -129,6 +129,9 @@ data class AppStrings(
     val settingsSectionLanguage: String,
     val settingsSectionMeasurements: String,
     val settingsSectionOdds: String,
+    val settingsSectionTheme: String,
+    val settingsThemeLight: String,
+    val settingsThemeDark: String,
     // Menu Screen
     val menuSignInPrompt: String,
     val menuTitle: String,

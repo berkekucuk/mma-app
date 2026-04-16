@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -95,8 +96,8 @@ fun ProfileEditScreen(
                     title = {
                         Text(
                             text = strings.profileEditTitle,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Normal,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleLarge
                         )
                     },
                     navigationIcon = {
