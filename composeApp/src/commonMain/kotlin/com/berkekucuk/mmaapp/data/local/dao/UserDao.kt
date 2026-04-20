@@ -4,18 +4,28 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.local.entity.UserEntity
+import com.berkekucuk.mmaapp.data.local.entity.UserFighterFavoriteEntity
+import com.berkekucuk.mmaapp.data.local.entity.UserWithFavoriteFighters
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
 
     @Query("SELECT * FROM users WHERE id = :userId")
-    fun getUserById(userId: String): Flow<UserEntity?>
+    fun getUser(userId: String): Flow<UserEntity?>
+
+    @Transaction
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun getUserWithFavorites(userId: String): Flow<UserWithFavoriteFighters?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserFavorites(favorites: List<UserFighterFavoriteEntity>)
 
     @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
     suspend fun updateUser(userId: String, fullName: String, username: String)

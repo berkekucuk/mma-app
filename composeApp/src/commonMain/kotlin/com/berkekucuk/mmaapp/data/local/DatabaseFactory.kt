@@ -14,6 +14,7 @@ import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.UserEntity
+import com.berkekucuk.mmaapp.data.local.entity.UserFighterFavoriteEntity
 import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
 import com.berkekucuk.mmaapp.data.local.entity.WeightClassEntity
 import kotlinx.coroutines.Dispatchers
@@ -25,10 +26,11 @@ import kotlinx.coroutines.IO
         WeightClassEntity::class,
         FighterEntity::class,
         UserEntity::class,
+        UserFighterFavoriteEntity::class,
         SyncedYearEntity::class,
         FightNotificationEntity::class
     ],
-    version = 12
+    version = 15
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

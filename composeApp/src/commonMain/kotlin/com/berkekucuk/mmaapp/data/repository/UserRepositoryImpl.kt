@@ -4,6 +4,7 @@ import com.berkekucuk.mmaapp.data.local.dao.UserDao
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
+import com.berkekucuk.mmaapp.data.mapper.toFavoriteEntities
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.User
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
@@ -22,7 +23,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override fun getUser(userId: String): Flow<User?> {
-        return dao.getUserById(userId)
+        return dao.getUserWithFavorites(userId)
             .map { entity -> entity?.toDomain() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
@@ -33,6 +34,7 @@ class UserRepositoryImpl(
             runCatching {
                 val userDto = remoteDataSource.fetchUser(userId)
                 dao.insertUser(userDto.toEntity())
+                dao.insertUserFavorites(userDto.toFavoriteEntities())
             }.onFailure {
                 if (it is CancellationException) throw it
             }
