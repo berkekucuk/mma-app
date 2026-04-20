@@ -90,9 +90,11 @@ class UserRepositoryImpl(
     override suspend fun addFavoriteFighter(userId: String, fighter: Fighter): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
+                val user = dao.getUser(userId).first() ?: return@runCatching
                 remoteDataSource.addFavoriteFighter(userId, fighter.fighterId)
-                val current = dao.getUser(userId).first() ?: return@runCatching
-                dao.insertUser(current.copy(favoriteFighters = current.favoriteFighters + fighter.toFavoriteDto()))
+                val newList = (user.favoriteFighters + fighter.toFavoriteDto())
+                    .mapIndexed { index, item -> item.copy(rankNumber = index + 1) }
+                dao.insertUser(user.copy(favoriteFighters = newList))
             }.onFailure {
                 if (it is CancellationException) throw it
             }
@@ -102,9 +104,12 @@ class UserRepositoryImpl(
     override suspend fun removeFavoriteFighter(userId: String, fighterId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
+                val user = dao.getUser(userId).first() ?: return@runCatching
                 remoteDataSource.removeFavoriteFighter(userId, fighterId)
-                val current = dao.getUser(userId).first() ?: return@runCatching
-                dao.insertUser(current.copy(favoriteFighters = current.favoriteFighters.filter { it.fighter?.fighterId != fighterId }))
+                val updated = user.favoriteFighters
+                    .filter { it.fighter?.fighterId != fighterId }
+                    .mapIndexed { index, item -> item.copy(rankNumber = index + 1) }
+                dao.insertUser(user.copy(favoriteFighters = updated))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

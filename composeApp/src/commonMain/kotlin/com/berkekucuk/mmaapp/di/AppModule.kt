@@ -208,7 +208,9 @@ val appModule = module {
     viewModel {
         FighterSearchViewModel(
             fighterRepository = get(),
-            weightClassRepository = get()
+            weightClassRepository = get(),
+            userRepository = get(),
+            savedStateHandle = get()
         )
     }
 
@@ -237,7 +239,9 @@ val appModule = module {
     viewModel {
         FavoriteFightersViewModel(
             userRepository = get(),
+            authRepository = get(),
             savedStateHandle = get()
         )
     }
+
 }

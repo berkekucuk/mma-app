@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.domain.model.AuthState
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 
 class FavoriteFightersViewModel(
     private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -28,6 +31,7 @@ class FavoriteFightersViewModel(
 
     init {
         observeFavorites()
+        observeAuthState()
     }
 
     private fun observeFavorites() {
@@ -39,10 +43,28 @@ class FavoriteFightersViewModel(
         }
     }
 
+    private fun observeAuthState() {
+        viewModelScope.launch {
+            authRepository.authState
+                .collect { authState ->
+                val isOwner = authState is AuthState.Authenticated && authState.userId == userId
+                _state.update { it.copy(isOwner = isOwner) }
+            }
+        }
+    }
+
     fun onAction(action: FavoriteFightersUiAction) {
         when (action) {
             is FavoriteFightersUiAction.OnBackClicked -> navigateTo(FavoriteFightersNavigationEvent.Back)
+            is FavoriteFightersUiAction.OnAddFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToAddFighter)
             is FavoriteFightersUiAction.OnFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToFighterDetail(action.fighterId))
+            is FavoriteFightersUiAction.OnRemoveFighterClicked -> removeFavoriteFighter(action.fighterId)
+        }
+    }
+
+    private fun removeFavoriteFighter(fighterId: String) {
+        viewModelScope.launch {
+            userRepository.removeFavoriteFighter(userId, fighterId)
         }
     }
 

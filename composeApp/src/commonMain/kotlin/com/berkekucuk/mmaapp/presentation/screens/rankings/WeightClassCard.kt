@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppFonts
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.domain.model.RankedFighter
 import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
@@ -32,7 +31,7 @@ import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 @Composable
 fun WeightClassCard(
     weightClassName: String,
-    champion: RankedFighter?,
+    champion: RankedFighter? = null,
     onWeightClassClicked: () -> Unit
 ) {
     val colors = LocalAppColors.current

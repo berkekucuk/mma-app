@@ -1,8 +1,10 @@
 package com.berkekucuk.mmaapp.presentation.screens.favorite_fighters
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -43,6 +48,7 @@ fun FavoriteFightersScreenRoot(
     viewModel: FavoriteFightersViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFighterDetail: (String) -> Unit,
+    onNavigateToAddFighter: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -50,6 +56,7 @@ fun FavoriteFightersScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is FavoriteFightersNavigationEvent.Back -> onNavigateBack()
+                is FavoriteFightersNavigationEvent.ToAddFighter -> onNavigateToAddFighter()
                 is FavoriteFightersNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
             }
         }
@@ -71,6 +78,8 @@ fun FavoriteFightersScreen(
     val colors = LocalAppColors.current
     val onBackClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnBackClicked) } }
     val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnFighterClicked(fighterId)) } }
+    val onAddFighterClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnAddFighterClicked) } }
+    val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnRemoveFighterClicked(fighterId)) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Scaffold(
@@ -87,6 +96,7 @@ fun FavoriteFightersScreen(
                             text = strings.toUpperCase(strings.profileFavoriteFighters),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
+                            color = colors.textPrimary
                         )
                     },
                     navigationIcon = {
@@ -94,7 +104,19 @@ fun FavoriteFightersScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = strings.contentDescriptionBack,
+                                tint = colors.textPrimary
                             )
+                        }
+                    },
+                    actions = {
+                        if (state.isOwner) {
+                            IconButton(onClick = onAddFighterClicked) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = colors.textPrimary,
+                                )
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -122,22 +144,38 @@ fun FavoriteFightersScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .background(colors.fightItemBackground)
                 ) {
-                    state.fighters.forEachIndexed { index, ranking ->
-                        ranking.fighter?.let { fighter ->
+                    state.fighters.forEachIndexed { index, rankedFighter ->
+                        rankedFighter.fighter?.let { fighter ->
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 12.dp)
                             ) {
-                                RankedFighterRow(
-                                    rankNumber = index + 1,
-                                    isChampion = false,
-                                    name = fighter.name,
-                                    record = fighter.record.toString(),
-                                    imageUrl = fighter.imageUrl,
-                                    countryCode = fighter.countryCode,
-                                    onFighterClicked = { onFighterClicked(fighter.fighterId) },
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        RankedFighterRow(
+                                            rankNumber = rankedFighter.rankNumber,
+                                            isChampion = false,
+                                            name = fighter.name,
+                                            record = fighter.record.toString(),
+                                            imageUrl = fighter.imageUrl,
+                                            countryCode = fighter.countryCode,
+                                            onFighterClicked = { onFighterClicked(fighter.fighterId) },
+                                        )
+                                    }
+                                    if (state.isOwner) {
+                                        IconButton(onClick = { onRemoveFighterClicked(fighter.fighterId) }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Remove,
+                                                contentDescription = null,
+                                                tint = colors.textSecondary,
+                                            )
+                                        }
+                                    }
+                                }
 
                                 if (index < state.fighters.lastIndex) {
                                     HorizontalDivider(

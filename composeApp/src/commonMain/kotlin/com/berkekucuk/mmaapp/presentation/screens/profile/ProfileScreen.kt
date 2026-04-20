@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +29,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
-import com.berkekucuk.mmaapp.domain.model.RankedFighter
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -73,6 +73,10 @@ fun ProfileScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+    val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
+    val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
+    val onFavoriteFightersClicked = remember(onAction) { { onAction(ProfileUiAction.OnFavoriteFightersClicked) } }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +89,7 @@ fun ProfileScreen(
             ) {
                 MediumTopAppBar(
                     navigationIcon = {
-                        IconButton(onClick = { onAction(ProfileUiAction.OnBackClicked) }) {
+                        IconButton(onClick = onBackClicked) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = strings.contentDescriptionBack
@@ -131,23 +135,21 @@ fun ProfileScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
                     .background(colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {
                     0 -> {
-                        val firstFavorite = state.user?.favoriteFighters?.firstOrNull()
                         ListContainer(
                             isRefreshing = state.isRefreshing,
-                            onRefresh = { onAction(ProfileUiAction.OnRefresh) },
-                            contentPadding = PaddingValues(16.dp),
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(top = 16.dp),
                         ) {
                             item {
                                 WeightClassCard(
                                     weightClassName = strings.profileFavoriteFighters,
-                                    champion = firstFavorite,
-                                    onWeightClassClicked = { onAction(ProfileUiAction.OnFavoriteFightersClicked) },
+                                    champion = state.user?.favoriteFighters?.firstOrNull(),
+                                    onWeightClassClicked = onFavoriteFightersClicked,
                                 )
                             }
                         }

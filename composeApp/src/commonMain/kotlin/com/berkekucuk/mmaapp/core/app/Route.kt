@@ -14,6 +14,6 @@ sealed interface Route {
     @Serializable data class FighterDetail(val fighterId: String) : Route
     @Serializable data class RankingDetail(val weightClassId: String) : Route
     @Serializable data class FavoriteFighters(val userId: String) : Route
-    @Serializable data object FighterSearch : Route
+    @Serializable data class FighterSearch(val userId: String? = null) : Route
     @Serializable data object Settings : Route
 }

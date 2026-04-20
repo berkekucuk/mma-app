@@ -52,13 +52,13 @@ class UserSupabaseAPI(
     }
 
     override suspend fun addFavoriteFighter(userId: String, fighterId: String) {
-        client.from("user_fighter_favorites").insert(
+        client.from("user_favorite_fighters").insert(
             mapOf("user_id" to userId, "fighter_id" to fighterId)
         )
     }
 
     override suspend fun removeFavoriteFighter(userId: String, fighterId: String) {
-        client.from("user_fighter_favorites").delete {
+        client.from("user_favorite_fighters").delete {
             filter {
                 eq("user_id", userId)
                 eq("fighter_id", fighterId)
