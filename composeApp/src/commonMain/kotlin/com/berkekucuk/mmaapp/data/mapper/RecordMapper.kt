@@ -10,3 +10,11 @@ fun RecordDto.toDomain(): Record {
         draws = draws ?: 0
     )
 }
+
+fun Record.toDto(): RecordDto {
+    return RecordDto(
+        wins = wins,
+        losses = losses,
+        draws = draws
+    )
+}

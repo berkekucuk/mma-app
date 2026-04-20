@@ -57,3 +57,13 @@ fun UserWithFavoriteFighters.toDomain(): User {
         favoriteFighters = favoriteFighters.map { it.toDomain() },
     )
 }
+
+fun Fighter.toFavoriteEntity(userId: String): UserFighterFavoriteEntity {
+    return UserFighterFavoriteEntity(
+        userId = userId,
+        fighterId = fighterId,
+        name = name,
+        imageUrl = imageUrl,
+        record = record.toDto()
+    )
+}

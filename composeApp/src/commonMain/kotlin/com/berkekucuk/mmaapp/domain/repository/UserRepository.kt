@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.domain.repository
 
+import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.User
 import kotlinx.coroutines.flow.Flow
 
@@ -11,4 +12,6 @@ interface UserRepository {
     suspend fun syncFightNotificationStatus(fightId: String, userId: String): Result<Unit>
     suspend fun addFightNotification(fightId: String, userId: String): Result<Unit>
     suspend fun removeFightNotification(fightId: String, userId: String): Result<Unit>
+    suspend fun addFavoriteFighter(userId: String, fighter: Fighter): Result<Unit>
+    suspend fun removeFavoriteFighter(userId: String, fighterId: String): Result<Unit>
 }

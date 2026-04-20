@@ -13,4 +13,8 @@ interface UserRemoteDataSource {
     suspend fun upsertFightNotification(fightId: String, userId: String)
 
     suspend fun deleteFightNotification(fightId: String, userId: String)
+    
+    suspend fun addFavoriteFighter(userId: String, fighterId: String)
+    
+    suspend fun removeFavoriteFighter(userId: String, fighterId: String)
 }

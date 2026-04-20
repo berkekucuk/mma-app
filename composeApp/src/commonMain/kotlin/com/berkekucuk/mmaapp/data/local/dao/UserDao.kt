@@ -27,6 +27,12 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserFavorites(favorites: List<UserFighterFavoriteEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserFavorite(favorite: UserFighterFavoriteEntity)
+
+    @Query("DELETE FROM user_fighter_favorites WHERE user_id = :userId AND fighter_id = :fighterId")
+    suspend fun deleteUserFavorite(userId: String, fighterId: String)
+
     @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
     suspend fun updateUser(userId: String, fullName: String, username: String)
 
