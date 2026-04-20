@@ -5,12 +5,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 val LightColors = AppColors(
+    isDark = false,
     topBarBackground = Color(0xFFFFFFFF),
     pagerBackground = Color(0xFFF8F6F3),
     dropdownMenuBackground = Color(0xFFEBE7E2),
     textPrimary = Color(0xFF1C1917),
     textSecondary = Color(0xFF78716C),
-    dateColor = Color(0xFF6B7280),
+    dateColor = Color(0xFF4B5563),
     ufcRed = Color(0xFFD20909),
     winnerFrame = Color(0xFF2E8B42),
     upcomingColor = Color(0xFF9E9E9E),

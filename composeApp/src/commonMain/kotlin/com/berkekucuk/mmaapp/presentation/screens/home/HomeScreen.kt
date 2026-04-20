@@ -46,6 +46,7 @@ import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import mmaapp.composeapp.generated.resources.Res
 import mmaapp.composeapp.generated.resources.app_logo
+import mmaapp.composeapp.generated.resources.app_logo_light
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -132,7 +133,10 @@ fun HomeScreen(
                     title = {
                         Row(verticalAlignment = Alignment.CenterVertically){
                             Image(
-                                painter = painterResource(Res.drawable.app_logo),
+                                painter = painterResource(
+                                    if (colors.isDark) Res.drawable.app_logo
+                                    else Res.drawable.app_logo_light
+                                ),
                                 contentDescription = null,
                                 modifier = Modifier.size(36.dp)
                             )

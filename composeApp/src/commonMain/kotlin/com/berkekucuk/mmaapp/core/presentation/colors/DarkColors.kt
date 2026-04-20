@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 val DarkColors = AppColors(
+    isDark = true,
     topBarBackground = Color(0xFF1A1A1A),
     pagerBackground = Color.Black,
     dropdownMenuBackground = Color(0xFF2A2A2A),
