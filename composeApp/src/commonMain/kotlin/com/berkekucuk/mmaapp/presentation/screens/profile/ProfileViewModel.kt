@@ -28,7 +28,6 @@ class ProfileViewModel(
 
     init {
         observeUser()
-        syncUser(userId)
     }
 
     private fun observeUser() {
@@ -46,10 +45,10 @@ class ProfileViewModel(
         }
     }
 
-    private fun syncUser(id: String, isRefreshing: Boolean = false) {
+    private fun syncUser() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = isRefreshing) }
-            userRepository.syncUser(id)
+            _state.update { it.copy(isRefreshing = true) }
+            userRepository.syncUser(userId)
                 .onSuccess { _state.update { it.copy(isRefreshing = false) } }
                 .onFailure { _state.update { it.copy(isRefreshing = false) } }
         }
@@ -60,7 +59,7 @@ class ProfileViewModel(
             is ProfileUiAction.OnBackClicked -> navigateTo(ProfileNavigationEvent.Back)
             is ProfileUiAction.OnEditClicked -> navigateTo(ProfileNavigationEvent.ToEdit)
             is ProfileUiAction.OnSignOutClicked -> Unit
-            is ProfileUiAction.OnRefresh -> syncUser(id = userId, isRefreshing = true)
+            is ProfileUiAction.OnRefresh -> syncUser()
         }
     }
 

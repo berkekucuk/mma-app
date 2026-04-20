@@ -24,6 +24,21 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
 
+    @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
+    suspend fun updateUser(userId: String, fullName: String, username: String)
+
+    @Query("SELECT COUNT(*) > 0 FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
+    fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFightNotification(entity: FightNotificationEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFightNotifications(entities: List<FightNotificationEntity>)
+
+    @Query("DELETE FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
+    suspend fun deleteFightNotification(fightId: String, userId: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserFavorites(favorites: List<UserFighterFavoriteEntity>)
 
@@ -32,16 +47,4 @@ interface UserDao {
 
     @Query("DELETE FROM user_fighter_favorites WHERE user_id = :userId AND fighter_id = :fighterId")
     suspend fun deleteUserFavorite(userId: String, fighterId: String)
-
-    @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
-    suspend fun updateUser(userId: String, fullName: String, username: String)
-
-    @Query("SELECT COUNT(*) > 0 FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
-    fun observeIsFightNotificationEnabled(fightId: String, userId: String): Flow<Boolean>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFightNotification(entity: FightNotificationEntity)
-
-    @Query("DELETE FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
-    suspend fun deleteFightNotification(fightId: String, userId: String)
 }

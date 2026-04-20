@@ -37,6 +37,7 @@ class UserRepositoryImpl(
                 val userDto = remoteDataSource.fetchUser(userId)
                 dao.insertUser(userDto.toEntity())
                 dao.insertUserFavorites(userDto.toFavoriteEntities())
+                syncFightNotifications(userId)
             }.onFailure {
                 if (it is CancellationException) throw it
             }
@@ -54,25 +55,15 @@ class UserRepositoryImpl(
         }
     }
 
-    override fun observeFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
-        return dao.observeIsFightNotificationEnabled(fightId, userId)
-            .distinctUntilChanged()
-            .flowOn(Dispatchers.IO)
+    private suspend fun syncFightNotifications(userId: String) {
+        val notifications = remoteDataSource.fetchFightNotifications(userId)
+        dao.insertFightNotifications(notifications.map { it.toEntity() })
     }
 
-    override suspend fun syncFightNotificationStatus(fightId: String, userId: String): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                val isEnabled = remoteDataSource.isFightNotificationEnabled(fightId, userId)
-                if (isEnabled) {
-                    dao.insertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
-                } else {
-                    dao.deleteFightNotification(fightId, userId)
-                }
-            }.onFailure {
-                if (it is CancellationException) throw it
-            }
-        }
+    override fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
+        return dao.getFightNotificationStatus(fightId, userId)
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun addFightNotification(fightId: String, userId: String): Result<Unit> {

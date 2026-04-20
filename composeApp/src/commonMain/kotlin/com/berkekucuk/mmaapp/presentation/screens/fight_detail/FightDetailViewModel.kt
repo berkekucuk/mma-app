@@ -40,7 +40,6 @@ class FightDetailViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
-    private var isObservingNotifications = false
     private var isPendingNotificationRequest = false
 
     init {
@@ -49,6 +48,7 @@ class FightDetailViewModel(
         } else {
             observeFightFromEvent()
         }
+        observeFightNotificationStatus()
     }
 
     private fun observeFightFromEvent() {
@@ -66,7 +66,6 @@ class FightDetailViewModel(
                     }
                     if (fight != null) {
                         syncFighters(fight)
-                        observeNotificationStatus(fight.fightId)
                     }
                 }
         }
@@ -87,27 +86,19 @@ class FightDetailViewModel(
                     }
                     if (fight != null) {
                         syncFighters(fight, knownFighterId = fighterId)
-                        observeNotificationStatus(fight.fightId)
                     }
                 }
         }
     }
 
-    private fun observeNotificationStatus(fightId: String) {
-        if (isObservingNotifications) return
-        isObservingNotifications = true
-
-         viewModelScope.launch {
-            val userId = getAuthenticatedUserId()
-            if (userId != null) {
-                userRepository.observeFightNotificationStatus(fightId, userId)
-                    .collect { isEnabled -> _state.update { it.copy(isNotificationEnabled = isEnabled) } }
-            }
-        }
+    private fun observeFightNotificationStatus() {
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId != null) {
-                userRepository.syncFightNotificationStatus(fightId, userId)
+                userRepository.getFightNotificationStatus(fightId, userId)
+                    .collect { isEnabled ->
+                        _state.update { it.copy(isNotificationEnabled = isEnabled) }
+                    }
             }
         }
     }
