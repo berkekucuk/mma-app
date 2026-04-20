@@ -60,6 +60,7 @@ class ProfileViewModel(
             is ProfileUiAction.OnEditClicked -> navigateTo(ProfileNavigationEvent.ToEdit)
             is ProfileUiAction.OnSignOutClicked -> Unit
             is ProfileUiAction.OnRefresh -> syncUser()
+            is ProfileUiAction.OnFavoriteFightersClicked -> navigateTo(ProfileNavigationEvent.ToFavoriteFighters(userId))
         }
     }
 

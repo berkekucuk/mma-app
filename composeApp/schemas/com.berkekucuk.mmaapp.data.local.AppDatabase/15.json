@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 15,
-    "identityHash": "14ae9aeef01ca15530aebfd02a166085",
+    "identityHash": "eca24b7bbf36dfe5a9f8bb6b0a2d2b7b",
     "entities": [
       {
         "tableName": "events",
@@ -199,8 +199,8 @@
         }
       },
       {
-        "tableName": "user_fighter_favorites",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `fighter_id` TEXT NOT NULL, `name` TEXT, `image_url` TEXT, `record_json` TEXT, PRIMARY KEY(`user_id`, `fighter_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "user_favorite_fighters",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` TEXT NOT NULL, `fighter_id` TEXT NOT NULL, `name` TEXT, `image_url` TEXT, `record_json` TEXT, `country_code` TEXT, `rank_number` INTEGER NOT NULL, PRIMARY KEY(`user_id`, `fighter_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -228,6 +228,17 @@
             "fieldPath": "record",
             "columnName": "record_json",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "countryCode",
+            "columnName": "country_code",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "rankNumber",
+            "columnName": "rank_number",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -297,7 +308,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14ae9aeef01ca15530aebfd02a166085')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'eca24b7bbf36dfe5a9f8bb6b0a2d2b7b')"
     ]
   }
 }

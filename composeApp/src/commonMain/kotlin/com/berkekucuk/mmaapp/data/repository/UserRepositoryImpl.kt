@@ -4,8 +4,7 @@ import com.berkekucuk.mmaapp.data.local.dao.UserDao
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
-import com.berkekucuk.mmaapp.data.mapper.toFavoriteEntities
-import com.berkekucuk.mmaapp.data.mapper.toFavoriteEntity
+import com.berkekucuk.mmaapp.data.mapper.toFavoriteDto
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.model.User
@@ -14,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -25,7 +25,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override fun getUser(userId: String): Flow<User?> {
-        return dao.getUserWithFavorites(userId)
+        return dao.getUser(userId)
             .map { entity -> entity?.toDomain() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
@@ -36,7 +36,6 @@ class UserRepositoryImpl(
             runCatching {
                 val userDto = remoteDataSource.fetchUser(userId)
                 dao.insertUser(userDto.toEntity())
-                dao.insertUserFavorites(userDto.toFavoriteEntities())
                 syncFightNotifications(userId)
             }.onFailure {
                 if (it is CancellationException) throw it
@@ -92,7 +91,8 @@ class UserRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 remoteDataSource.addFavoriteFighter(userId, fighter.fighterId)
-                dao.insertUserFavorite(fighter.toFavoriteEntity(userId))
+                val current = dao.getUser(userId).first() ?: return@runCatching
+                dao.insertUser(current.copy(favoriteFighters = current.favoriteFighters + fighter.toFavoriteDto()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }
@@ -103,7 +103,8 @@ class UserRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 remoteDataSource.removeFavoriteFighter(userId, fighterId)
-                dao.deleteUserFavorite(userId, fighterId)
+                val current = dao.getUser(userId).first() ?: return@runCatching
+                dao.insertUser(current.copy(favoriteFighters = current.favoriteFighters.filter { it.fighter?.fighterId != fighterId }))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

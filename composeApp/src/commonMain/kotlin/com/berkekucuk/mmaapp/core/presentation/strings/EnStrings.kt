@@ -84,6 +84,7 @@ val EnStrings = AppStrings(
     profileSignOut = "Sign Out",
     profileTabOverview = "Overview",
     profileTabPredictions = "Predictions",
+    profileFavoriteFighters = "Favorite Fighters",
     profileEditTitle = "Edit Profile",
     profileEditPersonalInfo = "Personal Information",
     profileEditFullName = "Full Name",

@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.presentation.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,17 +25,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.domain.model.RankedFighter
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
+import com.berkekucuk.mmaapp.presentation.screens.rankings.WeightClassCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
     onBackClick: () -> Unit,
+    onFavoriteFightersClick: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -43,6 +49,7 @@ fun ProfileScreenRoot(
             when (event) {
                 ProfileNavigationEvent.Back -> onBackClick()
                 ProfileNavigationEvent.ToEdit -> Unit
+                is ProfileNavigationEvent.ToFavoriteFighters -> onFavoriteFightersClick(event.userId)
             }
         }
     }
@@ -119,7 +126,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        ){
+        ) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
@@ -130,12 +137,25 @@ fun ProfileScreen(
             ) { page ->
                 when (page) {
                     0 -> {
+                        val firstFavorite = state.user?.favoriteFighters?.firstOrNull()
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = { onAction(ProfileUiAction.OnRefresh) },
+                            contentPadding = PaddingValues(16.dp),
+                        ) {
+                            item {
+                                WeightClassCard(
+                                    weightClassName = strings.profileFavoriteFighters,
+                                    champion = firstFavorite,
+                                    onWeightClassClicked = { onAction(ProfileUiAction.OnFavoriteFightersClicked) },
+                                )
+                            }
+                        }
                     }
                     1 -> {
                     }
                 }
             }
         }
-
     }
 }

@@ -36,6 +36,7 @@ import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewMo
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuViewModel
+import com.berkekucuk.mmaapp.presentation.screens.favorite_fighters.FavoriteFightersViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditViewModel
@@ -228,6 +229,13 @@ val appModule = module {
 
     viewModel {
         ProfileEditViewModel(
+            userRepository = get(),
+            savedStateHandle = get()
+        )
+    }
+
+    viewModel {
+        FavoriteFightersViewModel(
             userRepository = get(),
             savedStateHandle = get()
         )

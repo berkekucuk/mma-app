@@ -84,6 +84,7 @@ val TrStrings = AppStrings(
     profileSignOut = "Çıkış Yap",
     profileTabOverview = "Genel",
     profileTabPredictions = "Tahminler",
+    profileFavoriteFighters = "Favori Dövüşçüler",
     profileEditTitle = "Profili Düzenle",
     profileEditPersonalInfo = "Kişisel Bilgiler",
     profileEditFullName = "Ad Soyad",
