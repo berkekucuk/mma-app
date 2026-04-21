@@ -64,7 +64,12 @@ class FavoriteFightersViewModel(
 
     private fun removeFavoriteFighter(fighterId: String) {
         viewModelScope.launch {
+            _state.update { it.copy(error = null) }
             userRepository.removeFavoriteFighter(userId, fighterId)
+                .onSuccess {}
+                .onFailure {
+                    _state.update { it.copy(error = FavoriteFightersError.NETWORK_ERROR) }
+                }
         }
     }
 

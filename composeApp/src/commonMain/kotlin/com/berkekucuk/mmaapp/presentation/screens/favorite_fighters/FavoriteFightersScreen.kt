@@ -22,6 +22,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -39,7 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankedFighterRow
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -81,22 +85,43 @@ fun FavoriteFightersScreen(
     val onAddFighterClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnAddFighterClicked) } }
     val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnRemoveFighterClicked(fighterId)) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val errorMessage = when (state.error) {
+        FavoriteFightersError.NETWORK_ERROR -> strings.errorNetwork
+        FavoriteFightersError.UNKNOWN_ERROR -> strings.errorUnknown
+        null -> null
+    }
+
+    SnackbarEffect(
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets.statusBars,
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = navBarBottomPadding),
+                snackbar = { snackbarData ->
+                    ErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
-            Column(
-                modifier = Modifier.background(colors.rankingTopBarGradient)
-            ) {
+            Column(modifier = Modifier.background(colors.rankingTopBarGradient)) {
                 TopAppBar(
                     title = {
                         Text(
                             text = strings.toUpperCase(strings.profileFavoriteFighters),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            color = colors.textPrimary
                         )
                     },
                     navigationIcon = {
@@ -104,7 +129,6 @@ fun FavoriteFightersScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = strings.contentDescriptionBack,
-                                tint = colors.textPrimary
                             )
                         }
                     },
@@ -114,7 +138,6 @@ fun FavoriteFightersScreen(
                                 Icon(
                                     imageVector = Icons.Default.Add,
                                     contentDescription = null,
-                                    tint = colors.textPrimary,
                                 )
                             }
                         }
@@ -124,6 +147,7 @@ fun FavoriteFightersScreen(
                         scrolledContainerColor = Color.Transparent,
                         navigationIconContentColor = colors.textPrimary,
                         titleContentColor = colors.textPrimary,
+                        actionIconContentColor = colors.textPrimary,
                     ),
                 )
             }
