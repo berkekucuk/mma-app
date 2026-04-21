@@ -36,6 +36,7 @@ import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewMo
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuViewModel
+import com.berkekucuk.mmaapp.presentation.screens.favorite_fighters.FavoriteFightersViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditViewModel
@@ -156,7 +157,8 @@ val appModule = module {
     single<UserRepository> {
         UserRepositoryImpl(
             remoteDataSource = get(),
-            dao = get()
+            dao = get(),
+            rateLimiter = get()
         )
     }
 
@@ -207,7 +209,9 @@ val appModule = module {
     viewModel {
         FighterSearchViewModel(
             fighterRepository = get(),
-            weightClassRepository = get()
+            weightClassRepository = get(),
+            userRepository = get(),
+            savedStateHandle = get()
         )
     }
 
@@ -232,4 +236,13 @@ val appModule = module {
             savedStateHandle = get()
         )
     }
+
+    viewModel {
+        FavoriteFightersViewModel(
+            userRepository = get(),
+            authRepository = get(),
+            savedStateHandle = get()
+        )
+    }
+
 }

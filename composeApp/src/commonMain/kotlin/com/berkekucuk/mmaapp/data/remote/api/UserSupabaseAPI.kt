@@ -28,14 +28,12 @@ class UserSupabaseAPI(
         }
     }
 
-    override suspend fun isFightNotificationEnabled(fightId: String, userId: String): Boolean {
-        val result = client.from("user_fight_notifications").select {
+    override suspend fun fetchFightNotifications(userId: String): List<FightNotificationDto> {
+        return client.from("user_fight_notifications").select {
             filter {
-                eq("fight_id", fightId)
                 eq("user_id", userId)
             }
         }.decodeList<FightNotificationDto>()
-        return result.isNotEmpty()
     }
 
     override suspend fun upsertFightNotification(fightId: String, userId: String) {
@@ -49,6 +47,21 @@ class UserSupabaseAPI(
             filter {
                 eq("fight_id", fightId)
                 eq("user_id", userId)
+            }
+        }
+    }
+
+    override suspend fun addFavoriteFighter(userId: String, fighterId: String) {
+        client.from("user_favorite_fighters").insert(
+            mapOf("user_id" to userId, "fighter_id" to fighterId)
+        )
+    }
+
+    override suspend fun removeFavoriteFighter(userId: String, fighterId: String) {
+        client.from("user_favorite_fighters").delete {
+            filter {
+                eq("user_id", userId)
+                eq("fighter_id", fighterId)
             }
         }
     }

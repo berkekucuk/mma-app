@@ -96,6 +96,7 @@ data class AppStrings(
     val profileSignOut: String,
     val profileTabOverview: String,
     val profileTabPredictions: String,
+    val profileFavoriteFighters: String,
     // Profile Edit Screen
     val profileEditTitle: String,
     val profileEditPersonalInfo: String,

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.colors.DarkColors
 import com.berkekucuk.mmaapp.core.presentation.strings.EnStrings
@@ -32,6 +33,7 @@ import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreen
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.favorite_fighters.FavoriteFightersScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreenRoot
@@ -128,7 +130,7 @@ fun App() {
                         rootNavController.navigate(Route.ProfileEdit(userId))
                     },
                     onNavigateToFighterSearch = {
-                        rootNavController.navigate(Route.FighterSearch)
+                        rootNavController.navigate(Route.FighterSearch())
                     },
                     onNavigateToSettings = {
                         rootNavController.navigate(Route.Settings)
@@ -199,7 +201,28 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 ProfileScreenRoot(
-                    onBackClick = { rootNavController.navigateUp() }
+                    onBackClick = { rootNavController.navigateUp() },
+                    onFavoriteFightersClick = { userId ->
+                        rootNavController.navigate(Route.FavoriteFighters(userId))
+                    }
+                )
+            }
+
+            composable<Route.FavoriteFighters>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) { backStackEntry ->
+                val favRoute = backStackEntry.toRoute<Route.FavoriteFighters>()
+                FavoriteFightersScreenRoot(
+                    onNavigateBack = { rootNavController.navigateUp() },
+                    onNavigateToFighterDetail = { fighterId ->
+                        rootNavController.navigate(Route.FighterDetail(fighterId))
+                    },
+                    onNavigateToAddFighter = {
+                        rootNavController.navigate(Route.FighterSearch(favRoute.userId))
+                    }
                 )
             }
 

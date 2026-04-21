@@ -1,9 +1,13 @@
 package com.berkekucuk.mmaapp.presentation.screens.fighter_search
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.FlowPreview
@@ -22,11 +26,16 @@ import kotlinx.coroutines.launch
 class FighterSearchViewModel(
     private val fighterRepository: FighterRepository,
     private val weightClassRepository: WeightClassRepository,
+    private val userRepository: UserRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     companion object {
         private const val MENS_P4P_ID = "mens_p4p"
     }
+
+    private val route = savedStateHandle.toRoute<Route.FighterSearch>()
+    private val userId: String? = route.userId
 
     private val _state = MutableStateFlow(FighterSearchUiState())
     val state = _state.asStateFlow()
@@ -92,8 +101,27 @@ class FighterSearchViewModel(
             is FighterSearchUiAction.OnClearQuery -> _state.update {
                 it.copy(query = "", results = p4pFighters, error = null)
             }
-            is FighterSearchUiAction.OnFighterClicked -> navigateTo(FighterSearchNavigationEvent.ToFighterDetail(action.fighterId))
+            is FighterSearchUiAction.OnFighterClicked -> {
+                if (userId != null) {
+                    addFavoriteFighter(action.fighterId)
+                } else {
+                    navigateTo(FighterSearchNavigationEvent.ToFighterDetail(action.fighterId))
+                }
+            }
             is FighterSearchUiAction.OnBackClicked -> navigateTo(FighterSearchNavigationEvent.Back)
+        }
+    }
+
+    private fun addFavoriteFighter(fighterId: String) {
+        val fighter = _state.value.results.find { it.fighterId == fighterId } ?: return
+        viewModelScope.launch {
+            userRepository.addFavoriteFighter(userId!!, fighter)
+                .onSuccess {
+                    navigateTo(FighterSearchNavigationEvent.Back)
+                }
+                .onFailure {
+                    _state.update { it.copy(error = FighterSearchError.NETWORK_ERROR) }
+                }
         }
     }
 

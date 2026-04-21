@@ -9,5 +9,5 @@ data class UserDto(
     val username: String? = null,
     @SerialName("full_name") val fullName: String? = null,
     @SerialName("avatar_url") val avatarUrl: String? = null,
-    @SerialName("user_fighter_favorites") val userFighterFavorites: List<FighterDto> = emptyList(),
+    @SerialName("user_favorite_fighters") val favoriteFighters: List<RankedFighterDto>? = null,
 )

@@ -28,7 +28,7 @@ import kotlinx.coroutines.IO
         SyncedYearEntity::class,
         FightNotificationEntity::class
     ],
-    version = 12
+    version = 16
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

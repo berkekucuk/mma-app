@@ -49,7 +49,7 @@ fun FighterRecordCard(
         StatItem(
             value = record.draws.toString(),
             label = strings.fighterDetailRecordDraws,
-            valueColor = colors.drawColor,
+            valueColor = colors.textSecondary,
         )
     }
 }

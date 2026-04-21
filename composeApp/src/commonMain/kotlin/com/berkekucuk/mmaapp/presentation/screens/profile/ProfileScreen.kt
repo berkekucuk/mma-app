@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.presentation.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,21 +21,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
+import com.berkekucuk.mmaapp.presentation.screens.rankings.WeightClassCard
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
     onBackClick: () -> Unit,
+    onFavoriteFightersClick: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -43,6 +49,7 @@ fun ProfileScreenRoot(
             when (event) {
                 ProfileNavigationEvent.Back -> onBackClick()
                 ProfileNavigationEvent.ToEdit -> Unit
+                is ProfileNavigationEvent.ToFavoriteFighters -> onFavoriteFightersClick(event.userId)
             }
         }
     }
@@ -66,6 +73,10 @@ fun ProfileScreen(
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+    val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
+    val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
+    val onFavoriteFightersClicked = remember(onAction) { { onAction(ProfileUiAction.OnFavoriteFightersClicked) } }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +89,7 @@ fun ProfileScreen(
             ) {
                 MediumTopAppBar(
                     navigationIcon = {
-                        IconButton(onClick = { onAction(ProfileUiAction.OnBackClicked) }) {
+                        IconButton(onClick = onBackClicked) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = strings.contentDescriptionBack
@@ -119,23 +130,34 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        ){
+        ) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
                     .background(colors.pagerBackground),
                 beyondViewportPageCount = 1
             ) { page ->
                 when (page) {
                     0 -> {
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(top = 16.dp),
+                        ) {
+                            item {
+                                WeightClassCard(
+                                    weightClassName = strings.profileFavoriteFighters,
+                                    champion = state.user?.favoriteFighters?.firstOrNull(),
+                                    onWeightClassClicked = onFavoriteFightersClicked,
+                                )
+                            }
+                        }
                     }
                     1 -> {
                     }
                 }
             }
         }
-
     }
 }

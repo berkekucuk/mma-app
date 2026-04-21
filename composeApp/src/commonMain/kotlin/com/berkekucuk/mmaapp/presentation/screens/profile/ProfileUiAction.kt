@@ -5,4 +5,5 @@ sealed interface ProfileUiAction {
     data object OnEditClicked : ProfileUiAction
     data object OnSignOutClicked : ProfileUiAction
     data object OnRefresh : ProfileUiAction
+    data object OnFavoriteFightersClicked : ProfileUiAction
 }
