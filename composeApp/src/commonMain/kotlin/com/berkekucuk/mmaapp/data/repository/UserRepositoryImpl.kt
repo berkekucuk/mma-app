@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
+import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.UserDao
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
@@ -21,8 +22,11 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class UserRepositoryImpl(
     private val remoteDataSource: UserRemoteDataSource,
-    private val dao: UserDao
+    private val dao: UserDao,
+    private val rateLimiter: RateLimiter
 ) : UserRepository {
+
+    private fun syncUserKey(userId: String) = "sync_user_$userId"
 
     override fun getUser(userId: String): Flow<User?> {
         return dao.getUser(userId)
@@ -34,11 +38,15 @@ class UserRepositoryImpl(
     override suspend fun syncUser(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
+                if (!rateLimiter.shouldFetch(syncUserKey(userId))) {
+                    return@runCatching
+                }
                 val userDto = remoteDataSource.fetchUser(userId)
                 dao.insertUser(userDto.toEntity())
                 syncFightNotifications(userId)
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(syncUserKey(userId))
             }
         }
     }

@@ -157,7 +157,8 @@ val appModule = module {
     single<UserRepository> {
         UserRepositoryImpl(
             remoteDataSource = get(),
-            dao = get()
+            dao = get(),
+            rateLimiter = get()
         )
     }
 
