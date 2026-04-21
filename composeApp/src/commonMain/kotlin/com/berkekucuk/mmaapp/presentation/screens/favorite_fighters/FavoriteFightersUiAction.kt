@@ -5,4 +5,5 @@ sealed interface FavoriteFightersUiAction {
     data object OnAddFighterClicked : FavoriteFightersUiAction
     data class OnFighterClicked(val fighterId: String) : FavoriteFightersUiAction
     data class OnRemoveFighterClicked(val fighterId: String) : FavoriteFightersUiAction
+    data object OnRefresh : FavoriteFightersUiAction
 }

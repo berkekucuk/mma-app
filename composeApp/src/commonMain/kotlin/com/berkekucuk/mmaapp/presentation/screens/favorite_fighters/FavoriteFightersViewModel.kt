@@ -59,6 +59,20 @@ class FavoriteFightersViewModel(
             is FavoriteFightersUiAction.OnAddFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToAddFighter)
             is FavoriteFightersUiAction.OnFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToFighterDetail(action.fighterId))
             is FavoriteFightersUiAction.OnRemoveFighterClicked -> removeFavoriteFighter(action.fighterId)
+            is FavoriteFightersUiAction.OnRefresh -> syncUser()
+        }
+    }
+
+    private fun syncUser() {
+        viewModelScope.launch {
+            _state.update { it.copy(isRefreshing = true) }
+            userRepository.syncUser(userId)
+                .onSuccess {
+                    _state.update { it.copy(isRefreshing = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isRefreshing = false) }
+                }
         }
     }
 

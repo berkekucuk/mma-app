@@ -84,6 +84,7 @@ fun FavoriteFightersScreen(
     val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnFighterClicked(fighterId)) } }
     val onAddFighterClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnAddFighterClicked) } }
     val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnRemoveFighterClicked(fighterId)) } }
+    val onRefresh = remember(onAction) { { onAction(FavoriteFightersUiAction.OnRefresh) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -155,7 +156,7 @@ fun FavoriteFightersScreen(
     ) { innerPadding ->
         ListContainer(
             isRefreshing = false,
-            onRefresh = {},
+            onRefresh = onRefresh,
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(top = 8.dp),
             verticalSpacing = 0.dp,
