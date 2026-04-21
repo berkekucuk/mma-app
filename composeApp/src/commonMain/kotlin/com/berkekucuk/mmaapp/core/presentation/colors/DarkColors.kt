@@ -32,7 +32,7 @@ val DarkColors = AppColors(
     cardHeaderBackground = Color(0xFF20232A),
     cardBorder = Color(0xFF3E4149),
     fighterBarBackground = Brush.verticalGradient(
-        colors = listOf(Color(0xFF2C2C2C), Color(0xFF1A1A1A))
+        colors = listOf(Color(0xFF111E2E), Color(0xFF0B141E), Color(0xFF070A11))
     ),
     eventDetailTopBarGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFF200000), Color(0xFF150000), Color(0xFF0A0000))
