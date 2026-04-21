@@ -48,7 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun FighterSearchScreenRoot(
     viewModel: FighterSearchViewModel = koinViewModel(),
     onNavigateToFighterDetail: (String) -> Unit,
-    onBackClick: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
 
@@ -56,7 +56,7 @@ fun FighterSearchScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is FighterSearchNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
-                is FighterSearchNavigationEvent.Back -> onBackClick()
+                is FighterSearchNavigationEvent.Back -> onNavigateBack()
             }
         }
     }

@@ -56,7 +56,7 @@ fun FightDetailScreenRoot(
     viewModel: FightDetailViewModel = koinViewModel(),
     onNavigateToFighterDetail: (fighterId: String) -> Unit,
     onNavigateToEventDetail: (eventId: String) -> Unit,
-    onBackClick: () -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
     val showPermissionRequest = remember { mutableStateOf(false) }
@@ -76,7 +76,7 @@ fun FightDetailScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is FightDetailNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
-                is FightDetailNavigationEvent.Back -> onBackClick()
+                is FightDetailNavigationEvent.Back -> onNavigateBack()
                 is FightDetailNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
                 is FightDetailNavigationEvent.RequestNotificationPermission -> {
                     showPermissionRequest.value = true

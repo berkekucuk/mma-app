@@ -148,7 +148,7 @@ fun App() {
                     onNavigateToFightDetail = { eventId, fightId ->
                         rootNavController.navigate(Route.FightDetail(eventId, fightId))
                     },
-                    onBackClick = { rootNavController.navigateUp() }
+                    onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
 
@@ -165,7 +165,7 @@ fun App() {
                     onNavigateToEventDetail = { eventId ->
                         rootNavController.navigate(Route.EventDetail(eventId, fromFightDetail = true))
                     },
-                    onBackClick = { rootNavController.navigateUp() }
+                    onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
 
@@ -179,7 +179,7 @@ fun App() {
                     onNavigateToFightDetail = { eventId, fightId, fighterId ->
                         rootNavController.navigate(Route.FightDetail(eventId, fightId, fighterId))
                     },
-                    onBackClick = { rootNavController.navigateUp() }
+                    onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
 
@@ -190,7 +190,7 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 ProfileEditScreenRoot(
-                    onBackClick = { rootNavController.navigateUp() }
+                    onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
 
@@ -201,8 +201,8 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 ProfileScreenRoot(
-                    onBackClick = { rootNavController.navigateUp() },
-                    onFavoriteFightersClick = { userId ->
+                    onNavigateBack = { rootNavController.navigateUp() },
+                    onNavigateToFavoriteFighters = { userId ->
                         rootNavController.navigate(Route.FavoriteFighters(userId))
                     }
                 )
@@ -220,7 +220,7 @@ fun App() {
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
-                    onNavigateToAddFighter = {
+                    onNavigateToFighterSearch = {
                         rootNavController.navigate(Route.FighterSearch(favRoute.userId))
                     }
                 )
@@ -250,7 +250,7 @@ fun App() {
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
-                    onBackClick = { rootNavController.navigateUp() }
+                    onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
 

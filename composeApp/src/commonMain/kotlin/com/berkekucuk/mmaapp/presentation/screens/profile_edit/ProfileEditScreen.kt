@@ -39,14 +39,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileEditScreenRoot(
     viewModel: ProfileEditViewModel = koinViewModel(),
-    onBackClick: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is ProfileEditNavigationEvent.Back -> onBackClick()
+                is ProfileEditNavigationEvent.Back -> onNavigateBack()
             }
         }
     }

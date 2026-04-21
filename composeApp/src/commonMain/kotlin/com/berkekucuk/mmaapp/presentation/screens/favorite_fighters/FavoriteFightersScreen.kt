@@ -52,7 +52,7 @@ fun FavoriteFightersScreenRoot(
     viewModel: FavoriteFightersViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFighterDetail: (String) -> Unit,
-    onNavigateToAddFighter: () -> Unit,
+    onNavigateToFighterSearch: () -> Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -60,7 +60,7 @@ fun FavoriteFightersScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is FavoriteFightersNavigationEvent.Back -> onNavigateBack()
-                is FavoriteFightersNavigationEvent.ToAddFighter -> onNavigateToAddFighter()
+                is FavoriteFightersNavigationEvent.ToAddFighter -> onNavigateToFighterSearch()
                 is FavoriteFightersNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
             }
         }
