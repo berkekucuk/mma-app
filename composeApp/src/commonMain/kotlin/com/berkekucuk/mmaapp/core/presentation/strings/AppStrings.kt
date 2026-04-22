@@ -136,7 +136,7 @@ data class AppStrings(
     // Menu Screen
     val menuSignInPrompt: String,
     val menuTitle: String,
-    val menuItemUsers: String,
+    val menuItemLeaderboard: String,
     val menuItemNotifications: String,
     val menuItemSettings: String,
     val menuSignInButton: String,
