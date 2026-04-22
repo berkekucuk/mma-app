@@ -11,5 +11,6 @@ data class UserEntity(
     val username: String? = null,
     @ColumnInfo(name = "full_name") val fullName: String? = null,
     @ColumnInfo(name = "avatar_url") val avatarUrl: String? = null,
+    @ColumnInfo(name = "total_points") val totalPoints: Int = 0,
     @ColumnInfo(name = "favorite_fighters_json") val favoriteFighters: List<RankedFighterDto> = emptyList(),
 )
