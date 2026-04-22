@@ -14,7 +14,7 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUser(userId: String): Flow<UserEntity?>
 
-    @Query("SELECT * FROM users LIMIT :limit")
+    @Query("SELECT * FROM users ORDER BY total_points DESC LIMIT :limit")
     fun getUsers(limit: Int): Flow<List<UserEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

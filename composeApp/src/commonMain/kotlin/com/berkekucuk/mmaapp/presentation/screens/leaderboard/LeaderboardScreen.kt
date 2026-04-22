@@ -164,7 +164,7 @@ fun LeaderboardScreen(
                                         ) {
                                             Text(
                                                 text = user.totalPoints.toString(),
-                                                color = colors.winColor,
+                                                color = colors.winnerFrame,
                                                 fontWeight = FontWeight.Bold,
                                                 fontSize = 16.sp
                                             )
@@ -172,7 +172,7 @@ fun LeaderboardScreen(
                                             Icon(
                                                 imageVector = Icons.Default.EmojiEvents,
                                                 contentDescription = null,
-                                                tint = colors.winColor,
+                                                tint = colors.winnerFrame,
                                                 modifier = Modifier.size(18.dp)
                                             )
                                         }

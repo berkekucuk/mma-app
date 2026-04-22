@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -70,6 +73,7 @@ fun ProfileEditScreen(
 
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
+    val focusManager = LocalFocusManager.current
     val errorMessage = when (state.error) {
         ProfileEditError.NETWORK_ERROR -> strings.errorNetwork
         ProfileEditError.USERNAME_TAKEN -> strings.profileEditErrorUsernameTaken
@@ -90,7 +94,7 @@ fun ProfileEditScreen(
         containerColor = colors.pagerBackground,
         topBar = {
             Column(
-                modifier = Modifier.background(colors.eventsTopBarGradient)
+                modifier = Modifier.background(colors.topBarBackground)
             ){
                 TopAppBar(
                     title = {
@@ -122,6 +126,11 @@ fun ProfileEditScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
                 .padding(24.dp)
         ) {
             Text(
