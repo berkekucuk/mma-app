@@ -1,38 +1,35 @@
 package com.berkekucuk.mmaapp.presentation.screens.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.LocalMeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
+import com.berkekucuk.mmaapp.core.presentation.LocalThemeMode
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
 import com.berkekucuk.mmaapp.core.presentation.ThemeMode
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.core.storage.NotificationStorage
+import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
+import org.koin.compose.koinInject
 
+enum class SettingsDialogType {
+    THEME, LANGUAGE, MEASUREMENT, ODDS
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,22 +38,32 @@ fun SettingsScreen(
     onLanguageChange: (AppLanguage) -> Unit,
     onMeasurementUnitChange: (MeasurementUnit) -> Unit,
     onOddsFormatChange: (OddsFormat) -> Unit,
-    currentThemeMode: ThemeMode,
     onThemeModeChange: (ThemeMode) -> Unit,
+    notificationStorage: NotificationStorage = koinInject()
 ) {
+    var notificationsEnabled by remember { mutableStateOf(notificationStorage.load()) }
+    OnResumeEffect {
+        notificationsEnabled = notificationStorage.load()
+    }
+
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val currentLanguage = strings.language
     val currentMeasurementUnit = LocalMeasurementUnit.current
     val currentOddsFormat = LocalOddsFormat.current
+    val currentThemeMode = LocalThemeMode.current
+
+    var activeDialog by remember { mutableStateOf<SettingsDialogType?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val onDismissRequest = { activeDialog = null }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colors.pagerBackground,
         topBar = {
             Column(
-                modifier = Modifier.background(colors.eventsTopBarGradient)
-            ){
+                modifier = Modifier.background(colors.topBarBackground)
+            ) {
                 TopAppBar(
                     title = {
                         Text(
@@ -81,7 +88,6 @@ fun SettingsScreen(
                     ),
                 )
             }
-
         },
     ) { innerPadding ->
         Column(
@@ -89,70 +95,161 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp)
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            SettingsSection(title = strings.settingsSectionTheme) {
-                SettingsOptionRow(
-                    label = strings.settingsThemeLight,
-                    isSelected = currentThemeMode == ThemeMode.LIGHT,
-                    onClick = { onThemeModeChange(ThemeMode.LIGHT) },
-                )
-                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
-                    label = strings.settingsThemeDark,
-                    isSelected = currentThemeMode == ThemeMode.DARK,
-                    onClick = { onThemeModeChange(ThemeMode.DARK) },
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
+            SettingsCard(
+                icon = Icons.Default.DarkMode,
+                title = strings.settingsSectionTheme,
+                subtitle = when (currentThemeMode) {
+                    ThemeMode.LIGHT -> strings.settingsThemeLight
+                    ThemeMode.DARK -> strings.settingsThemeDark
+                },
+                onClick = { activeDialog = SettingsDialogType.THEME }
+            )
 
-            SettingsSection(title = strings.settingsSectionLanguage) {
-                SettingsOptionRow(
-                    label = "English",
-                    isSelected = currentLanguage == AppLanguage.EN,
-                    onClick = { onLanguageChange(AppLanguage.EN) },
-                )
-                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
-                    label = "Türkçe",
-                    isSelected = currentLanguage == AppLanguage.TR,
-                    onClick = { onLanguageChange(AppLanguage.TR) },
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
+            SettingsCard(
+                icon = Icons.Default.Language,
+                title = strings.settingsSectionLanguage,
+                subtitle = when (currentLanguage) {
+                    AppLanguage.EN -> "English"
+                    AppLanguage.TR -> "Türkçe"
+                },
+                onClick = { activeDialog = SettingsDialogType.LANGUAGE }
+            )
 
-            SettingsSection(title = strings.settingsSectionMeasurements) {
-                SettingsOptionRow(
-                    label = "Metric (cm)",
-                    isSelected = currentMeasurementUnit == MeasurementUnit.METRIC,
-                    onClick = { onMeasurementUnitChange(MeasurementUnit.METRIC) },
-                )
-                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
-                    label = "Imperial (ft/in)",
-                    isSelected = currentMeasurementUnit == MeasurementUnit.IMPERIAL,
-                    onClick = { onMeasurementUnitChange(MeasurementUnit.IMPERIAL) },
-                )
-            }
-            Spacer(modifier = Modifier.height(24.dp))
+            SettingsCard(
+                icon = Icons.Default.AttachMoney,
+                title = strings.settingsSectionOdds,
+                subtitle = when (currentOddsFormat) {
+                    OddsFormat.DECIMAL -> "Decimal"
+                    OddsFormat.AMERICAN -> "American"
+                },
+                onClick = { activeDialog = SettingsDialogType.ODDS }
+            )
 
-            SettingsSection(title = strings.settingsSectionOdds) {
-                SettingsOptionRow(
-                    label = "Decimal",
-                    isSelected = currentOddsFormat == OddsFormat.DECIMAL,
-                    onClick = { onOddsFormatChange(OddsFormat.DECIMAL) },
+            SettingsCard(
+                icon = Icons.Default.Straighten,
+                title = strings.settingsSectionMeasurements,
+                subtitle = when (currentMeasurementUnit) {
+                    MeasurementUnit.METRIC -> "Metric (cm)"
+                    MeasurementUnit.IMPERIAL -> "Imperial (ft/in)"
+                },
+                onClick = { activeDialog = SettingsDialogType.MEASUREMENT }
+            )
+
+            SettingsCard(
+                icon = if (notificationsEnabled) Icons.Default.Notifications else Icons.Default.NotificationsOff,
+                title = strings.menuItemNotifications,
+                subtitle = if (notificationsEnabled) strings.menuNotificationsEnabled else strings.menuNotificationsDisabled,
+                onClick = { notificationStorage.openNotificationSettings() }
+            )
+        }
+    }
+
+    if (activeDialog != null) {
+        ModalBottomSheet(
+            onDismissRequest = onDismissRequest,
+            sheetState = sheetState,
+            containerColor = colors.dropdownMenuBackground
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .padding(bottom = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = when (activeDialog) {
+                        SettingsDialogType.THEME -> strings.settingsSectionTheme
+                        SettingsDialogType.LANGUAGE -> strings.settingsSectionLanguage
+                        SettingsDialogType.ODDS -> strings.settingsSectionOdds
+                        SettingsDialogType.MEASUREMENT -> strings.settingsSectionMeasurements
+                        else -> ""
+                    },
+                    color = colors.textPrimary,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp)
                 )
-                HorizontalDivider(color = colors.dividerColor, thickness = 0.8.dp, modifier = Modifier.padding(horizontal = 16.dp))
-                SettingsOptionRow(
-                    label = "American",
-                    isSelected = currentOddsFormat == OddsFormat.AMERICAN,
-                    onClick = { onOddsFormatChange(OddsFormat.AMERICAN) },
-                )
+
+                when (activeDialog) {
+                    SettingsDialogType.THEME -> {
+                        SettingsBottomSheetOption(
+                            text = strings.settingsThemeLight,
+                            isSelected = currentThemeMode == ThemeMode.LIGHT,
+                            onClick = {
+                                onThemeModeChange(ThemeMode.LIGHT)
+                                onDismissRequest()
+                            }
+                        )
+                        SettingsBottomSheetOption(
+                            text = strings.settingsThemeDark,
+                            isSelected = currentThemeMode == ThemeMode.DARK,
+                            onClick = {
+                                onThemeModeChange(ThemeMode.DARK)
+                                onDismissRequest()
+                            }
+                        )
+                    }
+                    SettingsDialogType.LANGUAGE -> {
+                        SettingsBottomSheetOption(
+                            text = "English",
+                            isSelected = currentLanguage == AppLanguage.EN,
+                            onClick = {
+                                onLanguageChange(AppLanguage.EN)
+                                onDismissRequest()
+                            }
+                        )
+                        SettingsBottomSheetOption(
+                            text = "Türkçe",
+                            isSelected = currentLanguage == AppLanguage.TR,
+                            onClick = {
+                                onLanguageChange(AppLanguage.TR)
+                                onDismissRequest()
+                            }
+                        )
+                    }
+                    SettingsDialogType.ODDS -> {
+                        SettingsBottomSheetOption(
+                            text = "Decimal",
+                            isSelected = currentOddsFormat == OddsFormat.DECIMAL,
+                            onClick = {
+                                onOddsFormatChange(OddsFormat.DECIMAL)
+                                onDismissRequest()
+                            }
+                        )
+                        SettingsBottomSheetOption(
+                            text = "American",
+                            isSelected = currentOddsFormat == OddsFormat.AMERICAN,
+                            onClick = {
+                                onOddsFormatChange(OddsFormat.AMERICAN)
+                                onDismissRequest()
+                            }
+                        )
+                    }
+                    SettingsDialogType.MEASUREMENT -> {
+                        SettingsBottomSheetOption(
+                            text = "Metric (cm)",
+                            isSelected = currentMeasurementUnit == MeasurementUnit.METRIC,
+                            onClick = {
+                                onMeasurementUnitChange(MeasurementUnit.METRIC)
+                                onDismissRequest()
+                            }
+                        )
+                        SettingsBottomSheetOption(
+                            text = "Imperial (ft/in)",
+                            isSelected = currentMeasurementUnit == MeasurementUnit.IMPERIAL,
+                            onClick = {
+                                onMeasurementUnitChange(MeasurementUnit.IMPERIAL)
+                                onDismissRequest()
+                            }
+                        )
+                    }
+                    else -> {}
+                }
             }
         }
     }
 }
-
-
-
-

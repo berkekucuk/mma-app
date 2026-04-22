@@ -39,17 +39,16 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
-    onBackClick: () -> Unit,
-    onFavoriteFightersClick: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+    onNavigateToFavoriteFighters: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                ProfileNavigationEvent.Back -> onBackClick()
-                ProfileNavigationEvent.ToEdit -> Unit
-                is ProfileNavigationEvent.ToFavoriteFighters -> onFavoriteFightersClick(event.userId)
+                is ProfileNavigationEvent.Back -> onNavigateBack()
+                is ProfileNavigationEvent.ToFavoriteFighters -> onNavigateToFavoriteFighters(event.userId)
             }
         }
     }

@@ -43,6 +43,7 @@ import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditViewMo
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
+import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 
@@ -218,6 +219,7 @@ val appModule = module {
     viewModel {
         ProfileViewModel(
             userRepository = get(),
+            authRepository = get(),
             savedStateHandle = get()
         )
     }
@@ -225,8 +227,7 @@ val appModule = module {
     viewModel {
         MenuViewModel(
             authRepository = get(),
-            userRepository = get(),
-            notificationStorage = get()
+            userRepository = get()
         )
     }
 
@@ -245,4 +246,9 @@ val appModule = module {
         )
     }
 
+    viewModel {
+        LeaderboardViewModel(
+            userRepository = get()
+        )
+    }
 }

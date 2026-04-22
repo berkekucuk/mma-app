@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 16,
-    "identityHash": "b52e35e97561a1755451c01c028f827d",
+    "identityHash": "aa98ebeb3a860843ca6ca06f3263b44c",
     "entities": [
       {
         "tableName": "events",
@@ -167,7 +167,7 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `username` TEXT, `full_name` TEXT, `avatar_url` TEXT, `favorite_fighters_json` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `username` TEXT, `full_name` TEXT, `avatar_url` TEXT, `total_points` INTEGER NOT NULL, `favorite_fighters_json` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -189,6 +189,12 @@
             "fieldPath": "avatarUrl",
             "columnName": "avatar_url",
             "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "totalPoints",
+            "columnName": "total_points",
+            "affinity": "INTEGER",
+            "notNull": true
           },
           {
             "fieldPath": "favoriteFighters",
@@ -250,7 +256,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b52e35e97561a1755451c01c028f827d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa98ebeb3a860843ca6ca06f3263b44c')"
     ]
   }
 }

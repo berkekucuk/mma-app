@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,8 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.berkekucuk.mmaapp.core.presentation.AppFonts
-import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
@@ -52,6 +48,7 @@ fun MenuScreenRoot(
     onNavigateToProfile: (String) -> Unit,
     onNavigateToProfileEdit: (String) -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToLeaderboard: () -> Unit,
     viewModel: MenuViewModel = koinViewModel(),
     supabaseClient: SupabaseClient = koinInject()
 ) {
@@ -62,7 +59,8 @@ fun MenuScreenRoot(
             when (event) {
                 is MenuNavigationEvent.ToProfile -> onNavigateToProfile(event.userId)
                 is MenuNavigationEvent.ToProfileEdit -> onNavigateToProfileEdit(event.userId)
-                MenuNavigationEvent.ToSettings -> onNavigateToSettings()
+                is MenuNavigationEvent.ToSettings -> onNavigateToSettings()
+                is MenuNavigationEvent.ToLeaderboard -> onNavigateToLeaderboard()
             }
         }
     }
@@ -99,7 +97,6 @@ fun MenuScreen(
     val colors = LocalAppColors.current
 
     val (showSignInSheet, setShowSignInSheet) = remember { mutableStateOf(false) }
-    OnResumeEffect { onAction(MenuUiAction.OnResumeCheckSettings) }
 
     val onSignInClick = remember(setShowSignInSheet) { { setShowSignInSheet(true) } }
     val onDismissSignIn = remember(setShowSignInSheet) { { setShowSignInSheet(false) } }
@@ -110,12 +107,11 @@ fun MenuScreen(
         }
     }
 
-    val onProfileClick = remember(onAction) { { onAction(MenuUiAction.OnOpenProfileClicked) } }
-    val onProfileEditClick = remember(onAction) { { onAction(MenuUiAction.OnOpenProfileEditClicked) } }
-    val onNotificationsClick = remember(onAction) { { onAction(MenuUiAction.OnNotificationsClicked) } }
+    val onProfileClick = remember(onAction) { { onAction(MenuUiAction.OnProfileClicked) } }
+    val onProfileEditClick = remember(onAction) { { onAction(MenuUiAction.OnProfileEditClicked) } }
     val onSettingsClick = remember(onAction) { { onAction(MenuUiAction.OnSettingsClicked) } }
+    val onLeaderboardClick = remember(onAction) { { onAction(MenuUiAction.OnLeaderboardClicked) } }
     val onSignOutClick = remember(onAction) { { onAction(MenuUiAction.OnSignOutClicked) } }
-    val onDummyClick = remember { { } }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -163,16 +159,10 @@ fun MenuScreen(
             HorizontalDivider(color = colors.dividerColor)
             MenuItemRow(
                 icon = Icons.Filled.Person,
-                title = strings.menuItemUsers,
-                onClick = onDummyClick
+                title = strings.menuItemLeaderboard,
+                onClick = onLeaderboardClick
             )
-            HorizontalDivider(color = colors.dividerColor)
-            MenuItemRow(
-                icon = if (state.notificationsEnabled) Icons.Filled.Notifications else Icons.Filled.NotificationsOff,
-                title = strings.menuItemNotifications,
-                subtitle = if (state.notificationsEnabled) null else strings.menuNotificationsDisabled,
-                onClick = onNotificationsClick
-            )
+
             HorizontalDivider(color = colors.dividerColor)
             MenuItemRow(
                 icon = Icons.Filled.Settings,

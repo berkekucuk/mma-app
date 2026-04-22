@@ -14,6 +14,7 @@ fun UserDto.toEntity(): UserEntity {
         username = username,
         fullName = fullName,
         avatarUrl = avatarUrl,
+        totalPoints = totalPoints ?: 0,
         favoriteFighters = favoriteFighters ?: emptyList(),
     )
 }
@@ -24,6 +25,7 @@ fun UserEntity.toDomain(): User {
         username = username,
         fullName = fullName,
         avatarUrl = avatarUrl,
+        totalPoints = totalPoints,
         favoriteFighters = favoriteFighters
             .map { RankedFighter(rankNumber = it.rankNumber, fighter = it.fighter?.toDomain()) }
     )

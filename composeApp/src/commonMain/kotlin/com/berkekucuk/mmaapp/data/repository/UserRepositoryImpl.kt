@@ -27,10 +27,18 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     private fun syncUserKey(userId: String) = "sync_user_$userId"
+    private val syncUsersKey = "sync_users"
 
     override fun getUser(userId: String): Flow<User?> {
         return dao.getUser(userId)
             .map { entity -> entity?.toDomain() }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
+    override fun getUsers(limit: Int): Flow<List<User>> {
+        return dao.getUsers(limit)
+            .map { entities -> entities.map { it.toDomain() } }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }
@@ -43,10 +51,24 @@ class UserRepositoryImpl(
                 }
                 val userDto = remoteDataSource.fetchUser(userId)
                 dao.insertUser(userDto.toEntity())
-                syncFightNotifications(userId)
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncUserKey(userId))
+            }
+        }
+    }
+
+    override suspend fun syncUsers(limit: Int): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                if (!rateLimiter.shouldFetch(syncUsersKey)) {
+                    return@runCatching
+                }
+                val users = remoteDataSource.fetchUsers(limit)
+                dao.insertUsers(users.map { it.toEntity() })
+            }.onFailure {
+                if (it is CancellationException) throw it
+                rateLimiter.reset(syncUsersKey)
             }
         }
     }
@@ -62,15 +84,21 @@ class UserRepositoryImpl(
         }
     }
 
-    private suspend fun syncFightNotifications(userId: String) {
-        val notifications = remoteDataSource.fetchFightNotifications(userId)
-        dao.insertFightNotifications(notifications.map { it.toEntity() })
-    }
-
     override fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
         return dao.getFightNotificationStatus(fightId, userId)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun syncFightNotifications(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                val notifications = remoteDataSource.fetchFightNotifications(userId)
+                dao.insertFightNotifications(notifications.map { it.toEntity() })
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
     }
 
     override suspend fun addFightNotification(fightId: String, userId: String): Result<Unit> {

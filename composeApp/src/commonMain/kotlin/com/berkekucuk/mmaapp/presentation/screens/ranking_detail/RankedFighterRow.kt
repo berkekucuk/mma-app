@@ -31,6 +31,7 @@ fun RankedFighterRow(
     record: String,
     imageUrl: String,
     countryCode: String? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
     onFighterClicked: () -> Unit
 ) {
     val colors = LocalAppColors.current
@@ -90,5 +91,10 @@ fun RankedFighterRow(
             flagHeight = 9.dp,
             nameFontSize = 14.sp,
         )
+
+        if (trailingContent != null) {
+            Spacer(Modifier.width(8.dp))
+            trailingContent()
+        }
     }
 }

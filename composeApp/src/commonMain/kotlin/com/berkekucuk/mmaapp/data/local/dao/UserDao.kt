@@ -14,8 +14,14 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUser(userId: String): Flow<UserEntity?>
 
+    @Query("SELECT * FROM users ORDER BY total_points DESC LIMIT :limit")
+    fun getUsers(limit: Int): Flow<List<UserEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUsers(users: List<UserEntity>)
 
     @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
     suspend fun updateUser(userId: String, fullName: String, username: String)
