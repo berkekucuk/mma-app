@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
 data class AppColors(
+    val isDark: Boolean,
     val topBarBackground: Color,
     val pagerBackground: Color,
     val dropdownMenuBackground: Color,
