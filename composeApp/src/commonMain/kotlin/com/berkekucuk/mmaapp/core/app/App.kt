@@ -23,6 +23,7 @@ import com.berkekucuk.mmaapp.core.presentation.LocalOddsFormat
 import com.berkekucuk.mmaapp.core.presentation.MeasurementUnit
 import com.berkekucuk.mmaapp.core.presentation.OddsFormat
 import com.berkekucuk.mmaapp.core.presentation.ThemeMode
+import com.berkekucuk.mmaapp.core.presentation.LocalThemeMode
 import com.berkekucuk.mmaapp.core.presentation.strings.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
@@ -38,6 +39,7 @@ import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardScreenRoot
 
 @Composable
 fun App() {
@@ -101,7 +103,8 @@ fun App() {
         LocalAppStrings provides strings,
         LocalMeasurementUnit provides measurementUnit,
         LocalOddsFormat provides oddsFormat,
-        LocalAppColors provides colors
+        LocalAppColors provides colors,
+        LocalThemeMode provides themeMode
     ) {
         NavHost(
             navController = rootNavController,
@@ -134,6 +137,9 @@ fun App() {
                     },
                     onNavigateToSettings = {
                         rootNavController.navigate(Route.Settings)
+                    },
+                    onNavigateToLeaderboard = {
+                        rootNavController.navigate(Route.Leaderboard)
                     },
                 )
             }
@@ -274,11 +280,24 @@ fun App() {
                         oddsFormatState.value = it
                         oddsFormatStorage.save(it.name)
                     },
-                    currentThemeMode = themeMode,
                     onThemeModeChange = {
                         themeModeState.value = it
                         themeStorage.save(it.name)
                     },
+                )
+            }
+
+            composable<Route.Leaderboard>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) {
+                LeaderboardScreenRoot(
+                    onNavigateBack = { rootNavController.navigateUp() },
+                    onNavigateToProfile = { userId ->
+                        rootNavController.navigate(Route.Profile(userId))
+                    }
                 )
             }
         }

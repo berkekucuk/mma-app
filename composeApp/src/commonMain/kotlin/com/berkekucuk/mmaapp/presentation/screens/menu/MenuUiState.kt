@@ -8,5 +8,4 @@ data class MenuUiState(
     val avatarUrl: String? = null,
     val name: String? = null,
     val username: String? = null,
-    val notificationsEnabled: Boolean = true,
 )

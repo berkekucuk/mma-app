@@ -127,6 +127,7 @@ val TrStrings = AppStrings(
     menuProfileSettings = "Profil Ayarları",
     menuSignInWithGoogle = "Google ile giriş yap",
     menuNotificationsDisabled = "Bildirimleri kapattınız",
+    menuNotificationsEnabled = "Açık",
     navEvents = "Etkinlikler",
     navRankings = "Sıralamalar",
     navMenu = "Menü",

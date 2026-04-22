@@ -143,6 +143,7 @@ data class AppStrings(
     val menuSignInTerms: String,
     val menuProfileSettings: String,
     val menuSignInWithGoogle: String,
+    val menuNotificationsEnabled: String,
     val menuNotificationsDisabled: String,
     // Bottom Nav
     val navEvents: String,
