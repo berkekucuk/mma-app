@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.presentation.screens.fight_detail
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.outlined.EmojiEvents
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -28,6 +29,7 @@ import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 fun PredictionBoard(
     state: FightDetailUiState,
     onPredict: (String) -> Unit,
+    onLeaderboardClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val strings = LocalAppStrings.current
@@ -56,10 +58,12 @@ fun PredictionBoard(
                     fontWeight = FontWeight.Bold
                 )
                 Icon(
-                    imageVector = Icons.Default.EmojiEvents,
+                    imageVector = Icons.Outlined.EmojiEvents,
                     contentDescription = null,
-                    tint = colors.upcomingColor,
-                    modifier = Modifier.size(24.dp)
+                    tint = colors.winnerFrame,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onLeaderboardClick() }
                 )
             }
 

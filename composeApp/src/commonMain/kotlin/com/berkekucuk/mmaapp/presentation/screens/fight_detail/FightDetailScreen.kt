@@ -56,6 +56,7 @@ fun FightDetailScreenRoot(
     viewModel: FightDetailViewModel = koinViewModel(),
     onNavigateToFighterDetail: (fighterId: String) -> Unit,
     onNavigateToEventDetail: (eventId: String) -> Unit,
+    onNavigateToLeaderboard: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -78,6 +79,7 @@ fun FightDetailScreenRoot(
                 is FightDetailNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
                 is FightDetailNavigationEvent.Back -> onNavigateBack()
                 is FightDetailNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
+                is FightDetailNavigationEvent.ToLeaderboard -> onNavigateToLeaderboard()
                 is FightDetailNavigationEvent.RequestNotificationPermission -> {
                     showPermissionRequest.value = true
                 }
@@ -139,6 +141,7 @@ fun FightDetailScreen(
         }
     }
     val onPredict = remember(onAction) { { id: String -> onAction(FightDetailUiAction.OnSubmitPredictionClicked(id)) } }
+    val onLeaderboardClick = remember(onAction) { { onAction(FightDetailUiAction.OnLeaderboardClicked) } }
 
     val isRetryableError = state.error == FightDetailError.NETWORK_ERROR || state.error == FightDetailError.UNKNOWN_ERROR
     val errorMessage = when (state.error) {
@@ -270,7 +273,8 @@ fun FightDetailScreen(
                         item(contentType = "PredictionBoard") {
                             PredictionBoard(
                                 state = state,
-                                onPredict = onPredict
+                                onPredict = onPredict,
+                                onLeaderboardClick = onLeaderboardClick
                             )
                         }
                     }

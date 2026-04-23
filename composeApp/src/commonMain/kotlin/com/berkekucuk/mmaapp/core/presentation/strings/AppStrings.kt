@@ -12,8 +12,6 @@ data class AppStrings(
     val tba: String,
     val liveEvent: String,
     val selectYear: String,
-    // Fight Item
-    val weightClassBout: (String) -> String,
     // Fighter Portrait / NameColumn
     val contentDescriptionFlag: String,
     val contentDescriptionWin: String,
@@ -49,11 +47,6 @@ data class AppStrings(
     val radarLabelWinRate: String,
     val radarLabelKoTkoRate: String,
     val radarLabelSubRate: String,
-    // Fight Result Card
-    val fightResultDefeats: (String, String) -> String,
-    val fightResultDraw: String,
-    val fightResultNoContest: String,
-    val fightResultVia: (String) -> String,
     // Rankings Screen
     val rankingsTitle: String,
     val tabMens: String,

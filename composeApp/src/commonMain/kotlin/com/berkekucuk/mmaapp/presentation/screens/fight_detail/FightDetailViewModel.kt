@@ -171,6 +171,7 @@ class FightDetailViewModel(
                 }
             }
             is FightDetailUiAction.OnSubmitPredictionClicked -> submitPrediction(action.predictedWinnerId)
+            is FightDetailUiAction.OnLeaderboardClicked -> navigateTo(FightDetailNavigationEvent.ToLeaderboard)
         }
     }
 

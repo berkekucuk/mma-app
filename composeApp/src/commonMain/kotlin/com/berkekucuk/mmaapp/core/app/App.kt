@@ -171,6 +171,9 @@ fun App() {
                     onNavigateToEventDetail = { eventId ->
                         rootNavController.navigate(Route.EventDetail(eventId, fromFightDetail = true))
                     },
+                    onNavigateToLeaderboard = {
+                        rootNavController.navigate(Route.Leaderboard)
+                    },
                     onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
