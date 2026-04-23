@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.data.remote.api
 
 import com.berkekucuk.mmaapp.data.remote.dto.FightNotificationDto
+import com.berkekucuk.mmaapp.data.remote.dto.PredictionInsertDto
 import com.berkekucuk.mmaapp.data.remote.dto.UserDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -70,5 +71,17 @@ class UserSupabaseAPI(
                 eq("fighter_id", fighterId)
             }
         }
+    }
+
+    override suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int) {
+
+        val payload = PredictionInsertDto(
+            userId = userId,
+            fightId = fightId,
+            predictedWinnerId = predictedWinnerId,
+            lockedOdds = lockedOdds
+        )
+
+        client.from("user_predictions").insert(payload)
     }
 }

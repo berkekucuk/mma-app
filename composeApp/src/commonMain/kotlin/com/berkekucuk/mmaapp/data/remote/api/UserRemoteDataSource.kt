@@ -19,4 +19,5 @@ interface UserRemoteDataSource {
     suspend fun addFavoriteFighter(userId: String, fighterId: String)
 
     suspend fun removeFavoriteFighter(userId: String, fighterId: String)
+    suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int)
 }

@@ -151,4 +151,14 @@ class UserRepositoryImpl(
             }
         }
     }
+
+    override suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.submitPrediction(userId, fightId, predictedWinnerId, lockedOdds)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
 }

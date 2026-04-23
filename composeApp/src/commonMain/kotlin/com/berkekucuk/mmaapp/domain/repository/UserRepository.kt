@@ -16,4 +16,5 @@ interface UserRepository {
     suspend fun removeFightNotification(fightId: String, userId: String): Result<Unit>
     suspend fun addFavoriteFighter(userId: String, fighter: Fighter): Result<Unit>
     suspend fun removeFavoriteFighter(userId: String, fighterId: String): Result<Unit>
+    suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): Result<Unit>
 }
