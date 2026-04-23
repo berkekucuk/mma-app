@@ -1,0 +1,17 @@
+package com.berkekucuk.mmaapp.data.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.berkekucuk.mmaapp.data.local.entity.PredictionEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface PredictionDao {
+    @Query("SELECT * FROM predictions WHERE fight_id = :fightId AND user_id = :userId")
+    fun getPrediction(fightId: String, userId: String): Flow<PredictionEntity?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPrediction(entity: PredictionEntity)
+}

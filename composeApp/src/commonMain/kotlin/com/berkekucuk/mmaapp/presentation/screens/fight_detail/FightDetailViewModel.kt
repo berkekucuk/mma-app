@@ -7,9 +7,10 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
-import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
+import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Fighter
@@ -26,7 +27,8 @@ class FightDetailViewModel(
     private val eventRepository: EventRepository,
     private val fighterRepository: FighterRepository,
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository,
+    private val notificationRepository: NotificationRepository,
+    private val predictionRepository: PredictionRepository,
     private val notificationStorage: NotificationStorage,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -49,6 +51,7 @@ class FightDetailViewModel(
             observeFightFromEvent()
         }
         observeFightNotificationStatus()
+        observePredictionStatus()
     }
 
     private fun observeFightFromEvent() {
@@ -61,7 +64,8 @@ class FightDetailViewModel(
                         it.copy(
                             fight = fight,
                             eventDate = event.datetimeUtc,
-                            eventName = event.name
+                            eventName = event.name,
+                            showPredictionBoard = fight != null && !isFightCompleted(fight)
                         )
                     }
                     if (fight != null) {
@@ -82,6 +86,7 @@ class FightDetailViewModel(
                             fight = fight,
                             eventName = fight?.eventName,
                             eventDate = fight?.eventDate,
+                            showPredictionBoard = fight != null && !isFightCompleted(fight)
                         )
                     }
                     if (fight != null) {
@@ -95,9 +100,21 @@ class FightDetailViewModel(
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId != null) {
-                userRepository.getFightNotificationStatus(fightId, userId)
+                notificationRepository.getFightNotificationStatus(fightId, userId)
                     .collect { isEnabled ->
                         _state.update { it.copy(isNotificationEnabled = isEnabled) }
+                    }
+            }
+        }
+    }
+
+    private fun observePredictionStatus() {
+        viewModelScope.launch {
+            val userId = getAuthenticatedUserId()
+            if (userId != null) {
+                predictionRepository.getPredictedWinnerId(fightId, userId)
+                    .collect { predictedId ->
+                        _state.update { it.copy(predictedWinnerId = predictedId) }
                     }
             }
         }
@@ -153,6 +170,7 @@ class FightDetailViewModel(
                     onNotificationClicked()
                 }
             }
+            is FightDetailUiAction.OnSubmitPredictionClicked -> submitPrediction(action.predictedWinnerId, action.lockedOdds)
         }
     }
 
@@ -176,10 +194,12 @@ class FightDetailViewModel(
         }
     }
 
-    private fun canToggleNotification(fight: Fight, isNotificationEnabled: Boolean): Boolean {
-        val isFightCompleted = fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank()
+    private fun isFightCompleted(fight: Fight): Boolean {
+        return fight.methodType.isNotBlank() || fight.methodDetail.isNotBlank()
+    }
 
-        if (isFightCompleted && !isNotificationEnabled) {
+    private fun canToggleNotification(fight: Fight, isNotificationEnabled: Boolean): Boolean {
+        if (isFightCompleted(fight) && !isNotificationEnabled) {
             _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
             return false
         }
@@ -187,7 +207,7 @@ class FightDetailViewModel(
     }
 
     private suspend fun removeNotification(fightId: String, userId: String) {
-        userRepository.removeFightNotification(fightId, userId)
+        notificationRepository.removeFightNotification(fightId, userId)
             .onFailure {
                 _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
             }
@@ -199,7 +219,7 @@ class FightDetailViewModel(
             return
         }
 
-        userRepository.addFightNotification(fightId, userId)
+        notificationRepository.addFightNotification(fightId, userId)
             .onFailure {
             _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
         }
@@ -212,6 +232,32 @@ class FightDetailViewModel(
         } else {
             notificationStorage.setRequestedPermission(true)
             navigateTo(FightDetailNavigationEvent.RequestNotificationPermission)
+        }
+    }
+
+    private fun submitPrediction(predictedWinnerId: String, lockedOdds: Int) {
+        viewModelScope.launch {
+            val userId = getAuthenticatedUserId()
+            if (userId == null) {
+                _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
+                return@launch
+            }
+
+            val fight = _state.value.fight ?: return@launch
+            if (isFightCompleted(fight)) {
+                _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
+                return@launch
+            }
+
+            _state.update { it.copy(isSubmittingPrediction = true, error = null) }
+            
+            predictionRepository.submitPrediction(userId, fight.fightId, predictedWinnerId, lockedOdds)
+                .onSuccess {
+                    _state.update { it.copy(isSubmittingPrediction = false) }
+                }
+                .onFailure {
+                    _state.update { it.copy(isSubmittingPrediction = false, error = FightDetailError.NETWORK_ERROR) }
+                }
         }
     }
 

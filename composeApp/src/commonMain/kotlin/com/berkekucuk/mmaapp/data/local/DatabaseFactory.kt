@@ -10,8 +10,11 @@ import com.berkekucuk.mmaapp.data.local.dao.EventDao
 import com.berkekucuk.mmaapp.data.local.dao.FighterDao
 import com.berkekucuk.mmaapp.data.local.dao.UserDao
 import com.berkekucuk.mmaapp.data.local.dao.RankingDao
+import com.berkekucuk.mmaapp.data.local.dao.NotificationDao
+import com.berkekucuk.mmaapp.data.local.dao.PredictionDao
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
+import com.berkekucuk.mmaapp.data.local.entity.PredictionEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.UserEntity
 import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
@@ -26,9 +29,10 @@ import kotlinx.coroutines.IO
         FighterEntity::class,
         UserEntity::class,
         SyncedYearEntity::class,
-        FightNotificationEntity::class
+        FightNotificationEntity::class,
+        PredictionEntity::class
     ],
-    version = 16
+    version = 17
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)
@@ -37,6 +41,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun rankingDao(): RankingDao
     abstract fun fighterDao(): FighterDao
     abstract fun userDao(): UserDao
+    abstract fun notificationDao(): NotificationDao
+    abstract fun predictionDao(): PredictionDao
 }
 
 @Suppress("KotlinNoActualForExpect")

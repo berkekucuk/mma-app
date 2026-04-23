@@ -27,7 +27,15 @@ import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.WeightClassRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.AuthRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.UserRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.NotificationRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.PredictionRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
+import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
+import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
+import com.berkekucuk.mmaapp.data.remote.api.NotificationRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.NotificationSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.PredictionRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.PredictionSupabaseAPI
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
@@ -97,6 +105,14 @@ val appModule = module {
         get<AppDatabase>().userDao()
     }
 
+    single {
+        get<AppDatabase>().notificationDao()
+    }
+
+    single {
+        get<AppDatabase>().predictionDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventSupabaseAPI(client = get())
@@ -116,6 +132,14 @@ val appModule = module {
 
     single<DeviceTokenRemoteDataSource> {
         DeviceTokenSupabaseAPI(client = get())
+    }
+
+    single<NotificationRemoteDataSource> {
+        NotificationSupabaseAPI(client = get())
+    }
+
+    single<PredictionRemoteDataSource> {
+        PredictionSupabaseAPI(client = get())
     }
 
     single { DeviceTokenProvider() }
@@ -163,6 +187,20 @@ val appModule = module {
         )
     }
 
+    single<NotificationRepository> {
+        NotificationRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get()
+        )
+    }
+
+    single<PredictionRepository> {
+        PredictionRepositoryImpl(
+            remoteDataSource = get(),
+            dao = get()
+        )
+    }
+
     // view model
     viewModel {
         HomeViewModel(
@@ -183,7 +221,8 @@ val appModule = module {
             eventRepository = get(),
             fighterRepository = get(),
             authRepository = get(),
-            userRepository = get(),
+            notificationRepository = get(),
+            predictionRepository = get(),
             notificationStorage = get(),
             savedStateHandle = get()
         )
@@ -220,6 +259,7 @@ val appModule = module {
         ProfileViewModel(
             userRepository = get(),
             authRepository = get(),
+            notificationRepository = get(),
             savedStateHandle = get()
         )
     }

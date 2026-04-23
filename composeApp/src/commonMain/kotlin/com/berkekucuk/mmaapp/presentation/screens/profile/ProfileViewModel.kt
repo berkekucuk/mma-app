@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
+import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
+    private val notificationRepository: NotificationRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -63,7 +65,7 @@ class ProfileViewModel(
             val currentUserId = getAuthenticatedUserId()
             val isOwner = currentUserId == userId
             if (isOwner) {
-                userRepository.syncFightNotifications(userId)
+                notificationRepository.syncFightNotifications(userId)
             }
             _state.update { it.copy(isRefreshing = false) }
         }

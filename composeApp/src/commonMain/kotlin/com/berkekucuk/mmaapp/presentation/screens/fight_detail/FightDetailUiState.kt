@@ -13,6 +13,9 @@ data class FightDetailUiState(
     val blueFighter: Fighter? = null,
     val error: FightDetailError? = null,
     val isNotificationEnabled: Boolean = false,
+    val isSubmittingPrediction: Boolean = false,
+    val predictedWinnerId: String? = null,
+    val showPredictionBoard: Boolean = false,
 )
 
 enum class FightDetailError {
