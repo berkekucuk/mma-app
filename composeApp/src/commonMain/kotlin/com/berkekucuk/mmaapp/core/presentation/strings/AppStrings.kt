@@ -147,7 +147,7 @@ data class AppStrings(
     val resultDisplayName: (String) -> String,
     val toUpperCase: (String) -> String,
     // Fight Prediction
-    val fightDetailPredictionTitle: String,
+    val predictionQuestionTitle: String,
     val errorOddsNotPublished: String,
     val errorEventCompletedOrCancelled: String,
     val errorFightPending: String,

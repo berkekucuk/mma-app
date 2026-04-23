@@ -9,7 +9,7 @@ import com.berkekucuk.mmaapp.domain.model.Prediction
 fun PredictionDto.toEntity(): PredictionEntity =
     PredictionEntity(
         predictionId = predictionId,
-        fightId = fight?.fightId ?: "",
+        fightId = fightId,
         userId = userId,
         predictedWinnerId = predictedWinnerId ?: "",
         pointsEarned = pointsEarned ?: 0,

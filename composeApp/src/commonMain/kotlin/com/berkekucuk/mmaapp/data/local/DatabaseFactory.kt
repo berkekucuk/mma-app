@@ -32,7 +32,7 @@ import kotlinx.coroutines.IO
         FightNotificationEntity::class,
         PredictionEntity::class
     ],
-    version = 19
+    version = 20
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

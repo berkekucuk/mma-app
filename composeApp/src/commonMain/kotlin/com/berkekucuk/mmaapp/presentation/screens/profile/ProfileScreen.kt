@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.lazy.items
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -71,6 +74,7 @@ fun ProfileScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
@@ -143,6 +147,7 @@ fun ProfileScreen(
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
                             contentPadding = PaddingValues(top = 16.dp),
+                            extraBottomPadding = navBarBottomPadding,
                         ) {
                             item {
                                 WeightClassCard(
@@ -154,6 +159,21 @@ fun ProfileScreen(
                         }
                     }
                     1 -> {
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(16.dp),
+                            extraBottomPadding = navBarBottomPadding,
+                        ) {
+                            items(
+                                items = state.predictions,
+                                key = { it.predictionId }
+                            ) { prediction ->
+                                PredictionCard(
+                                    prediction = prediction
+                                )
+                            }
+                        }
                     }
                 }
             }

@@ -28,14 +28,13 @@ class PredictionSupabaseAPI(
             lockedOdds = lockedOdds
         )
 
-        client.from("user_predictions").insert(payload)
+        client.from("user_predictions").upsert(payload){
+            onConflict = "user_id, fight_id"
+        }
 
         return client.from("prediction_view").select {
             filter {
-                and {
-                    eq("user_id", userId)
-                    eq("fight_id", fightId)
-                }
+                eq("fight_id", fightId)
             }
         }.decodeSingle<PredictionDto>()
     }

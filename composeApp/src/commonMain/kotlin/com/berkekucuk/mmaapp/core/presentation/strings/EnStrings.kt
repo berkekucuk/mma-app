@@ -159,7 +159,7 @@ val EnStrings = AppStrings(
         }
     },
     toUpperCase = { it.uppercase() },
-    fightDetailPredictionTitle = "Who will win?",
+    predictionQuestionTitle = "Who will win?",
     errorOddsNotPublished = "Odds pending. Predictions opening soon.",
     errorEventCompletedOrCancelled = "Event already completed or cancelled.",
     errorFightPending = "Result pending. Predictions locked."

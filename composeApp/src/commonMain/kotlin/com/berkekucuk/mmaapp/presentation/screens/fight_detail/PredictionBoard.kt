@@ -52,7 +52,7 @@ fun PredictionBoard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = strings.fightDetailPredictionTitle,
+                    text = strings.predictionQuestionTitle,
                     style = MaterialTheme.typography.titleSmall,
                     color = colors.textPrimary,
                     fontWeight = FontWeight.Bold

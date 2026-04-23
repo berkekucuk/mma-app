@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class PredictionDto(
     @SerialName("prediction_id") val predictionId: String,
     @SerialName("user_id") val userId: String,
+    @SerialName("fight_id") val fightId: String,
     @SerialName("predicted_winner_id") val predictedWinnerId: String? = null,
     @SerialName("points_earned") val pointsEarned: Int? = null,
     @SerialName("is_correct") val isCorrect: Boolean? = null,

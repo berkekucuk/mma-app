@@ -32,7 +32,7 @@ class PredictionRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 val predictions = remoteDataSource.fetchPredictions(userId)
-                dao.insertPredictions(predictions.map { it.toEntity() })
+                dao.syncUserPredictions(userId, predictions.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
             }
