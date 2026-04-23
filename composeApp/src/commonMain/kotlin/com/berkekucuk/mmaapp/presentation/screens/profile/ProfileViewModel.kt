@@ -38,6 +38,7 @@ class ProfileViewModel(
 
     init {
         observeUser()
+        observePredictions()
         syncUser()
     }
 
@@ -53,6 +54,17 @@ class ProfileViewModel(
                     )
                 }
             }
+        }
+    }
+
+    private fun observePredictions() {
+        viewModelScope.launch {
+            predictionRepository.getPredictions(userId)
+                .collect { predictions ->
+                    _state.update {
+                        it.copy(predictions = predictions)
+                    }
+                }
         }
     }
 

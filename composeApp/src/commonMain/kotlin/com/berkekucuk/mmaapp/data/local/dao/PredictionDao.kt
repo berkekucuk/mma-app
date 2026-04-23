@@ -12,6 +12,9 @@ interface PredictionDao {
     @Query("SELECT * FROM predictions WHERE fight_id = :fightId AND user_id = :userId")
     fun getPrediction(fightId: String, userId: String): Flow<PredictionEntity?>
 
+    @Query("SELECT * FROM predictions WHERE user_id = :userId ORDER BY created_at DESC")
+    fun getPredictions(userId: String): Flow<List<PredictionEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPrediction(entity: PredictionEntity)
 

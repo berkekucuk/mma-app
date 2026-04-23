@@ -6,7 +6,9 @@ import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
+import com.berkekucuk.mmaapp.domain.model.Prediction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -18,6 +20,12 @@ class PredictionRepositoryImpl(
 
     override fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?> {
         return dao.getPrediction(fightId, userId).map { it?.predictedWinnerId }
+    }
+
+    override fun getPredictions(userId: String): Flow<List<Prediction>> {
+        return dao.getPredictions(userId).map { entities ->
+            entities.map { it.toDomain() }
+        }
     }
 
     override suspend fun syncPredictions(userId: String): Result<Unit> {
