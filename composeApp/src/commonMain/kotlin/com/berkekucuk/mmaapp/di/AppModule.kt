@@ -260,6 +260,7 @@ val appModule = module {
             userRepository = get(),
             authRepository = get(),
             notificationRepository = get(),
+            predictionRepository = get(),
             savedStateHandle = get()
         )
     }

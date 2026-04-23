@@ -8,6 +8,14 @@ class PredictionSupabaseAPI(
     private val client: SupabaseClient
 ) : PredictionRemoteDataSource {
 
+    override suspend fun fetchPredictions(userId: String): List<PredictionDto> {
+        return client.from("user_predictions").select {
+            filter {
+                eq("user_id", userId)
+            }
+        }.decodeList<PredictionDto>()
+    }
+
     override suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int) {
         val payload = PredictionDto(
             userId = userId,

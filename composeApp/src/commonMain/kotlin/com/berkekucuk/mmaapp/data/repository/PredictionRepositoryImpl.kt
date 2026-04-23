@@ -7,6 +7,7 @@ import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import com.berkekucuk.mmaapp.data.mapper.toEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -18,6 +19,17 @@ class PredictionRepositoryImpl(
 
     override fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?> {
         return dao.getPrediction(fightId, userId).map { it?.predictedWinnerId }
+    }
+
+    override suspend fun syncPredictions(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                val predictions = remoteDataSource.fetchPredictions(userId)
+                dao.insertPredictions(predictions.map { it.toEntity() })
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
     }
 
     override suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): Result<Unit> {

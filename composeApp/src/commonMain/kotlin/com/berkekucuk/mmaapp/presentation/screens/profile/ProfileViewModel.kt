@@ -8,6 +8,7 @@ import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
+import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +24,7 @@ class ProfileViewModel(
     private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
+    private val predictionRepository: PredictionRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -61,6 +63,7 @@ class ProfileViewModel(
             _state.update { it.copy(isRefreshing = isRefreshing) }
 
             userRepository.syncUser(userId)
+            predictionRepository.syncPredictions(userId)
 
             val currentUserId = getAuthenticatedUserId()
             val isOwner = currentUserId == userId

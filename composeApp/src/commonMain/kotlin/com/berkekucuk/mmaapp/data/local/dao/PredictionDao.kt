@@ -14,4 +14,7 @@ interface PredictionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPrediction(entity: PredictionEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPredictions(entities: List<PredictionEntity>)
 }

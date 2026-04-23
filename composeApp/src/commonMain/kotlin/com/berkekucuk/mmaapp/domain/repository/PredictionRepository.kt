@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface PredictionRepository {
     fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?>
     suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): Result<Unit>
+    suspend fun syncPredictions(userId: String): Result<Unit>
 }
