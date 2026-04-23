@@ -1,7 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.data.local.dao.PredictionDao
-import com.berkekucuk.mmaapp.data.local.entity.PredictionEntity
 import com.berkekucuk.mmaapp.data.remote.api.PredictionRemoteDataSource
 import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import kotlinx.coroutines.CancellationException
@@ -35,15 +34,8 @@ class PredictionRepositoryImpl(
     override suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                remoteDataSource.submitPrediction(userId, fightId, predictedWinnerId, lockedOdds)
-                dao.insertPrediction(
-                    PredictionEntity(
-                        fightId = fightId,
-                        userId = userId,
-                        predictedWinnerId = predictedWinnerId,
-                        lockedOdds = lockedOdds
-                    )
-                )
+                val prediction = remoteDataSource.submitPrediction(userId, fightId, predictedWinnerId, lockedOdds)
+                dao.insertPrediction(prediction.toEntity())
             }.onFailure {
                 if (it is CancellationException) throw it
             }
