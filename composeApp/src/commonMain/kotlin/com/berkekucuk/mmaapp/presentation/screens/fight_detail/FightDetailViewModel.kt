@@ -170,7 +170,7 @@ class FightDetailViewModel(
                     onNotificationClicked()
                 }
             }
-            is FightDetailUiAction.OnSubmitPredictionClicked -> submitPrediction(action.predictedWinnerId, action.lockedOdds)
+            is FightDetailUiAction.OnSubmitPredictionClicked -> submitPrediction(action.predictedWinnerId)
         }
     }
 
@@ -235,7 +235,7 @@ class FightDetailViewModel(
         }
     }
 
-    private fun submitPrediction(predictedWinnerId: String, lockedOdds: Int) {
+    private fun submitPrediction(predictedWinnerId: String) {
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId == null) {
@@ -249,16 +249,44 @@ class FightDetailViewModel(
                 return@launch
             }
 
+            if(!areOddsPublished(fight)){
+                _state.update { it.copy(error = FightDetailError.ODDS_NOT_PUBLISHED) }
+                return@launch
+            }
+
+            val lockedOdds = getLockedOdds(fight, predictedWinnerId)
+
             _state.update { it.copy(isSubmittingPrediction = true, error = null) }
             
             predictionRepository.submitPrediction(userId, fight.fightId, predictedWinnerId, lockedOdds)
                 .onSuccess {
                     _state.update { it.copy(isSubmittingPrediction = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isSubmittingPrediction = false, error = FightDetailError.NETWORK_ERROR) }
+                .onFailure { e ->
+                    val error = mapRemoteError(e)
+                    _state.update { it.copy(isSubmittingPrediction = false, error = error) }
                 }
         }
+    }
+
+    private fun mapRemoteError(e: Throwable): FightDetailError {
+        val message = e.message ?: ""
+        return when {
+            message.contains("Odds not published yet. Predictions locked.", ignoreCase = true) -> FightDetailError.ODDS_NOT_PUBLISHED
+            message.contains("Event already completed or cancelled.", ignoreCase = true) -> FightDetailError.EVENT_COMPLETED_OR_CANCELLED
+            message.contains("Fight already over.", ignoreCase = true) -> FightDetailError.FIGHT_COMPLETED
+            message.contains("Starting soon or in progress. Predictions locked.", ignoreCase = true) -> FightDetailError.FIGHT_PENDING
+            e is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
+            else -> FightDetailError.NETWORK_ERROR
+        }
+    }
+
+    private fun areOddsPublished(fight: Fight): Boolean {
+        return fight.participants.all { it.oddsValue != null && it.oddsValue != 0 }
+    }
+
+    private fun getLockedOdds(fight: Fight, predictedWinnerId: String): Int {
+        return fight.participants.find { it.fighter.fighterId == predictedWinnerId }?.oddsValue ?: 0
     }
 
     private suspend fun getAuthenticatedUserId(): String? {
