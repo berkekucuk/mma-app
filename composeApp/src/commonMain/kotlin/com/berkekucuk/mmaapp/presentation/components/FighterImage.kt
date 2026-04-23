@@ -36,6 +36,7 @@ fun FighterImage(
     imageSize: Dp = 55.dp,
     flagWidth: Dp = 18.dp,
     flagHeight: Dp = 12.dp,
+    showFlag: Boolean = true,
 ) {
     val context = LocalPlatformContext.current
     val strings = LocalAppStrings.current
@@ -84,7 +85,7 @@ fun FighterImage(
             contentScale = ContentScale.Crop,
         )
 
-        if (flagRequest != null) {
+        if (showFlag && flagRequest != null) {
             AsyncImage(
                 model = flagRequest,
                 contentDescription = strings.contentDescriptionFlag,

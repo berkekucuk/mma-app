@@ -172,4 +172,8 @@ val TrStrings = AppStrings(
             }
         }.joinToString("")
     },
+    fightDetailPredictionTitle = "Kim kazanır?",
+    errorOddsNotPublished = "Oranlar bekleniyor. Tahminler yakında açılacak.",
+    errorEventCompletedOrCancelled = "Etkinlik zaten tamamlandı veya iptal edildi.",
+    errorFightPending = "Sonuç bekleniyor. Tahminler kapandı."
 )

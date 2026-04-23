@@ -272,10 +272,10 @@ class FightDetailViewModel(
     private fun mapRemoteError(e: Throwable): FightDetailError {
         val message = e.message ?: ""
         return when {
-            message.contains("Odds not published yet. Predictions locked.", ignoreCase = true) -> FightDetailError.ODDS_NOT_PUBLISHED
+            message.contains("Odds pending. Predictions opening soon.", ignoreCase = true) -> FightDetailError.ODDS_NOT_PUBLISHED
             message.contains("Event already completed or cancelled.", ignoreCase = true) -> FightDetailError.EVENT_COMPLETED_OR_CANCELLED
             message.contains("Fight already over.", ignoreCase = true) -> FightDetailError.FIGHT_COMPLETED
-            message.contains("Starting soon or in progress. Predictions locked.", ignoreCase = true) -> FightDetailError.FIGHT_PENDING
+            message.contains("Result pending. Predictions locked.", ignoreCase = true) -> FightDetailError.FIGHT_PENDING
             e is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
             else -> FightDetailError.NETWORK_ERROR
         }

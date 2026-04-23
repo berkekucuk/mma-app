@@ -153,4 +153,9 @@ data class AppStrings(
     val weightClassDisplayName: (String) -> String,
     val resultDisplayName: (String) -> String,
     val toUpperCase: (String) -> String,
+    // Fight Prediction
+    val fightDetailPredictionTitle: String,
+    val errorOddsNotPublished: String,
+    val errorEventCompletedOrCancelled: String,
+    val errorFightPending: String,
 )

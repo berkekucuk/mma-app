@@ -138,6 +138,7 @@ fun FightDetailScreen(
             }
         }
     }
+    val onPredict = remember(onAction) { { id: String -> onAction(FightDetailUiAction.OnSubmitPredictionClicked(id)) } }
 
     val isRetryableError = state.error == FightDetailError.NETWORK_ERROR || state.error == FightDetailError.UNKNOWN_ERROR
     val errorMessage = when (state.error) {
@@ -145,6 +146,9 @@ fun FightDetailScreen(
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
         FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
         FightDetailError.FIGHT_COMPLETED -> strings.errorFightCompleted
+        FightDetailError.ODDS_NOT_PUBLISHED -> strings.errorOddsNotPublished
+        FightDetailError.EVENT_COMPLETED_OR_CANCELLED -> strings.errorEventCompletedOrCancelled
+        FightDetailError.FIGHT_PENDING -> strings.errorFightPending
         else -> null
     }
     SnackbarEffect(
@@ -262,6 +266,14 @@ fun FightDetailScreen(
                     verticalSpacing = 8.dp,
                     extraBottomPadding = navBarBottomPadding,
                 ) {
+                    if (state.showPredictionBoard){
+                        item(contentType = "PredictionBoard") {
+                            PredictionBoard(
+                                state = state,
+                                onPredict = onPredict
+                            )
+                        }
+                    }
                     item(contentType = "FightDetailContainer") {
                         FightDetailContainer(
                             redCorner = fight?.redCorner,
