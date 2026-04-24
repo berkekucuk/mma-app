@@ -44,6 +44,7 @@ fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFavoriteFighters: (String) -> Unit,
+    onNavigateToFightDetail: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -52,6 +53,7 @@ fun ProfileScreenRoot(
             when (event) {
                 is ProfileNavigationEvent.Back -> onNavigateBack()
                 is ProfileNavigationEvent.ToFavoriteFighters -> onNavigateToFavoriteFighters(event.userId)
+                is ProfileNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.fightId)
             }
         }
     }
@@ -79,6 +81,7 @@ fun ProfileScreen(
     val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
     val onFavoriteFightersClicked = remember(onAction) { { onAction(ProfileUiAction.OnFavoriteFightersClicked) } }
+    val onPredictionClicked = remember(onAction) { { fightId: String -> onAction(ProfileUiAction.OnPredictionClicked(fightId)) } }
 
     Scaffold(
         modifier = Modifier
@@ -162,7 +165,7 @@ fun ProfileScreen(
                         ListContainer(
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
-                            contentPadding = PaddingValues(16.dp),
+                            contentPadding = PaddingValues(top = 16.dp),
                             extraBottomPadding = navBarBottomPadding,
                         ) {
                             items(
@@ -170,7 +173,12 @@ fun ProfileScreen(
                                 key = { it.predictionId }
                             ) { prediction ->
                                 PredictionCard(
-                                    prediction = prediction
+                                    prediction = prediction,
+                                    onClick = {
+                                        prediction.fight?.let { fight ->
+                                            onPredictionClicked(fight.fightId)
+                                        }
+                                    },
                                 )
                             }
                         }

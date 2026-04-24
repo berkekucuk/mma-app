@@ -7,13 +7,13 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
-import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
 import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Fighter
+import com.berkekucuk.mmaapp.domain.repository.FightRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FightDetailViewModel(
-    private val eventRepository: EventRepository,
+    private val fightRepository: FightRepository,
     private val fighterRepository: FighterRepository,
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
@@ -34,10 +34,9 @@ class FightDetailViewModel(
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<Route.FightDetail>()
-    private val eventId: String = route.eventId
     private val fightId: String = route.fightId
     private val fighterId: String? = route.fighterId
-    val cameFromEvent: Boolean = fighterId == null
+    val fromEventDetail: Boolean = route.fromEventDetail
     private val _state = MutableStateFlow(FightDetailUiState())
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
@@ -45,53 +44,22 @@ class FightDetailViewModel(
     private var isPendingNotificationRequest = false
 
     init {
-        if (fighterId != null) {
-            observeFightFromFighter()
-        } else {
-            observeFightFromEvent()
-        }
+        observeFight()
         observeFightNotificationStatus()
         observePredictionStatus()
     }
 
-    private fun observeFightFromEvent() {
+    private fun observeFight() {
         viewModelScope.launch {
-            eventRepository.getEventById(eventId)
-                .collect { event ->
-                    val fight = event.fights.find { it.fightId == fightId }
-
+            fightRepository.getFight(fightId)
+                .collect { fight ->
                     _state.update {
                         it.copy(
                             fight = fight,
-                            eventDate = event.datetimeUtc,
-                            eventName = event.name,
-                            showPredictionBoard = fight != null && !isFightCompleted(fight)
+                            showPredictionBoard = !isFightCompleted(fight)
                         )
                     }
-                    if (fight != null) {
-                        syncFighters(fight)
-                    }
-                }
-        }
-    }
-
-    private fun observeFightFromFighter() {
-        viewModelScope.launch {
-            fighterRepository.getFighterById(fighterId!!)
-                .collect { fighter ->
-                    val fight = fighter.fights.find { it.fightId == fightId }
-
-                    _state.update {
-                        it.copy(
-                            fight = fight,
-                            eventName = fight?.eventName,
-                            eventDate = fight?.eventDate,
-                            showPredictionBoard = fight != null && !isFightCompleted(fight)
-                        )
-                    }
-                    if (fight != null) {
-                        syncFighters(fight, knownFighterId = fighterId)
-                    }
+                    syncFighters(fight, knownFighterId = fighterId)
                 }
         }
     }
@@ -301,18 +269,14 @@ class FightDetailViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true, error = null) }
 
-            val result = if (fighterId != null) {
-                fighterRepository.syncFighter(fighterId)
-            } else {
-                eventRepository.syncEventById(eventId = eventId)
-            }
-
-            result.onSuccess {
+            fightRepository.syncFight(fightId)
+                .onSuccess {
                 _state.value.fight?.let { currentFight ->
                     syncFighters(currentFight, knownFighterId = fighterId)
                 }
                 _state.update { it.copy(isRefreshing = false) }
-            }.onFailure { e ->
+            }
+                .onFailure { e ->
                 val errorType = when (e) {
                     is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
                     else -> FightDetailError.NETWORK_ERROR

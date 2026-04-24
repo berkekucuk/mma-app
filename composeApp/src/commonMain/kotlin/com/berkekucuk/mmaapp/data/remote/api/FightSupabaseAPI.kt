@@ -1,0 +1,18 @@
+package com.berkekucuk.mmaapp.data.remote.api
+
+import com.berkekucuk.mmaapp.data.remote.dto.FightDto
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
+
+class FightSupabaseAPI(
+    private val client: SupabaseClient
+) : FightRemoteDataSource {
+
+    override suspend fun fetchFightById(fightId: String): FightDto? {
+        return client.from("fight_view").select {
+            filter {
+                eq("fight_id", fightId)
+            }
+        }.decodeSingleOrNull<FightDto>()
+    }
+}

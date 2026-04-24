@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.core.utils.RateLimiter
+import com.berkekucuk.mmaapp.data.local.dao.FightDao
 import com.berkekucuk.mmaapp.data.local.dao.FighterDao
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
@@ -16,17 +17,20 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
+import com.berkekucuk.mmaapp.data.local.entity.FighterFightCrossRef
+import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
 
 class FighterRepositoryImpl(
     private val remoteDataSource: FighterRemoteDataSource,
-    private val dao: FighterDao,
+    private val fighterDao: FighterDao,
+    private val fightDao: FightDao,
     private val rateLimiter: RateLimiter
 ) : FighterRepository {
 
     private fun syncKey(fighterId: String) = "sync_fighter_$fighterId"
 
     override fun getFighterById(fighterId: String): Flow<Fighter> {
-        return dao.getFighterById(fighterId)
+        return fighterDao.getFighter(fighterId)
             .filterNotNull()
             .map { it.toDomain() }
             .distinctUntilChanged()
@@ -40,7 +44,7 @@ class FighterRepositoryImpl(
                     return@runCatching
                 }
                 val fighterDto = remoteDataSource.fetchFighterById(fighterId)
-                dao.insertFighter(fighterDto.toEntity())
+                saveFighterAndFights(fighterDto)
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncKey(fighterId))
@@ -48,14 +52,36 @@ class FighterRepositoryImpl(
         }
     }
 
+    private suspend fun saveFighterAndFights(fighterDto: FighterDto) {
+        // 1. Save fighter to local database
+        fighterDao.insertFighter(fighterDto.toEntity())
+        
+        // 2. Save fights to centralized table
+        val fights = fighterDto.fights ?: emptyList()
+        val fightEntities = fights.map { it.toEntity() }
+        if (fightEntities.isNotEmpty()) {
+            fightDao.insertFights(fightEntities)
+        }
+        
+        // 3. Update Junction table (Fighter <-> Fights)
+        fighterDao.deleteFighterFightCrossRefs(fighterDto.fighterId)
+        val crossRefs = fights.map { 
+            FighterFightCrossRef(fighterId = fighterDto.fighterId, fightId = it.fightId) 
+        }
+        if (crossRefs.isNotEmpty()) {
+            fighterDao.insertFighterFightCrossRefs(crossRefs)
+        }
+    }
+
     override suspend fun hasFighterById(fighterId: String): Boolean {
-        return withContext(Dispatchers.IO) { dao.hasFighterById(fighterId) }
+        return withContext(Dispatchers.IO) { fighterDao.hasFighterById(fighterId) }
     }
 
     override suspend fun searchFighters(query: String): Result<List<Fighter>> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                remoteDataSource.searchFighters(query).map { it.toDomain() }
+                remoteDataSource.searchFighters(query)
+                    .map { it.toDomain() }
             }.onFailure {
                 if (it is CancellationException) throw it
             }

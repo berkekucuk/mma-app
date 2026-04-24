@@ -89,7 +89,7 @@ fun FightDetailScreenRoot(
 
     FightDetailScreen(
         state = uiState,
-        cameFromEvent = viewModel.cameFromEvent,
+        fromEventDetail = viewModel.fromEventDetail,
         onAction = viewModel::onAction,
     )
 }
@@ -98,13 +98,13 @@ fun FightDetailScreenRoot(
 @Composable
 fun FightDetailScreen(
     state: FightDetailUiState,
-    cameFromEvent: Boolean,
+    fromEventDetail: Boolean,
     onAction: (FightDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val eventId = state.fight?.eventId
-    val displayTitle = state.eventName ?: state.fight?.eventName
+    val displayTitle = state.fight?.eventName
     val fight = state.fight
     val hasMetaInfo = fight != null && (
             fight.roundsFormat.isNotBlank() ||
@@ -131,9 +131,9 @@ fun FightDetailScreen(
     val onBlueCornerClick = remember(onAction, fight) {
         fight?.blueCorner?.fighter?.fighterId?.let { id -> { onAction(FightDetailUiAction.OnFighterClicked(id)) } }
     }
-    val onEventLinkClick = remember(onAction, eventId, cameFromEvent) {
+    val onEventLinkClick = remember(onAction, eventId, fromEventDetail) {
         {
-            if (cameFromEvent) {
+            if (fromEventDetail) {
                 onAction(FightDetailUiAction.OnBackClicked)
             } else if (!eventId.isNullOrBlank()) {
                 onAction(FightDetailUiAction.OnEventClicked(eventId))
@@ -282,7 +282,7 @@ fun FightDetailScreen(
                         FightDetailContainer(
                             redCorner = fight?.redCorner,
                             blueCorner = fight?.blueCorner,
-                            eventDate = state.eventDate,
+                            eventDate = state.fight?.eventDate,
                         )
                     }
                     if (hasMetaInfo) {
@@ -294,7 +294,7 @@ fun FightDetailScreen(
                         item(contentType = "EventLink") {
                             EventLinkRow(
                                 eventName = displayTitle,
-                                isBackNavigation = cameFromEvent,
+                                isBackNavigation = fromEventDetail,
                                 onClick = onEventLinkClick,
                             )
                         }

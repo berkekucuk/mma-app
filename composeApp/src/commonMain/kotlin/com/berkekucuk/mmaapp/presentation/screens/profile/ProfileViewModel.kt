@@ -96,6 +96,7 @@ class ProfileViewModel(
             is ProfileUiAction.OnBackClicked -> navigateTo(ProfileNavigationEvent.Back)
             is ProfileUiAction.OnRefresh -> syncUser(isRefreshing = true)
             is ProfileUiAction.OnFavoriteFightersClicked -> navigateTo(ProfileNavigationEvent.ToFavoriteFighters(userId))
+            is ProfileUiAction.OnPredictionClicked -> navigateTo(ProfileNavigationEvent.ToFightDetail(action.fightId))
         }
     }
 

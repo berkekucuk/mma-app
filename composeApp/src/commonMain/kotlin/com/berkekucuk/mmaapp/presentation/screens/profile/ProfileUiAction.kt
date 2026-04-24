@@ -4,4 +4,5 @@ sealed interface ProfileUiAction {
     data object OnBackClicked : ProfileUiAction
     data object OnRefresh : ProfileUiAction
     data object OnFavoriteFightersClicked : ProfileUiAction
+    data class OnPredictionClicked(val fightId: String) : ProfileUiAction
 }
