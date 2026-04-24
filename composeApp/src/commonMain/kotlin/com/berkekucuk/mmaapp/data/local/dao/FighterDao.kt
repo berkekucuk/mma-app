@@ -27,5 +27,5 @@ interface FighterDao {
     suspend fun deleteFighterFightCrossRefs(fighterId: String)
 
     @Query("SELECT EXISTS(SELECT 1 FROM fighters WHERE fighter_id = :fighterId)")
-    suspend fun hasFighterById(fighterId: String): Boolean
+    suspend fun isFighterExists(fighterId: String): Boolean
 }

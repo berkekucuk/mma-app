@@ -29,7 +29,7 @@ class FighterRepositoryImpl(
 
     private fun syncKey(fighterId: String) = "sync_fighter_$fighterId"
 
-    override fun getFighterById(fighterId: String): Flow<Fighter> {
+    override fun getFighter(fighterId: String): Flow<Fighter> {
         return fighterDao.getFighter(fighterId)
             .filterNotNull()
             .map { it.toDomain() }
@@ -43,7 +43,7 @@ class FighterRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncKey(fighterId))) {
                     return@runCatching
                 }
-                val fighterDto = remoteDataSource.fetchFighterById(fighterId)
+                val fighterDto = remoteDataSource.fetchFighter(fighterId)
                 saveFighterAndFights(fighterDto)
             }.onFailure {
                 if (it is CancellationException) throw it
@@ -73,8 +73,8 @@ class FighterRepositoryImpl(
         }
     }
 
-    override suspend fun hasFighterById(fighterId: String): Boolean {
-        return withContext(Dispatchers.IO) { fighterDao.hasFighterById(fighterId) }
+    override suspend fun isFighterExists(fighterId: String): Boolean {
+        return withContext(Dispatchers.IO) { fighterDao.isFighterExists(fighterId) }
     }
 
     override suspend fun searchFighters(query: String): Result<List<Fighter>> {

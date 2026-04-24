@@ -115,7 +115,7 @@ class FightDetailViewModel(
                     }
             }
 
-            val fighter = fighterRepository.getFighterById(fighterId).first()
+            val fighter = fighterRepository.getFighter(fighterId).first()
             onUpdate(fighter)
         }
     }
