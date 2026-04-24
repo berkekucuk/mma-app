@@ -49,7 +49,7 @@ class EventDetailViewModel(
 
     fun onAction(action: EventDetailUiAction){
         when(action){
-            is EventDetailUiAction.OnFightClicked -> navigateTo(EventDetailNavigationEvent.ToFightDetail(eventId, action.fightId))
+            is EventDetailUiAction.OnFightClicked -> navigateTo(EventDetailNavigationEvent.ToFightDetail(action.fightId))
             is EventDetailUiAction.OnBackClicked -> navigateTo(EventDetailNavigationEvent.Back)
             is EventDetailUiAction.OnRefresh -> syncEvent(isRefreshing = true)
         }

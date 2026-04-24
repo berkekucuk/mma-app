@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.colors.DarkColors
 import com.berkekucuk.mmaapp.core.presentation.strings.EnStrings
@@ -151,8 +150,13 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 EventDetailScreenRoot(
-                    onNavigateToFightDetail = { eventId, fightId ->
-                        rootNavController.navigate(Route.FightDetail(eventId, fightId))
+                    onNavigateToFightDetail = { fightId ->
+                        rootNavController.navigate(
+                            Route.FightDetail(
+                                fightId = fightId,
+                                fromEventDetail = true
+                            )
+                        )
                     },
                     onNavigateBack = { rootNavController.navigateUp() }
                 )
@@ -171,6 +175,9 @@ fun App() {
                     onNavigateToEventDetail = { eventId ->
                         rootNavController.navigate(Route.EventDetail(eventId, fromFightDetail = true))
                     },
+                    onNavigateToLeaderboard = {
+                        rootNavController.navigate(Route.Leaderboard)
+                    },
                     onNavigateBack = { rootNavController.navigateUp() }
                 )
             }
@@ -182,8 +189,14 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 FighterDetailScreenRoot(
-                    onNavigateToFightDetail = { eventId, fightId, fighterId ->
-                        rootNavController.navigate(Route.FightDetail(eventId, fightId, fighterId))
+                    onNavigateToFightDetail = { fightId, fighterId ->
+                        rootNavController.navigate(
+                            Route.FightDetail(
+                                fightId = fightId,
+                                fighterId = fighterId,
+                                fromEventDetail = false
+                            )
+                        )
                     },
                     onNavigateBack = { rootNavController.navigateUp() }
                 )
@@ -210,6 +223,9 @@ fun App() {
                     onNavigateBack = { rootNavController.navigateUp() },
                     onNavigateToFavoriteFighters = { userId ->
                         rootNavController.navigate(Route.FavoriteFighters(userId))
+                    },
+                    onNavigateToFightDetail = { fightId ->
+                        rootNavController.navigate(Route.FightDetail(fightId = fightId))
                     }
                 )
             }
@@ -219,16 +235,13 @@ fun App() {
                 exitTransition = NavTransitions.slideOutToLeft,
                 popEnterTransition = NavTransitions.slideFromLeft,
                 popExitTransition = NavTransitions.slideOutToRight
-            ) { backStackEntry ->
-                val favRoute = backStackEntry.toRoute<Route.FavoriteFighters>()
+            ) {
                 FavoriteFightersScreenRoot(
                     onNavigateBack = { rootNavController.navigateUp() },
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
-                    onNavigateToFighterSearch = {
-                        rootNavController.navigate(Route.FighterSearch(favRoute.userId))
-                    }
+                    onNavigateToFighterSearch = { Route.FighterSearch() }
                 )
             }
 

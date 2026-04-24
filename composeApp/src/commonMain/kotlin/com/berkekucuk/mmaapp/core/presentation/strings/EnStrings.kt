@@ -4,18 +4,16 @@ import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,
-    eventsTitle = "EVENTS",
     tabUpcoming = "Upcoming",
     tabCompleted = "Completed",
     toBeAnnounced = "TO BE ANNOUNCED",
     tba = "tba",
     liveEvent = "Live Event",
     selectYear = "Select Year",
-    weightClassBout = { "$it Bout" },
     contentDescriptionFlag = "Flag",
+    contentDescriptionInfo = "Information",
     contentDescriptionWin = "Win",
     contentDescriptionLoss = "Loss",
-    unknownFighter = "Unknown Fighter",
     eventDetailsFallback = "Event Details",
     contentDescriptionBack = "Back",
     tabMainCard = "Main Card",
@@ -28,8 +26,8 @@ val EnStrings = AppStrings(
     radarLabelReach = "Reach",
     radarLabelOdds = "Odds",
     radarLabelWinRate = "Win %",
-    radarLabelKoTkoRate = "KO/TKO %",
-    radarLabelSubRate = "Submission %",
+    radarLabelKoTkoRate = "KO/TKO %\n(UFC)",
+    radarLabelSubRate = "Submission %\n(UFC)",
     fightDetailLabelName = "Name",
     fightDetailLabelAge = "Age at Fight",
     fightDetailLabelHometown = "Fighting out of",
@@ -42,10 +40,6 @@ val EnStrings = AppStrings(
     fightDetailLabelMethod = "Method",
     fightDetailLabelRoundSummary = "Time",
     heightCm = { "$it cm" },
-    fightResultDefeats = { winner, loser -> "$winner defeats $loser" },
-    fightResultDraw = "Draw",
-    fightResultNoContest = "No Contest",
-    fightResultVia = { "via $it" },
     rankingsTitle = "Rankings",
     tabMens = "Men's",
     tabWomens = "Women's",
@@ -74,12 +68,6 @@ val EnStrings = AppStrings(
     fighterDetailResultDraw = "D",
     fighterDetailResultNoContest = "NC",
     fighterDetailResultPending = "–",
-    loginTitleMma = "MMA",
-    loginTitleApp = "APP",
-    loginSubtitle = "Fights · Events · Rankings",
-    loginSignInGoogle = "Sign in with Google",
-    loginSecureSignIn = "secure sign in",
-    contentDescriptionGoogle = "Google",
     profileEdit = "Edit",
     profileSignOut = "Sign Out",
     profileTabOverview = "Overview",
@@ -104,7 +92,6 @@ val EnStrings = AppStrings(
     errorNetwork2 = "No internet connection.",
     errorUnknown = "Something went wrong. Please try again.",
     errorPleaseSignIn = "Please sign in to use this feature.",
-    errorFightCompleted = "This fight is already over.",
     retry = "Retry",
     dialogAccept = "Accept",
     dialogCancel = "Cancel",
@@ -164,4 +151,17 @@ val EnStrings = AppStrings(
         }
     },
     toUpperCase = { it.uppercase() },
+    predictionQuestionTitle = "Who will win?",
+    errorOddsNotPublished = "Odds pending. Predictions opening soon.",
+    errorEventOver = "Event already over.",
+    errorFightOver = "This fight is already over.",
+    errorFightPending = "Result pending. Predictions locked.",
+    leaderboardInfoTitle = "Points System",
+    leaderboardInfoText = "Points are based on the reward value of the odds at the time of your prediction.\n" +
+            "\n" + "The 100-Point Rule: Each 1.00 unit of net profit in decimal odds equals 100 points.\n" +
+            "\n" + "High Odds: A 3.00 odd offers 2.00 units of profit, resulting in 200 points.\n" +
+            "\n" + "Low Odds: A 1.25 odd offers 0.25 units of profit, resulting in 25 points.\n" +
+            "\n" + "Lock-in: Your potential reward is fixed the moment you lock your prediction.\n" +
+            "\n" + "Result: Points are only awarded for correct predictions.",
+    leaderboardInfoClose = "Close"
 )

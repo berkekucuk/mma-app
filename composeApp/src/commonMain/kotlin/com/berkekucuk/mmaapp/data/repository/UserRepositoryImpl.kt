@@ -2,7 +2,6 @@ package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.UserDao
-import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.mapper.toFavoriteDto
@@ -78,45 +77,6 @@ class UserRepositoryImpl(
             runCatching {
                 remoteDataSource.updateUser(userId, fullName, username)
                 dao.updateUser(userId, fullName, username)
-            }.onFailure {
-                if (it is CancellationException) throw it
-            }
-        }
-    }
-
-    override fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
-        return dao.getFightNotificationStatus(fightId, userId)
-            .distinctUntilChanged()
-            .flowOn(Dispatchers.IO)
-    }
-
-    override suspend fun syncFightNotifications(userId: String): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                val notifications = remoteDataSource.fetchFightNotifications(userId)
-                dao.insertFightNotifications(notifications.map { it.toEntity() })
-            }.onFailure {
-                if (it is CancellationException) throw it
-            }
-        }
-    }
-
-    override suspend fun addFightNotification(fightId: String, userId: String): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                remoteDataSource.upsertFightNotification(fightId, userId)
-                dao.insertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
-            }.onFailure {
-                if (it is CancellationException) throw it
-            }
-        }
-    }
-
-    override suspend fun removeFightNotification(fightId: String, userId: String): Result<Unit> {
-        return withContext(Dispatchers.IO) {
-            runCatching {
-                remoteDataSource.deleteFightNotification(fightId, userId)
-                dao.deleteFightNotification(fightId, userId)
             }.onFailure {
                 if (it is CancellationException) throw it
             }

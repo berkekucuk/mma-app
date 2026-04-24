@@ -51,7 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun EventDetailScreenRoot(
     viewModel: EventDetailViewModel = koinViewModel(),
-    onNavigateToFightDetail: (eventId: String, fightId: String) -> Unit,
+    onNavigateToFightDetail: (fightId: String) -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -59,7 +59,7 @@ fun EventDetailScreenRoot(
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is EventDetailNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.eventId, event.fightId)
+                is EventDetailNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.fightId)
                 is EventDetailNavigationEvent.Back -> onNavigateBack()
             }
         }

@@ -49,7 +49,7 @@ fun FightItem(
 
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
-    val weightClassLabel = strings.weightClassBout(strings.weightClassDisplayName(fight.weightClassId))
+    val weightClassLabel = strings.weightClassDisplayName(fight.weightClassId)
 
     val headerText = remember(methodText, weightClassLabel) {
         methodText.ifEmpty { weightClassLabel }

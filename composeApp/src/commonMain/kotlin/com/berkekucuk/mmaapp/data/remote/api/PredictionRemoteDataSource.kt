@@ -1,0 +1,8 @@
+package com.berkekucuk.mmaapp.data.remote.api
+
+import com.berkekucuk.mmaapp.data.remote.dto.PredictionDto
+
+interface PredictionRemoteDataSource {
+    suspend fun fetchPredictions(userId: String): List<PredictionDto>
+    suspend fun submitPrediction(userId: String, fightId: String, predictedWinnerId: String, lockedOdds: Int): PredictionDto
+}

@@ -86,14 +86,16 @@ fun EventItem(
                     .background(colors.cardHeaderBackground)
                     .padding(10.dp)
             ) {
-                Text(
-                    text = event.name,
-                    color = colors.textPrimary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                event.name?.let {
+                    Text(
+                        text = it,
+                        color = colors.textPrimary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

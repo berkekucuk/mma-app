@@ -6,10 +6,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +36,7 @@ import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankedFighterRow
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -60,7 +72,9 @@ fun LeaderboardScreen(
     val onBackClicked = remember(onAction) { { onAction(LeaderboardUiAction.OnBackClicked) } }
     val onUserClicked = remember(onAction) { { userId: String -> onAction(LeaderboardUiAction.OnUserClicked(userId)) } }
     val onRefresh = remember(onAction) { { onAction(LeaderboardUiAction.OnRefresh) } }
-
+    val showInfoDialog = remember { mutableStateOf(false) }
+    val onInfoDialogDismiss = remember { { showInfoDialog.value = false } }
+    val onInfoDialogConfirmed = remember { { showInfoDialog.value = false} }
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -115,11 +129,20 @@ fun LeaderboardScreen(
                             )
                         }
                     },
+                    actions = {
+                        IconButton(onClick = { showInfoDialog.value = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = strings.contentDescriptionInfo,
+                            )
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
                         navigationIconContentColor = colors.textPrimary,
-                        titleContentColor = colors.textPrimary
+                        titleContentColor = colors.textPrimary,
+                        actionIconContentColor = colors.textPrimary,
                     )
                 )
             }
@@ -192,5 +215,15 @@ fun LeaderboardScreen(
                 }
             }
         }
+    }
+
+    if (showInfoDialog.value) {
+        AppAlertDialog(
+            onDismissRequest = onInfoDialogDismiss,
+            onConfirmClick = onInfoDialogConfirmed,
+            title = strings.leaderboardInfoTitle,
+            text = strings.leaderboardInfoText,
+            confirmText = strings.leaderboardInfoClose
+        )
     }
 }

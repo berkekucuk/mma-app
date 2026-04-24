@@ -9,7 +9,7 @@ class FighterSupabaseAPI(
     private val client: SupabaseClient
 ) : FighterRemoteDataSource {
 
-    override suspend fun fetchFighterById(id: String): FighterDto {
+    override suspend fun fetchFighter(id: String): FighterDto {
         return client.from("fighter_view").select {
             filter {
                 eq("fighter_id", id)

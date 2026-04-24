@@ -1,9 +1,8 @@
 package com.berkekucuk.mmaapp.data.local
 
 import androidx.room.TypeConverter
-import com.berkekucuk.mmaapp.data.remote.dto.FightDto
-import com.berkekucuk.mmaapp.data.remote.dto.FighterDto
 import com.berkekucuk.mmaapp.data.remote.dto.MeasurementDto
+import com.berkekucuk.mmaapp.data.remote.dto.ParticipantDto
 import com.berkekucuk.mmaapp.data.remote.dto.RankedFighterDto
 import com.berkekucuk.mmaapp.data.remote.dto.RecordDto
 import kotlinx.serialization.json.Json
@@ -42,18 +41,6 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromFightsList(value: List<FightDto>?): String = encodeList(value)
-
-    @TypeConverter
-    fun toFightsList(value: String?): List<FightDto> = decodeList(value)
-
-    @TypeConverter
-    fun fromFighterList(value: List<FighterDto>?): String = encodeList(value)
-
-    @TypeConverter
-    fun toFighterList(value: String?): List<FighterDto> = decodeList(value)
-
-    @TypeConverter
     fun fromTimestamp(value: Long?): Instant? = value?.let { Instant.fromEpochMilliseconds(it) }
 
     @TypeConverter
@@ -76,4 +63,10 @@ class Converters {
 
     @TypeConverter
     fun toRankingsList(value: String?): List<RankedFighterDto> = decodeList(value)
+
+    @TypeConverter
+    fun fromParticipantsList(value: List<ParticipantDto>?): String = encodeList(value)
+
+    @TypeConverter
+    fun toParticipantsList(value: String?): List<ParticipantDto> = decodeList(value)
 }

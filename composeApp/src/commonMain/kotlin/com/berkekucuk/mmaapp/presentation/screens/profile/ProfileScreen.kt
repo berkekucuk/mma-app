@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.lazy.items
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
@@ -41,6 +44,7 @@ fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFavoriteFighters: (String) -> Unit,
+    onNavigateToFightDetail: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -49,6 +53,7 @@ fun ProfileScreenRoot(
             when (event) {
                 is ProfileNavigationEvent.Back -> onNavigateBack()
                 is ProfileNavigationEvent.ToFavoriteFighters -> onNavigateToFavoriteFighters(event.userId)
+                is ProfileNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.fightId)
             }
         }
     }
@@ -71,10 +76,12 @@ fun ProfileScreen(
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
     val onFavoriteFightersClicked = remember(onAction) { { onAction(ProfileUiAction.OnFavoriteFightersClicked) } }
+    val onPredictionClicked = remember(onAction) { { fightId: String -> onAction(ProfileUiAction.OnPredictionClicked(fightId)) } }
 
     Scaffold(
         modifier = Modifier
@@ -143,6 +150,7 @@ fun ProfileScreen(
                             isRefreshing = state.isRefreshing,
                             onRefresh = onRefresh,
                             contentPadding = PaddingValues(top = 16.dp),
+                            extraBottomPadding = navBarBottomPadding,
                         ) {
                             item {
                                 WeightClassCard(
@@ -154,6 +162,26 @@ fun ProfileScreen(
                         }
                     }
                     1 -> {
+                        ListContainer(
+                            isRefreshing = state.isRefreshing,
+                            onRefresh = onRefresh,
+                            contentPadding = PaddingValues(top = 16.dp),
+                            extraBottomPadding = navBarBottomPadding,
+                        ) {
+                            items(
+                                items = state.predictions,
+                                key = { it.predictionId }
+                            ) { prediction ->
+                                PredictionCard(
+                                    prediction = prediction,
+                                    onClick = {
+                                        prediction.fight?.let { fight ->
+                                            onPredictionClicked(fight.fightId)
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
                 }
             }

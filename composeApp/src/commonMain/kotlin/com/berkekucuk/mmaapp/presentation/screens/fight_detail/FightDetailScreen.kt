@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,8 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -47,6 +44,7 @@ import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import com.berkekucuk.mmaapp.presentation.components.FightItem
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import org.koin.compose.viewmodel.koinViewModel
@@ -56,6 +54,7 @@ fun FightDetailScreenRoot(
     viewModel: FightDetailViewModel = koinViewModel(),
     onNavigateToFighterDetail: (fighterId: String) -> Unit,
     onNavigateToEventDetail: (eventId: String) -> Unit,
+    onNavigateToLeaderboard: () -> Unit,
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.state.collectAsStateWithLifecycle()
@@ -78,6 +77,7 @@ fun FightDetailScreenRoot(
                 is FightDetailNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
                 is FightDetailNavigationEvent.Back -> onNavigateBack()
                 is FightDetailNavigationEvent.ToEventDetail -> onNavigateToEventDetail(event.eventId)
+                is FightDetailNavigationEvent.ToLeaderboard -> onNavigateToLeaderboard()
                 is FightDetailNavigationEvent.RequestNotificationPermission -> {
                     showPermissionRequest.value = true
                 }
@@ -87,7 +87,7 @@ fun FightDetailScreenRoot(
 
     FightDetailScreen(
         state = uiState,
-        cameFromEvent = viewModel.cameFromEvent,
+        fromEventDetail = viewModel.fromEventDetail,
         onAction = viewModel::onAction,
     )
 }
@@ -96,13 +96,13 @@ fun FightDetailScreenRoot(
 @Composable
 fun FightDetailScreen(
     state: FightDetailUiState,
-    cameFromEvent: Boolean,
+    fromEventDetail: Boolean,
     onAction: (FightDetailUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val eventId = state.fight?.eventId
-    val displayTitle = state.eventName ?: state.fight?.eventName
+    val displayTitle = state.fight?.eventName
     val fight = state.fight
     val hasMetaInfo = fight != null && (
             fight.roundsFormat.isNotBlank() ||
@@ -129,22 +129,27 @@ fun FightDetailScreen(
     val onBlueCornerClick = remember(onAction, fight) {
         fight?.blueCorner?.fighter?.fighterId?.let { id -> { onAction(FightDetailUiAction.OnFighterClicked(id)) } }
     }
-    val onEventLinkClick = remember(onAction, eventId, cameFromEvent) {
+    val onEventLinkClick = remember(onAction, eventId, fromEventDetail) {
         {
-            if (cameFromEvent) {
+            if (fromEventDetail) {
                 onAction(FightDetailUiAction.OnBackClicked)
             } else if (!eventId.isNullOrBlank()) {
                 onAction(FightDetailUiAction.OnEventClicked(eventId))
             }
         }
     }
+    val onPredict = remember(onAction) { { id: String -> onAction(FightDetailUiAction.OnSubmitPredictionClicked(id)) } }
+    val onLeaderboardClick = remember(onAction) { { onAction(FightDetailUiAction.OnLeaderboardClicked) } }
 
     val isRetryableError = state.error == FightDetailError.NETWORK_ERROR || state.error == FightDetailError.UNKNOWN_ERROR
     val errorMessage = when (state.error) {
         FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
         FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
-        FightDetailError.FIGHT_COMPLETED -> strings.errorFightCompleted
+        FightDetailError.ODDS_NOT_PUBLISHED -> strings.errorOddsNotPublished
+        FightDetailError.EVENT_OVER -> strings.errorEventOver
+        FightDetailError.FIGHT_OVER -> strings.errorFightOver
+        FightDetailError.FIGHT_PENDING -> strings.errorFightPending
         else -> null
     }
     SnackbarEffect(
@@ -165,19 +170,12 @@ fun FightDetailScreen(
         }
     }
     if (showNotificationDialog.value) {
-        AlertDialog(
+        AppAlertDialog(
             onDismissRequest = onNotificationDialogDismiss,
-            text = { Text(if (state.isNotificationEnabled) strings.fightNotificationRemoveDialogMessage else strings.fightNotificationDialogMessage) },
-            confirmButton = {
-                TextButton(onClick = onNotificationConfirmed) {
-                    Text(strings.dialogAccept)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onNotificationDialogDismiss) {
-                    Text(strings.dialogCancel)
-                }
-            },
+            onConfirmClick = onNotificationConfirmed,
+            text = if (state.isNotificationEnabled) strings.fightNotificationRemoveDialogMessage else strings.fightNotificationDialogMessage,
+            confirmText = strings.dialogAccept,
+            dismissText = strings.dialogCancel
         )
     }
 
@@ -262,11 +260,20 @@ fun FightDetailScreen(
                     verticalSpacing = 8.dp,
                     extraBottomPadding = navBarBottomPadding,
                 ) {
+                    if (state.showPredictionBoard){
+                        item(contentType = "PredictionBoard") {
+                            PredictionBoard(
+                                state = state,
+                                onPredict = onPredict,
+                                onLeaderboardClick = onLeaderboardClick
+                            )
+                        }
+                    }
                     item(contentType = "FightDetailContainer") {
                         FightDetailContainer(
                             redCorner = fight?.redCorner,
                             blueCorner = fight?.blueCorner,
-                            eventDate = state.eventDate,
+                            eventDate = state.fight?.eventDate,
                         )
                     }
                     if (hasMetaInfo) {
@@ -278,7 +285,7 @@ fun FightDetailScreen(
                         item(contentType = "EventLink") {
                             EventLinkRow(
                                 eventName = displayTitle,
-                                isBackNavigation = cameFromEvent,
+                                isBackNavigation = fromEventDetail,
                                 onClick = onEventLinkClick,
                             )
                         }

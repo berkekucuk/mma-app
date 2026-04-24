@@ -7,11 +7,11 @@ import kotlin.time.Instant
 @Immutable
 data class Event(
     val eventId: String,
-    val name: String,
+    val name: String?,
     val status: EventStatus,
     val datetimeUtc: Instant?,
-    val venue: String,
-    val location: String,
+    val venue: String?,
+    val location: String?,
     val eventYear: Int?,
     val fights: List<Fight>
 ) {

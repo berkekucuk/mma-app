@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,6 +26,7 @@ class FighterDetailViewModel(
     val state = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<FighterDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
+    private var syncJob: Job? = null
 
     init {
         observeFighter()
@@ -33,7 +35,7 @@ class FighterDetailViewModel(
 
     private fun observeFighter() {
         viewModelScope.launch {
-            repository.getFighterById(fighterId)
+            repository.getFighter(fighterId)
                 .collect { fighter ->
                     _state.update {
                         it.copy(
@@ -46,14 +48,16 @@ class FighterDetailViewModel(
     }
 
     private fun syncFighter(isRefreshing: Boolean = false) {
-        viewModelScope.launch {
+        if (syncJob?.isActive == true) return
+
+        syncJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
             repository.syncFighter(fighterId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = if (!repository.hasFighterById(fighterId)) {
+                    val errorType = if (!repository.isFighterExists(fighterId)) {
                         when (e) {
                             is PostgrestRestException -> FighterDetailError.UNKNOWN_ERROR
                             else -> FighterDetailError.NETWORK_ERROR

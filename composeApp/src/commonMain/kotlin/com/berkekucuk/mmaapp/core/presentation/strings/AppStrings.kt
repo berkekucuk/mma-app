@@ -5,20 +5,17 @@ import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 data class AppStrings(
     val language: AppLanguage,
     // Home Screen
-    val eventsTitle: String,
     val tabUpcoming: String,
     val tabCompleted: String,
     val toBeAnnounced: String,
     val tba: String,
     val liveEvent: String,
     val selectYear: String,
-    // Fight Item
-    val weightClassBout: (String) -> String,
     // Fighter Portrait / NameColumn
     val contentDescriptionFlag: String,
+    val contentDescriptionInfo: String,
     val contentDescriptionWin: String,
     val contentDescriptionLoss: String,
-    val unknownFighter: String,
     // Event Detail Screen
     val eventDetailsFallback: String,
     val contentDescriptionBack: String,
@@ -49,11 +46,6 @@ data class AppStrings(
     val radarLabelWinRate: String,
     val radarLabelKoTkoRate: String,
     val radarLabelSubRate: String,
-    // Fight Result Card
-    val fightResultDefeats: (String, String) -> String,
-    val fightResultDraw: String,
-    val fightResultNoContest: String,
-    val fightResultVia: (String) -> String,
     // Rankings Screen
     val rankingsTitle: String,
     val tabMens: String,
@@ -84,13 +76,6 @@ data class AppStrings(
     val fighterDetailResultDraw: String,
     val fighterDetailResultNoContest: String,
     val fighterDetailResultPending: String,
-    // Login Screen
-    val loginTitleMma: String,
-    val loginTitleApp: String,
-    val loginSubtitle: String,
-    val loginSignInGoogle: String,
-    val loginSecureSignIn: String,
-    val contentDescriptionGoogle: String,
     // Profile Screen
     val profileEdit: String,
     val profileSignOut: String,
@@ -119,7 +104,6 @@ data class AppStrings(
     val errorNetwork2: String,
     val errorUnknown: String,
     val errorPleaseSignIn: String,
-    val errorFightCompleted: String,
     val retry: String,
     val dialogAccept: String,
     val dialogCancel: String,
@@ -153,4 +137,14 @@ data class AppStrings(
     val weightClassDisplayName: (String) -> String,
     val resultDisplayName: (String) -> String,
     val toUpperCase: (String) -> String,
+    // Fight Prediction
+    val predictionQuestionTitle: String,
+    val errorOddsNotPublished: String,
+    val errorEventOver: String,
+    val errorFightOver: String,
+    val errorFightPending: String,
+    // Leaderboard
+    val leaderboardInfoTitle: String,
+    val leaderboardInfoText: String,
+    val leaderboardInfoClose: String
 )

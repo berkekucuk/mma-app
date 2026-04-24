@@ -16,10 +16,14 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
+import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 
 class MenuViewModel(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val predictionRepository: PredictionRepository,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MenuUiState())
@@ -43,8 +47,10 @@ class MenuViewModel(
                     _state.update { it.copy(authState = authState, userId = userId) }
 
                     if (userId != null) {
-                        // 2. If user exists, start the sync operation (run in background)
+                        // 2. If user exists, start the sync operations (run in background)
                         launch { userRepository.syncUser(userId) }
+                        launch { predictionRepository.syncPredictions(userId) }
+                        launch { notificationRepository.syncFightNotifications(userId) }
 
                         // 3. Return the User Flow (flatMapLatest will start collecting it)
                         userRepository.getUser(userId)

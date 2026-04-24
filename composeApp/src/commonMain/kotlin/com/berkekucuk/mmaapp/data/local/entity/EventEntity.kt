@@ -3,7 +3,6 @@ package com.berkekucuk.mmaapp.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.berkekucuk.mmaapp.data.remote.dto.FightDto
 import kotlin.time.Instant
 
 @Entity(tableName = "events")
@@ -14,7 +13,5 @@ data class EventEntity(
     @ColumnInfo(name = "datetime_utc") val datetimeUtc: Instant? = null,
     val venue: String? = null,
     val location: String? = null,
-    @ColumnInfo(name = "event_year") val eventYear: Int? = null,
-    // Thanks to TypeConverter, this list will be embedded in a single cell as JSON text
-    @ColumnInfo(name = "fights_json") val fights: List<FightDto>? = null
+    @ColumnInfo(name = "event_year") val eventYear: Int? = null
 )

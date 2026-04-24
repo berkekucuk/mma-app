@@ -8,4 +8,6 @@ sealed interface FightDetailUiAction {
     data object OnNotificationClicked: FightDetailUiAction
     data object OnErrorShown: FightDetailUiAction
     data object OnResume: FightDetailUiAction
+    data class OnSubmitPredictionClicked(val predictedWinnerId: String): FightDetailUiAction
+    data object OnLeaderboardClicked: FightDetailUiAction
 }
