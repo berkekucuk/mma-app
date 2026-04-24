@@ -160,7 +160,8 @@ val appModule = module {
     single<FightRepository> {
         FightRepositoryImpl(
             fightDao = get(),
-            remoteDataSource = get()
+            remoteDataSource = get(),
+            rateLimiter = get()
         )
     }
 

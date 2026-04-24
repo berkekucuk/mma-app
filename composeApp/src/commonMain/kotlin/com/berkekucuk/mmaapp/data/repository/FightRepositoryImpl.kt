@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
+import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.FightDao
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
@@ -18,8 +19,11 @@ import kotlin.coroutines.cancellation.CancellationException
 
 class FightRepositoryImpl(
     private val fightDao: FightDao,
-    private val remoteDataSource: FightRemoteDataSource
+    private val remoteDataSource: FightRemoteDataSource,
+    private val rateLimiter: RateLimiter
 ) : FightRepository {
+    
+    private fun syncKey(fightId: String) = "sync_fight_$fightId"
 
     override fun getFight(fightId: String): Flow<Fight> {
         return fightDao.getFight(fightId)
@@ -32,13 +36,16 @@ class FightRepositoryImpl(
     override suspend fun syncFight(fightId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val fightDto = remoteDataSource.fetchFightById(fightId)
-                fightDto?.let {
-                    fightDao.insertFight(it.toEntity())
+                if (!rateLimiter.shouldFetch(syncKey(fightId))) {
+                    return@runCatching
                 }
-                Unit
+                val fightDto = remoteDataSource.fetchFight(fightId)
+                if (fightDto != null) {
+                    fightDao.insertFight(fightDto.toEntity())
+                }
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(syncKey(fightId))
             }
         }
     }

@@ -8,7 +8,7 @@ class FightSupabaseAPI(
     private val client: SupabaseClient
 ) : FightRemoteDataSource {
 
-    override suspend fun fetchFightById(fightId: String): FightDto? {
+    override suspend fun fetchFight(fightId: String): FightDto? {
         return client.from("fight_view").select {
             filter {
                 eq("fight_id", fightId)

@@ -15,6 +15,7 @@ import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FightRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -42,6 +43,7 @@ class FightDetailViewModel(
     private val _navigation = MutableSharedFlow<FightDetailNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
     private var isPendingNotificationRequest = false
+    private var refreshJob: Job? = null
 
     init {
         observeFight()
@@ -264,9 +266,9 @@ class FightDetailViewModel(
     }
 
     private fun onRefresh() {
-        if (_state.value.isRefreshing) return
+        if (refreshJob?.isActive == true) return
 
-        viewModelScope.launch {
+        refreshJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true, error = null) }
 
             fightRepository.syncFight(fightId)
