@@ -4,7 +4,6 @@ import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 
 val TrStrings = AppStrings(
     language = AppLanguage.TR,
-    eventsTitle = "ETKİNLİKLER",
     tabUpcoming = "Yaklaşan",
     tabCompleted = "Tamamlanan",
     toBeAnnounced = "AÇIKLANACAK",
@@ -12,9 +11,9 @@ val TrStrings = AppStrings(
     liveEvent = "Canlı Etkinlik",
     selectYear = "Yıl Seçin",
     contentDescriptionFlag = "Bayrak",
+    contentDescriptionInfo = "Bilgi",
     contentDescriptionWin = "Galibiyet",
     contentDescriptionLoss = "Yenilgi",
-    unknownFighter = "Bilinmeyen Dövüşçü",
     eventDetailsFallback = "Etkinlik Detayları",
     contentDescriptionBack = "Geri",
     tabMainCard = "Ana Kart",
@@ -27,8 +26,8 @@ val TrStrings = AppStrings(
     radarLabelReach = "Kanat Açıklığı",
     radarLabelOdds = "Oranlar",
     radarLabelWinRate = "Galibiyet %",
-    radarLabelKoTkoRate = "KO/TKO %",
-    radarLabelSubRate = "Pes Ettirme %",
+    radarLabelKoTkoRate = "KO/TKO %\n(UFC)",
+    radarLabelSubRate = "Pes Ettirme %\n(UFC)",
     fightDetailLabelName = "İsim",
     fightDetailLabelAge = "Maçtaki Yaş",
     fightDetailLabelHometown = "Temsil Ediyor",
@@ -69,12 +68,6 @@ val TrStrings = AppStrings(
     fighterDetailResultDraw = "D",
     fighterDetailResultNoContest = "NC",
     fighterDetailResultPending = "–",
-    loginTitleMma = "MMA",
-    loginTitleApp = "APP",
-    loginSubtitle = "Dövüşler · Etkinlikler · Sıralamalar",
-    loginSignInGoogle = "Google ile Giriş Yap",
-    loginSecureSignIn = "güvenli giriş",
-    contentDescriptionGoogle = "Google",
     profileEdit = "Düzenle",
     profileSignOut = "Çıkış Yap",
     profileTabOverview = "Genel",
@@ -170,5 +163,13 @@ val TrStrings = AppStrings(
     errorOddsNotPublished = "Oranlar bekleniyor. Tahminler yakında açılacak.",
     errorEventOver = "Etkinlik zaten tamamlandı.",
     errorFightOver = "Bu dövüş zaten tamamlandı.",
-    errorFightPending = "Sonuç bekleniyor. Tahminler kapandı."
+    errorFightPending = "Sonuç bekleniyor. Tahminler kapandı.",
+    leaderboardInfoTitle = "Puan Sistemi",
+    leaderboardInfoText = "Puanlar, tahmininizi yaptığınız andaki oranın sunduğu puan getirisine dayanır.\n" +
+            "\n" + "100 Puan Kuralı: Ondalık orandaki her 1.00 birimlik net kâr, 100 puan değerindedir.\n" +
+            "\n" + "Yüksek Oranlar: 3.00 oran, 2.00 birim net kâr sunar ve 200 puan kazandırır.\n" +
+            "\n" + "Düşük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
+            "\n" + "Sabitleme: Kazanacağınız puan, tahmininizi kilitlediğiniz an sabitlenir.\n" +
+            "\n" + "Sonuç: Sadece doğru tahminler puan kazandırır.",
+    leaderboardInfoClose = "Kapat"
 )
