@@ -6,7 +6,7 @@ import kotlin.time.Instant
 
 @Entity(tableName = "predictions", primaryKeys = ["fight_id", "user_id"])
 data class PredictionEntity(
-    @ColumnInfo(name = "prediction_id") val predictionId: String,
+    @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "fight_id") val fightId: String,
     @ColumnInfo(name = "predicted_winner_id") val predictedWinnerId: String,

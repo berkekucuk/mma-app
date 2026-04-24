@@ -8,7 +8,7 @@ import kotlin.time.Instant
 
 fun PredictionDto.toEntity(): PredictionEntity =
     PredictionEntity(
-        predictionId = predictionId,
+        id = id,
         fightId = fightId,
         userId = userId,
         predictedWinnerId = predictedWinnerId ?: "",
@@ -20,7 +20,7 @@ fun PredictionDto.toEntity(): PredictionEntity =
 
 fun PredictionWithFightRelation.toDomain(): Prediction =
     Prediction(
-        predictionId = prediction.predictionId,
+        predictionId = prediction.id,
         fightId = prediction.fightId,
         userId = prediction.userId,
         predictedWinnerId = prediction.predictedWinnerId,

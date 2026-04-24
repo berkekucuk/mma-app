@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.data.remote.api
 
 import com.berkekucuk.mmaapp.data.remote.dto.PredictionDto
+import com.berkekucuk.mmaapp.data.remote.dto.PredictionInsertDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 
@@ -22,14 +23,8 @@ class PredictionSupabaseAPI(
         predictedWinnerId: String,
         lockedOdds: Int
     ): PredictionDto {
-        return client.from("predictions").insert(
-            mapOf(
-                "user_id" to userId,
-                "fight_id" to fightId,
-                "predicted_winner_id" to predictedWinnerId,
-                "locked_odds" to lockedOdds
-            )
-        ) {
+        val request = PredictionInsertDto(userId, fightId, predictedWinnerId, lockedOdds)
+        return client.from("user_predictions").insert(request) {
             select()
         }.decodeSingle<PredictionDto>()
     }

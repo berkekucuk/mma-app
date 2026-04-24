@@ -12,13 +12,13 @@ data class FightEntity(
     @ColumnInfo(name = "event_id") val eventId: String,
     @ColumnInfo(name = "event_name") val eventName: String?,
     @ColumnInfo(name = "event_date") val eventDate: Instant?,
-    val methodType: String,
-    val methodDetail: String,
-    val roundSummary: String,
-    val boutType: String,
-    val weightClassLbs: Int?,
-    val weightClassId: String,
-    val roundsFormat: String,
-    val fightOrder: Int,
-    val participants: List<ParticipantDto>
+    @ColumnInfo(name = "method_type") val methodType: String,
+    @ColumnInfo(name = "method_detail") val methodDetail: String,
+    @ColumnInfo(name = "round_summary") val roundSummary: String,
+    @ColumnInfo(name = "bout_type") val boutType: String,
+    @ColumnInfo(name = "weight_class_lbs") val weightClassLbs: Int?,
+    @ColumnInfo(name = "weight_class_id") val weightClassId: String,
+    @ColumnInfo(name = "rounds_format") val roundsFormat: String,
+    @ColumnInfo(name = "fight_order") val fightOrder: Int,
+    @ColumnInfo(name = "participants") val participants: List<ParticipantDto>
 )
