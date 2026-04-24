@@ -112,7 +112,6 @@ data class AppStrings(
     val errorNetwork2: String,
     val errorUnknown: String,
     val errorPleaseSignIn: String,
-    val errorFightCompleted: String,
     val retry: String,
     val dialogAccept: String,
     val dialogCancel: String,
@@ -149,6 +148,7 @@ data class AppStrings(
     // Fight Prediction
     val predictionQuestionTitle: String,
     val errorOddsNotPublished: String,
-    val errorEventCompletedOrCancelled: String,
+    val errorEventOver: String,
+    val errorFightOver: String,
     val errorFightPending: String,
 )

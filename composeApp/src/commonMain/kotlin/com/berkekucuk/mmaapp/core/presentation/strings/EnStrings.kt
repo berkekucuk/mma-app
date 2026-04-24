@@ -99,7 +99,6 @@ val EnStrings = AppStrings(
     errorNetwork2 = "No internet connection.",
     errorUnknown = "Something went wrong. Please try again.",
     errorPleaseSignIn = "Please sign in to use this feature.",
-    errorFightCompleted = "This fight is already over.",
     retry = "Retry",
     dialogAccept = "Accept",
     dialogCancel = "Cancel",
@@ -161,6 +160,7 @@ val EnStrings = AppStrings(
     toUpperCase = { it.uppercase() },
     predictionQuestionTitle = "Who will win?",
     errorOddsNotPublished = "Odds pending. Predictions opening soon.",
-    errorEventCompletedOrCancelled = "Event already completed or cancelled.",
+    errorEventOver = "Event already over.",
+    errorFightOver = "This fight is already over.",
     errorFightPending = "Result pending. Predictions locked."
 )

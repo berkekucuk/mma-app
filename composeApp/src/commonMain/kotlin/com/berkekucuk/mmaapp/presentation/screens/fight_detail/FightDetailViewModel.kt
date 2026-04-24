@@ -171,7 +171,7 @@ class FightDetailViewModel(
 
     private fun canToggleNotification(fight: Fight, isNotificationEnabled: Boolean): Boolean {
         if (isFightCompleted(fight) && !isNotificationEnabled) {
-            _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
+            _state.update { it.copy(error = FightDetailError.FIGHT_OVER) }
             return false
         }
         return true
@@ -216,7 +216,7 @@ class FightDetailViewModel(
 
             val fight = _state.value.fight ?: return@launch
             if (isFightCompleted(fight)) {
-                _state.update { it.copy(error = FightDetailError.FIGHT_COMPLETED) }
+                _state.update { it.copy(error = FightDetailError.FIGHT_OVER) }
                 return@launch
             }
 
@@ -244,8 +244,8 @@ class FightDetailViewModel(
         val message = e.message ?: ""
         return when {
             message.contains("Odds pending. Predictions opening soon.", ignoreCase = true) -> FightDetailError.ODDS_NOT_PUBLISHED
-            message.contains("Event already completed or cancelled.", ignoreCase = true) -> FightDetailError.EVENT_COMPLETED_OR_CANCELLED
-            message.contains("Fight already over.", ignoreCase = true) -> FightDetailError.FIGHT_COMPLETED
+            message.contains("Event already over.", ignoreCase = true) -> FightDetailError.EVENT_OVER
+            message.contains("Fight already over.", ignoreCase = true) -> FightDetailError.FIGHT_OVER
             message.contains("Result pending. Predictions locked.", ignoreCase = true) -> FightDetailError.FIGHT_PENDING
             e is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
             else -> FightDetailError.NETWORK_ERROR

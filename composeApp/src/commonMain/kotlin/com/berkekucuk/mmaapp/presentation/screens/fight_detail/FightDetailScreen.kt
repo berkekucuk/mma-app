@@ -148,9 +148,9 @@ fun FightDetailScreen(
         FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
         FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
         FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
-        FightDetailError.FIGHT_COMPLETED -> strings.errorFightCompleted
         FightDetailError.ODDS_NOT_PUBLISHED -> strings.errorOddsNotPublished
-        FightDetailError.EVENT_COMPLETED_OR_CANCELLED -> strings.errorEventCompletedOrCancelled
+        FightDetailError.EVENT_OVER -> strings.errorEventOver
+        FightDetailError.FIGHT_OVER -> strings.errorFightOver
         FightDetailError.FIGHT_PENDING -> strings.errorFightPending
         else -> null
     }

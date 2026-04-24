@@ -99,7 +99,6 @@ val TrStrings = AppStrings(
     errorNetwork2 = "İnternet bağlantısı yok.",
     errorUnknown = "Bir hata oluştu. Lütfen tekrar deneyin.",
     errorPleaseSignIn = "Bu özelliği kullanmak için lütfen giriş yapın.",
-    errorFightCompleted = "Bu dövüş zaten tamamlandı.",
     retry = "Yenile",
     dialogAccept = "Onayla",
     dialogCancel = "Vazgeç",
@@ -169,6 +168,7 @@ val TrStrings = AppStrings(
     },
     predictionQuestionTitle = "Kim kazanır?",
     errorOddsNotPublished = "Oranlar bekleniyor. Tahminler yakında açılacak.",
-    errorEventCompletedOrCancelled = "Etkinlik zaten tamamlandı veya iptal edildi.",
+    errorEventOver = "Etkinlik zaten tamamlandı.",
+    errorFightOver = "Bu dövüş zaten tamamlandı.",
     errorFightPending = "Sonuç bekleniyor. Tahminler kapandı."
 )
