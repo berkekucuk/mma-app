@@ -155,7 +155,7 @@ fun ProfileScreen(
                             item {
                                 WeightClassCard(
                                     weightClassName = strings.profileFavoriteFighters,
-                                    champion = state.user?.favoriteFighters?.firstOrNull(),
+                                    champion = null,
                                     onWeightClassClicked = onFavoriteFightersClicked,
                                 )
                             }

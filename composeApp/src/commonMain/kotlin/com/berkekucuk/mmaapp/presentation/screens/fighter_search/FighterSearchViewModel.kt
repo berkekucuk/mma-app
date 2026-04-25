@@ -115,13 +115,7 @@ class FighterSearchViewModel(
     private fun addFavoriteFighter(fighterId: String) {
         val fighter = _state.value.results.find { it.fighterId == fighterId } ?: return
         viewModelScope.launch {
-            userRepository.addFavoriteFighter(userId!!, fighter)
-                .onSuccess {
-                    navigateTo(FighterSearchNavigationEvent.Back)
-                }
-                .onFailure {
-                    _state.update { it.copy(error = FighterSearchError.NETWORK_ERROR) }
-                }
+            // TO DO
         }
     }
 

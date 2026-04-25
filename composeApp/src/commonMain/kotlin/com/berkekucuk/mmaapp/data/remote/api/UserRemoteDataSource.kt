@@ -8,6 +8,4 @@ interface UserRemoteDataSource {
     suspend fun fetchUsers(limit: Int): List<UserDto>
 
     suspend fun updateUser(userId: String, fullName: String, username: String)
-    suspend fun addFavoriteFighter(userId: String, fighterId: String)
-    suspend fun removeFavoriteFighter(userId: String, fighterId: String)
 }

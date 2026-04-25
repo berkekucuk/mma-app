@@ -37,7 +37,7 @@ import kotlinx.coroutines.IO
         FightEntity::class,
         FighterFightCrossRef::class
     ],
-    version = 24
+    version = 25
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

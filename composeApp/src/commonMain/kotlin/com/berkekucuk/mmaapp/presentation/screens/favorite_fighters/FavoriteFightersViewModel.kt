@@ -36,10 +36,7 @@ class FavoriteFightersViewModel(
 
     private fun observeFavorites() {
         viewModelScope.launch {
-            userRepository.getUser(userId)
-                .collect { user ->
-                _state.update { it.copy(fighters = user?.favoriteFighters ?: emptyList()) }
-            }
+            // TO DO
         }
     }
 
@@ -79,11 +76,7 @@ class FavoriteFightersViewModel(
     private fun removeFavoriteFighter(fighterId: String) {
         viewModelScope.launch {
             _state.update { it.copy(error = null) }
-            userRepository.removeFavoriteFighter(userId, fighterId)
-                .onSuccess {}
-                .onFailure {
-                    _state.update { it.copy(error = FavoriteFightersError.NETWORK_ERROR) }
-                }
+                // TO DO
         }
     }
 
