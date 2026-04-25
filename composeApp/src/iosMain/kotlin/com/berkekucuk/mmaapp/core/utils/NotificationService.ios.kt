@@ -5,7 +5,7 @@ import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNUserNotificationCenter
 import platform.UserNotifications.UNNotificationSound
 
-class IosNotificationManager : AppNotificationManager {
+class IosNotificationService : NotificationService {
 
     override fun showNotification(title: String, body: String, data: Map<String, String>) {
         val content = UNMutableNotificationContent().apply {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,7 +42,10 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailSc
 import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardScreenRoot
 
 @Composable
-fun App() {
+fun App(
+    initialRoute: Route? = null,
+    onRouteConsumed: () -> Unit = {}
+) {
     val rootNavController = rememberNavController()
 
     val languageStorage: LanguageStorage = koinInject()
@@ -97,6 +101,13 @@ fun App() {
         )
     }
     val oddsFormat by oddsFormatState
+
+    LaunchedEffect(initialRoute) {
+        initialRoute?.let {
+            rootNavController.navigate(it)
+            onRouteConsumed()
+        }
+    }
 
     CompositionLocalProvider(
         LocalAppStrings provides strings,

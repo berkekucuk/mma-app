@@ -16,10 +16,10 @@ import com.berkekucuk.mmaapp.core.presentation.strings.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import kotlin.random.Random
 
-class AndroidNotificationManager(
+class AndroidNotificationService(
     private val context: Context,
     private val languageStorage: LanguageStorage
-) : AppNotificationManager {
+) : NotificationService {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
