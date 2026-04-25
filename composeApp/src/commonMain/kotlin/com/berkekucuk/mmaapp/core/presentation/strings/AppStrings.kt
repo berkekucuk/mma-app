@@ -146,5 +146,8 @@ data class AppStrings(
     // Leaderboard
     val leaderboardInfoTitle: String,
     val leaderboardInfoText: String,
-    val leaderboardInfoClose: String
+    val leaderboardInfoClose: String,
+    // Notifications
+    val notificationChannelName: String,
+    val notificationChannelDescription: String
 )
