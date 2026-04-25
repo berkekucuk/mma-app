@@ -171,5 +171,7 @@ val TrStrings = AppStrings(
             "\n" + "Düşük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
             "\n" + "Sabitleme: Kazanacağınız puan, tahmininizi kilitlediğiniz an sabitlenir.\n" +
             "\n" + "Sonuç: Sadece doğru tahminler puan kazandırır.",
-    leaderboardInfoClose = "Kapat"
+    leaderboardInfoClose = "Kapat",
+    notificationChannelName = "Dövüş Sonuçları",
+    notificationChannelDescription = "Dövüş sonuçları hakkında bildirim al"
 )

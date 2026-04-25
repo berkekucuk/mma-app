@@ -11,6 +11,8 @@ import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
 import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
 import com.berkekucuk.mmaapp.core.storage.ThemeStorage
+import com.berkekucuk.mmaapp.core.utils.IosNotificationManager
+import com.berkekucuk.mmaapp.core.utils.AppNotificationManager
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getDatabaseBuilder
 import org.koin.dsl.module
@@ -33,5 +35,8 @@ actual val platformModule = module {
     }
     single<ThemeStorage>{
         IosThemeStorage()
+    }
+    single<AppNotificationManager> {
+        IosNotificationManager()
     }
 }

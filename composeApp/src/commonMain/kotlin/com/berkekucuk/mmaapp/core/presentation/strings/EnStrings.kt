@@ -163,5 +163,7 @@ val EnStrings = AppStrings(
             "\n" + "Low Odds: A 1.25 odd offers 0.25 units of profit, resulting in 25 points.\n" +
             "\n" + "Lock-in: Your potential reward is fixed the moment you lock your prediction.\n" +
             "\n" + "Result: Points are only awarded for correct predictions.",
-    leaderboardInfoClose = "Close"
+    leaderboardInfoClose = "Close",
+    notificationChannelName = "Fight Results",
+    notificationChannelDescription = "Get notified about fight results"
 )
