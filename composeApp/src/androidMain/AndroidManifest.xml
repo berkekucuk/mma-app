@@ -16,7 +16,7 @@
             android:value="clinch_alerts_channel" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/app_logo" />
+            android:resource="@drawable/ic_notification" />
 
         <activity
             android:exported="true"

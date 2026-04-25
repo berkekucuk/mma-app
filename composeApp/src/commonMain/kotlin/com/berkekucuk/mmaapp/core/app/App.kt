@@ -29,8 +29,8 @@ import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
 import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
 import com.berkekucuk.mmaapp.core.storage.ThemeStorage
-import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.core.utils.SetStatusBarAppearance
+import org.koin.compose.koinInject
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
@@ -78,6 +78,7 @@ fun App(
         ThemeMode.DARK -> DarkColors
         ThemeMode.LIGHT -> LightColors
     }
+    SetStatusBarAppearance(isDarkTheme = colors.isDark)
 
     val measurementUnitStorage: MeasurementUnitStorage = koinInject()
     val measurementUnitState = remember {
@@ -117,8 +118,6 @@ fun App(
         LocalAppColors provides colors,
         LocalThemeMode provides themeMode
     ) {
-        SetStatusBarAppearance(isDarkTheme = colors.isDark)
-        
         NavHost(
             navController = rootNavController,
             startDestination = Route.MainGraph,
