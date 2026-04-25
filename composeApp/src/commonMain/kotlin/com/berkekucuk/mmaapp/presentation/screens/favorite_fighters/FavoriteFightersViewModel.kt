@@ -56,7 +56,7 @@ class FavoriteFightersViewModel(
     fun onAction(action: FavoriteFightersUiAction) {
         when (action) {
             is FavoriteFightersUiAction.OnBackClicked -> navigateTo(FavoriteFightersNavigationEvent.Back)
-            is FavoriteFightersUiAction.OnAddFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToAddFighter)
+            is FavoriteFightersUiAction.OnAddFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToAddFighter(userId))
             is FavoriteFightersUiAction.OnFighterClicked -> navigateTo(FavoriteFightersNavigationEvent.ToFighterDetail(action.fighterId))
             is FavoriteFightersUiAction.OnRemoveFighterClicked -> removeFavoriteFighter(action.fighterId)
             is FavoriteFightersUiAction.OnRefresh -> syncUser()
