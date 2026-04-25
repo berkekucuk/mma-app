@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.berkekucuk.mmaapp.MainActivity
 import com.berkekucuk.mmaapp.R
+import android.media.RingtoneManager
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.strings.AppStrings
 import com.berkekucuk.mmaapp.core.presentation.strings.EnStrings
@@ -45,6 +46,9 @@ class AndroidNotificationManager(
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = strings.notificationChannelDescription
+            enableLights(true)
+            enableVibration(true)
+            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
         }
         notificationManager.createNotificationChannel(channel)
     }
@@ -67,7 +71,9 @@ class AndroidNotificationManager(
             .setContentTitle(title)
             .setContentText(body)
             .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(pendingIntent)
             .build()
 
