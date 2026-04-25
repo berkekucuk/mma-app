@@ -23,7 +23,6 @@ import com.berkekucuk.mmaapp.data.remote.api.WeightClassRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.UserSupabaseAPI
-import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
 import com.berkekucuk.mmaapp.data.repository.EventRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.FighterRepositoryImpl
 import com.berkekucuk.mmaapp.data.repository.WeightClassRepositoryImpl
@@ -153,8 +152,6 @@ val appModule = module {
     single<FightRemoteDataSource> {
         FightSupabaseAPI(client = get())
     }
-
-    single { DeviceTokenProvider() }
 
     // repository
     single<FightRepository> {

@@ -4,10 +4,10 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-actual class DeviceTokenProvider actual constructor() {
-    actual val platform: String = "android"
+class AndroidDeviceTokenProvider : DeviceTokenProvider {
+    override val platform: String = "android"
 
-    actual suspend fun getToken(): String? = suspendCancellableCoroutine { continuation ->
+    override suspend fun getToken(): String? = suspendCancellableCoroutine { continuation ->
         FirebaseMessaging.getInstance().token
             .addOnSuccessListener { token -> continuation.resume(token) }
             .addOnFailureListener { continuation.resume(null) }

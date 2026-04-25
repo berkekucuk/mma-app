@@ -15,6 +15,8 @@ import com.berkekucuk.mmaapp.core.utils.IosNotificationManager
 import com.berkekucuk.mmaapp.core.utils.AppNotificationManager
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.local.getDatabaseBuilder
+import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
+import com.berkekucuk.mmaapp.data.remote.fcm.IosDeviceTokenProvider
 import org.koin.dsl.module
 
 actual val platformModule = module {
@@ -38,5 +40,8 @@ actual val platformModule = module {
     }
     single<AppNotificationManager> {
         IosNotificationManager()
+    }
+    single<DeviceTokenProvider> {
+        IosDeviceTokenProvider()
     }
 }

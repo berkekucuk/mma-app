@@ -14,6 +14,8 @@ import com.berkekucuk.mmaapp.core.storage.ThemeStorage
 import com.berkekucuk.mmaapp.core.utils.AndroidNotificationManager
 import com.berkekucuk.mmaapp.core.utils.AppNotificationManager
 import com.berkekucuk.mmaapp.data.local.AppDatabase
+import com.berkekucuk.mmaapp.data.remote.fcm.AndroidDeviceTokenProvider
+import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
 import com.berkekucuk.mmaapp.data.local.getDatabaseBuilder
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -39,5 +41,8 @@ actual val platformModule = module {
     }
     single<AppNotificationManager> {
         AndroidNotificationManager(androidContext(), get())
+    }
+    single<DeviceTokenProvider> {
+        AndroidDeviceTokenProvider()
     }
 }
