@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FighterInteractionDto(
+data class InteractionDto(
     val id: String,
     @SerialName("user_id") val userId: String,
     @SerialName("fighter_id") val fighterId: String,

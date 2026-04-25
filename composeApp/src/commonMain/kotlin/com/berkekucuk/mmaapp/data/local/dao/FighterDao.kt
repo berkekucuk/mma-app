@@ -21,6 +21,9 @@ interface FighterDao {
     suspend fun insertFighter(fighter: FighterEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFighters(fighters: List<FighterEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFighterFightCrossRefs(refs: List<FighterFightCrossRef>)
 
     @Query("DELETE FROM fighter_fights WHERE fighter_id = :fighterId")

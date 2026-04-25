@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_fighter_interactions")
-data class FighterInteractionEntity(
+data class InteractionEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "fighter_id") val fighterId: String,

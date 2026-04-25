@@ -1,32 +1,32 @@
 package com.berkekucuk.mmaapp.data.remote.api
 
-import com.berkekucuk.mmaapp.data.remote.dto.FighterInteractionDto
+import com.berkekucuk.mmaapp.data.remote.dto.InteractionDto
 import com.berkekucuk.mmaapp.data.remote.dto.FighterInteractionInsertDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 
-class FighterInteractionSupabaseAPI(
+class InteractionSupabaseAPI(
     private val client: SupabaseClient
-) : FighterInteractionRemoteDataSource {
+) : InteractionRemoteDataSource {
 
-    override suspend fun fetchInteractions(userId: String): List<FighterInteractionDto> {
+    override suspend fun fetchInteractions(userId: String): List<InteractionDto> {
         return client.from("fighter_interaction_view").select {
             filter {
                 eq("user_id", userId)
             }
-        }.decodeList<FighterInteractionDto>()
+        }.decodeList<InteractionDto>()
     }
 
-    override suspend fun submitInteraction(
+    override suspend fun addInteraction(
         userId: String,
         fighterId: String,
         interactionType: String
-    ): FighterInteractionDto {
+    ): InteractionDto {
         val request = FighterInteractionInsertDto(userId, fighterId, interactionType)
 
         return client.from("user_fighter_interactions").insert(request) {
             select()
-        }.decodeSingle<FighterInteractionDto>()
+        }.decodeSingle<InteractionDto>()
     }
 
     override suspend fun removeInteraction(interactionId: String) {
