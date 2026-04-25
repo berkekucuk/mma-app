@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.domain.model.toRankedFighter
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
@@ -43,7 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun ProfileScreenRoot(
     viewModel: ProfileViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
-    onNavigateToFavoriteFighters: (String) -> Unit,
+    onNavigateToInteractionList: (String, String) -> Unit,
     onNavigateToFightDetail: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -52,7 +53,7 @@ fun ProfileScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is ProfileNavigationEvent.Back -> onNavigateBack()
-                is ProfileNavigationEvent.ToFavoriteFighters -> onNavigateToFavoriteFighters(event.userId)
+                is ProfileNavigationEvent.ToInteractionList -> onNavigateToInteractionList(event.userId, event.type)
                 is ProfileNavigationEvent.ToFightDetail -> onNavigateToFightDetail(event.fightId)
             }
         }
@@ -80,7 +81,7 @@ fun ProfileScreen(
 
     val onBackClicked = remember(onAction) { { onAction(ProfileUiAction.OnBackClicked) } }
     val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
-    val onFavoriteFightersClicked = remember(onAction) { { onAction(ProfileUiAction.OnFavoriteFightersClicked) } }
+    val onInteractionListClicked = remember(onAction) { { type: String -> onAction(ProfileUiAction.OnInteractionListClicked(type)) } }
     val onPredictionClicked = remember(onAction) { { fightId: String -> onAction(ProfileUiAction.OnPredictionClicked(fightId)) } }
 
     Scaffold(
@@ -103,12 +104,12 @@ fun ProfileScreen(
                         }
                     },
                     title = {
-                        state.user?.let {
+                        state.profile?.user.let {
                             FighterTopBarTitle(
-                                imageUrl = it.avatarUrl ?: "",
-                                name = it.fullName ?: it.username ?: "",
+                                imageUrl = it?.avatarUrl ?: "",
+                                name = it?.fullName ?: it?.username ?: "",
                                 countryCode = "",
-                                nickname = "@${it.username ?: ""}",
+                                nickname = "@${it?.username ?: ""}",
                                 showQuotes = false,
                             )
                         }
@@ -155,8 +156,22 @@ fun ProfileScreen(
                             item {
                                 WeightClassCard(
                                     weightClassName = strings.profileFavoriteFighters,
-                                    champion = null,
-                                    onWeightClassClicked = onFavoriteFightersClicked,
+                                    champion = state.profile?.topFavorite?.toRankedFighter(),
+                                    onWeightClassClicked = { onInteractionListClicked("favorite") },
+                                )
+                            }
+                            item {
+                                WeightClassCard(
+                                    weightClassName = strings.profileGoatFighters,
+                                    champion = state.profile?.topGoat?.toRankedFighter(),
+                                    onWeightClassClicked = { onInteractionListClicked("goat") },
+                                )
+                            }
+                            item {
+                                WeightClassCard(
+                                    weightClassName = strings.profileHatedFighters,
+                                    champion = state.profile?.topHated?.toRankedFighter(),
+                                    onWeightClassClicked = { onInteractionListClicked("hated") },
                                 )
                             }
                         }
@@ -169,7 +184,7 @@ fun ProfileScreen(
                             extraBottomPadding = navBarBottomPadding,
                         ) {
                             items(
-                                items = state.predictions,
+                                items = state.profile?.predictions ?: emptyList(),
                                 key = { it.predictionId }
                             ) { prediction ->
                                 PredictionCard(

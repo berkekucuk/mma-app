@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.screens.favorite_fighters
+package com.berkekucuk.mmaapp.presentation.screens.interaction_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -48,8 +48,8 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankedFighterRo
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FavoriteFightersScreenRoot(
-    viewModel: FavoriteFightersViewModel = koinViewModel(),
+fun InteractionListScreenRoot(
+    viewModel: InteractionListViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFighterDetail: (String) -> Unit,
     onNavigateToFighterSearch: (String) -> Unit,
@@ -59,14 +59,14 @@ fun FavoriteFightersScreenRoot(
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is FavoriteFightersNavigationEvent.Back -> onNavigateBack()
-                is FavoriteFightersNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.userId)
-                is FavoriteFightersNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
+                is InteractionListNavigationEvent.Back -> onNavigateBack()
+                is InteractionListNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.userId)
+                is InteractionListNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
             }
         }
     }
 
-    FavoriteFightersScreen(
+    InteractionListScreen(
         state = state,
         onAction = viewModel::onAction,
     )
@@ -74,23 +74,23 @@ fun FavoriteFightersScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteFightersScreen(
-    state: FavoriteFightersUiState,
-    onAction: (FavoriteFightersUiAction) -> Unit,
+fun InteractionListScreen(
+    state: InteractionListUiState,
+    onAction: (InteractionListUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
-    val onBackClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnBackClicked) } }
-    val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnFighterClicked(fighterId)) } }
-    val onAddFighterClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnAddFighterClicked) } }
-    val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnRemoveFighterClicked(fighterId)) } }
-    val onRefresh = remember(onAction) { { onAction(FavoriteFightersUiAction.OnRefresh) } }
+    val onBackClicked = remember(onAction) { { onAction(InteractionListUiAction.OnBackClicked) } }
+    val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnFighterClicked(fighterId)) } }
+    val onAddFighterClicked = remember(onAction) { { onAction(InteractionListUiAction.OnAddFighterClicked) } }
+    val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnRemoveFighterClicked(fighterId)) } }
+    val onRefresh = remember(onAction) { { onAction(InteractionListUiAction.OnRefresh) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val errorMessage = when (state.error) {
-        FavoriteFightersError.NETWORK_ERROR -> strings.errorNetwork
-        FavoriteFightersError.UNKNOWN_ERROR -> strings.errorUnknown
+        InteractionListError.NETWORK_ERROR -> strings.errorNetwork
+        InteractionListError.UNKNOWN_ERROR -> strings.errorUnknown
         null -> null
     }
 
@@ -119,8 +119,14 @@ fun FavoriteFightersScreen(
             Column(modifier = Modifier.background(colors.rankingTopBarGradient)) {
                 TopAppBar(
                     title = {
+                        val title = when (state.type) {
+                            "favorite" -> strings.profileFavoriteFighters
+                            "goat" -> strings.profileGoatFighters
+                            "hated" -> strings.profileHatedFighters
+                            else -> ""
+                        }
                         Text(
-                            text = strings.toUpperCase(strings.profileFavoriteFighters),
+                            text = strings.toUpperCase(title),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                         )
@@ -169,8 +175,8 @@ fun FavoriteFightersScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .background(colors.fightItemBackground)
                 ) {
-                    state.fighters.forEachIndexed { index, rankedFighter ->
-                        rankedFighter.fighter?.let { fighter ->
+                    state.interactions.forEachIndexed { index, interaction ->
+                        interaction.fighter?.let { fighter ->
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -182,7 +188,7 @@ fun FavoriteFightersScreen(
                                 ) {
                                     Box(modifier = Modifier.weight(1f)) {
                                         RankedFighterRow(
-                                            rankNumber = rankedFighter.rankNumber,
+                                            rankNumber = interaction.rankNumber ?: 0,
                                             isChampion = false,
                                             name = fighter.name,
                                             record = fighter.record.toString(),
@@ -202,7 +208,7 @@ fun FavoriteFightersScreen(
                                     }
                                 }
 
-                                if (index < state.fighters.lastIndex) {
+                                if (index < state.interactions.lastIndex) {
                                     HorizontalDivider(
                                         color = colors.dividerColor,
                                         thickness = 0.8.dp,

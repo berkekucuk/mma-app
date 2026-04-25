@@ -6,6 +6,7 @@ import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
 import com.berkekucuk.mmaapp.domain.model.User
+import com.berkekucuk.mmaapp.domain.model.UserProfile
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -35,6 +36,13 @@ class UserRepositoryImpl(
     override fun getUsers(limit: Int): Flow<List<User>> {
         return dao.getUsers(limit)
             .map { entities -> entities.map { it.toDomain() } }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
+    override fun getUserProfile(userId: String): Flow<UserProfile?> {
+        return dao.getUserProfile(userId)
+            .map { it?.toDomain() }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
     }

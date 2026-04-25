@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.FlowPreview
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 class FighterSearchViewModel(
     private val fighterRepository: FighterRepository,
     private val weightClassRepository: WeightClassRepository,
-    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
