@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 val TrStrings = AppStrings(
     language = AppLanguage.TR,
@@ -170,7 +171,7 @@ val TrStrings = AppStrings(
     leaderboardInfoText = "Puanlar, tahmininizi yaptığınız andaki oranın sunduğu puan getirisine dayanır.\n" +
             "\n" + "100 Puan Kuralı: Ondalık orandaki her 1.00 birimlik net kâr, 100 puan değerindedir.\n" +
             "\n" + "Yüksek Oranlar: 3.00 oran, 2.00 birim net kâr sunar ve 200 puan kazandırır.\n" +
-            "\n" + "Dük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
+            "\n" + "Düşük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
             "\n" + "Sabitleme: Kazanacağınız puan, tahmininizi kilitlediğiniz an sabitlenir.\n" +
             "\n" + "Sonuç: Sadece doğru tahminler puan kazandırır.",
     leaderboardInfoClose = "Kapat",
@@ -179,4 +180,11 @@ val TrStrings = AppStrings(
     commonRemove = "Kaldır",
     commonCancel = "Vazgeç",
     profileRemoveFighterConfirm = { name -> "$name listenizden kaldırılsın mı?" },
+    mapError = { error ->
+        when (error) {
+            AppError.NETWORK -> "İnternet bağlantısı yok. Lütfen tekrar deneyin."
+            AppError.SERVER_ERROR -> "Bir hata oluştu. Lütfen tekrar deneyin."
+            else -> null
+        }
+    }
 )

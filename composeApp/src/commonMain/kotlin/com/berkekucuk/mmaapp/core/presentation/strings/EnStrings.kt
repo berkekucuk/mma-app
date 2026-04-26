@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,
@@ -171,4 +172,11 @@ val EnStrings = AppStrings(
     commonRemove = "Remove",
     commonCancel = "Cancel",
     profileRemoveFighterConfirm = { name -> "Remove $name from your list?" },
+    mapError = { error ->
+        when (error) {
+            AppError.NETWORK -> "No internet connection. Please try again."
+            AppError.SERVER_ERROR -> "Something went wrong. Please try again."
+            else -> null
+        }
+    }
 )

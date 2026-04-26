@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 
 class InteractionListViewModel(
     private val interactionRepository: InteractionRepository,
@@ -79,6 +80,7 @@ class InteractionListViewModel(
                 it.copy(deletingFighterId = null) 
             }
             is InteractionListUiAction.OnRefresh -> syncInteractions()
+            is InteractionListUiAction.OnErrorDismissed -> _state.update { it.copy(error = null) }
         }
     }
 
@@ -90,8 +92,8 @@ class InteractionListViewModel(
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isRefreshing = false) }
+                .onFailure { e ->
+                    _state.update { it.copy(isRefreshing = false, error = AppErrorMapper.map(e)) }
                 }
         }
     }
@@ -100,8 +102,11 @@ class InteractionListViewModel(
         viewModelScope.launch {
             _state.update { it.copy(error = null) }
             val interaction = _state.value.interactions.find { it.fighterId == fighterId }
-            interaction?.let {
+            interaction?.let { it ->
                 interactionRepository.removeInteraction(it.id)
+                    .onFailure { e ->
+                        _state.update { it.copy(error = AppErrorMapper.map(e)) }
+                    }
             }
         }
     }

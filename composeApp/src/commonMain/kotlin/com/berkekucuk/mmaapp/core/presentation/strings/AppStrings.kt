@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 data class AppStrings(
     val language: AppLanguage,
@@ -156,4 +157,5 @@ data class AppStrings(
     val commonRemove: String,
     val commonCancel: String,
     val profileRemoveFighterConfirm: (String) -> String,
+    val mapError: (AppError?) -> String?,
 )

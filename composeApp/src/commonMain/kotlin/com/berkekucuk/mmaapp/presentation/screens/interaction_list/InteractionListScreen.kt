@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -88,17 +89,16 @@ fun InteractionListScreen(
     val onConfirmRemove = remember(onAction) { { onAction(InteractionListUiAction.OnConfirmRemove) } }
     val onDismissRemove = remember(onAction) { { onAction(InteractionListUiAction.OnDismissRemove) } }
     val onRefresh = remember(onAction) { { onAction(InteractionListUiAction.OnRefresh) } }
+    val onErrorDismissed = remember(onAction) { { onAction(InteractionListUiAction.OnErrorDismissed) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    val errorMessage = when (state.error) {
-        InteractionListError.NETWORK_ERROR -> strings.errorNetwork
-        InteractionListError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
     val snackbarHostState = remember { SnackbarHostState() }
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
+        duration = SnackbarDuration.Short,
+        onDismiss = onErrorDismissed
     )
 
     if (state.deletingFighterId != null) {
