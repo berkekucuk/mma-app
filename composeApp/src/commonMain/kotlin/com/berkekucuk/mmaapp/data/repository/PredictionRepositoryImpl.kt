@@ -21,8 +21,7 @@ class PredictionRepositoryImpl(
 ) : PredictionRepository {
 
     override fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?> {
-        return predictionDao.getPrediction(fightId, userId)
-            .map { it?.prediction?.predictedWinnerId }
+        return predictionDao.getPredictedWinnerId(fightId, userId)
     }
 
     override fun getPredictions(userId: String): Flow<List<Prediction>> {

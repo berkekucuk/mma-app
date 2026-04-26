@@ -30,6 +30,6 @@ fun UserProfileRelation.toDomain(): UserProfile {
     return UserProfile(
         user = user.toDomain(),
         interactions = interactions.map { it.toDomain() },
-        predictions = predictions.map { it.toDomain() }
+        predictions = predictions.map { it.toDomain() }.sortedByDescending { it.createdAt }
     )
 }

@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PredictionDao {
-    @Transaction
-    @Query("SELECT * FROM predictions WHERE fight_id = :fightId AND user_id = :userId")
-    fun getPrediction(fightId: String, userId: String): Flow<PredictionWithFightRelation?>
+    @Query("SELECT predicted_winner_id FROM predictions WHERE fight_id = :fightId AND user_id = :userId")
+    fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?>
 
     @Transaction
     @Query("SELECT * FROM predictions WHERE user_id = :userId ORDER BY created_at DESC")
