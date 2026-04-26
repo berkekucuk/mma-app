@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
+import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
 import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
@@ -25,6 +26,7 @@ class ProfileViewModel(
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val predictionRepository: PredictionRepository,
+    private val interactionRepository: InteractionRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -37,38 +39,26 @@ class ProfileViewModel(
     private var syncJob: Job? = null
 
     init {
-        observeUser()
-        observePredictions()
-        syncUser()
+        observeProfile()
+        syncProfile()
     }
 
-    private fun observeUser() {
+    private fun observeProfile() {
         viewModelScope.launch {
-            userRepository.getUser(userId)
-                .collect { user ->
-                _state.update {
-                    it.copy(
-                        user = user,
-                        isLoading = false,
-                        isRefreshing = false,
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observePredictions() {
-        viewModelScope.launch {
-            predictionRepository.getPredictions(userId)
-                .collect { predictions ->
+            userRepository.getUserProfile(userId)
+                .collect { profile ->
                     _state.update {
-                        it.copy(predictions = predictions)
+                        it.copy(
+                            profile = profile,
+                            isLoading = false,
+                            isRefreshing = false,
+                        )
                     }
                 }
         }
     }
 
-    private fun syncUser(isRefreshing: Boolean = false) {
+    private fun syncProfile(isRefreshing: Boolean = false) {
         if (syncJob?.isActive == true) return
 
         syncJob = viewModelScope.launch {
@@ -76,6 +66,7 @@ class ProfileViewModel(
 
             userRepository.syncUser(userId)
             predictionRepository.syncPredictions(userId)
+            interactionRepository.syncInteractions(userId)
 
             val currentUserId = getAuthenticatedUserId()
             val isOwner = currentUserId == userId
@@ -94,8 +85,8 @@ class ProfileViewModel(
     fun onAction(action: ProfileUiAction) {
         when (action) {
             is ProfileUiAction.OnBackClicked -> navigateTo(ProfileNavigationEvent.Back)
-            is ProfileUiAction.OnRefresh -> syncUser(isRefreshing = true)
-            is ProfileUiAction.OnFavoriteFightersClicked -> navigateTo(ProfileNavigationEvent.ToFavoriteFighters(userId))
+            is ProfileUiAction.OnRefresh -> syncProfile(isRefreshing = true)
+            is ProfileUiAction.OnInteractionListClicked -> navigateTo(ProfileNavigationEvent.ToInteractionList(userId, action.type))
             is ProfileUiAction.OnPredictionClicked -> navigateTo(ProfileNavigationEvent.ToFightDetail(action.fightId))
         }
     }

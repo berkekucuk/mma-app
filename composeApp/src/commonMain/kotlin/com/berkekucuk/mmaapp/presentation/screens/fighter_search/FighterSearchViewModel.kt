@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.FlowPreview
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 class FighterSearchViewModel(
     private val fighterRepository: FighterRepository,
     private val weightClassRepository: WeightClassRepository,
-    private val userRepository: UserRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -115,13 +113,7 @@ class FighterSearchViewModel(
     private fun addFavoriteFighter(fighterId: String) {
         val fighter = _state.value.results.find { it.fighterId == fighterId } ?: return
         viewModelScope.launch {
-            userRepository.addFavoriteFighter(userId!!, fighter)
-                .onSuccess {
-                    navigateTo(FighterSearchNavigationEvent.Back)
-                }
-                .onFailure {
-                    _state.update { it.copy(error = FighterSearchError.NETWORK_ERROR) }
-                }
+            // TO DO
         }
     }
 

@@ -82,6 +82,8 @@ data class AppStrings(
     val profileTabOverview: String,
     val profileTabPredictions: String,
     val profileFavoriteFighters: String,
+    val profileGoatFighters: String,
+    val profileHatedFighters: String,
     // Profile Edit Screen
     val profileEditTitle: String,
     val profileEditPersonalInfo: String,
