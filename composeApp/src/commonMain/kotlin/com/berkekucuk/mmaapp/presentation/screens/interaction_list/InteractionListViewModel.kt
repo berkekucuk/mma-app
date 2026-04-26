@@ -24,8 +24,8 @@ class InteractionListViewModel(
 
     private val route = savedStateHandle.toRoute<Route.InteractionList>()
     private val userId: String = route.userId
-    private val type: String = route.type
-    private val _state = MutableStateFlow(InteractionListUiState(type = type))
+    private val interactionType: String = route.interactionType
+    private val _state = MutableStateFlow(InteractionListUiState(type = interactionType))
     val state: StateFlow<InteractionListUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<InteractionListNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
@@ -37,7 +37,7 @@ class InteractionListViewModel(
 
     private fun observeInteractions() {
         viewModelScope.launch {
-            interactionRepository.getInteractions(userId, type)
+            interactionRepository.getInteractions(userId, interactionType)
                 .collect { interactions ->
                     _state.update {
                         it.copy(
@@ -61,7 +61,7 @@ class InteractionListViewModel(
     fun onAction(action: InteractionListUiAction) {
         when (action) {
             is InteractionListUiAction.OnBackClicked -> navigateTo(InteractionListNavigationEvent.Back)
-            is InteractionListUiAction.OnAddFighterClicked -> navigateTo(InteractionListNavigationEvent.ToAddFighter(userId))
+            is InteractionListUiAction.OnAddFighterClicked -> navigateTo(InteractionListNavigationEvent.ToAddFighter(interactionType))
             is InteractionListUiAction.OnFighterClicked -> navigateTo(InteractionListNavigationEvent.ToFighterDetail(action.fighterId))
             is InteractionListUiAction.OnRemoveFighterClicked -> removeInteraction(action.fighterId)
             is InteractionListUiAction.OnRefresh -> syncInteractions()

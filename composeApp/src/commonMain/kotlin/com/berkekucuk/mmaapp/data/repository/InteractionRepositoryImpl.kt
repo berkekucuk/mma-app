@@ -40,14 +40,13 @@ class InteractionRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncKey(userId))) {
                     return@runCatching
                 }
-                val interactions = remoteDataSource.fetchInteractions(userId)
+                val remoteInteractions = remoteDataSource.fetchInteractions(userId)
+                val remoteFighters = remoteInteractions.mapNotNull { it.fighter }
 
-                val fighters = interactions.mapNotNull { it.fighter }
-                if (fighters.isNotEmpty()) {
-                    fighterDao.insertFighters(fighters.map { it.toEntity() })
+                if (remoteFighters.isNotEmpty()) {
+                    fighterDao.insertFighters(remoteFighters.map { it.toEntity() })
                 }
-
-                interactionDao.replaceInteractions(userId, interactions.map { it.toEntity() })
+                interactionDao.replaceInteractions(userId, remoteInteractions.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncKey(userId))
@@ -62,8 +61,12 @@ class InteractionRepositoryImpl(
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val dto = remoteDataSource.addInteraction(userId, fighterId, interactionType)
-                interactionDao.insertInteractions(listOf(dto.toEntity()))
+                val remoteInteraction = remoteDataSource.addInteraction(userId, fighterId, interactionType)
+                
+                remoteInteraction.fighter?.let { remoteFighter ->
+                    fighterDao.insertFighters(listOf(remoteFighter.toEntity()))
+                }
+                interactionDao.insertInteractions(listOf(remoteInteraction.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

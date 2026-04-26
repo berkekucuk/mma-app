@@ -291,6 +291,8 @@ val appModule = module {
         FighterSearchViewModel(
             fighterRepository = get(),
             weightClassRepository = get(),
+            interactionRepository = get(),
+            authRepository = get(),
             savedStateHandle = get()
         )
     }

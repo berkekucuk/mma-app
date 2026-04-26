@@ -254,8 +254,8 @@ fun App(
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
-                    onNavigateToFighterSearch = { userId ->
-                        rootNavController.navigate(Route.FighterSearch(userId))
+                    onNavigateToFighterSearch = { interactionType ->
+                        rootNavController.navigate(Route.FighterSearch(interactionType))
                     }
                 )
             }

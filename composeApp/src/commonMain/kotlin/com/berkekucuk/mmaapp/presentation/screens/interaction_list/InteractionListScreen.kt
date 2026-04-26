@@ -60,7 +60,7 @@ fun InteractionListScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is InteractionListNavigationEvent.Back -> onNavigateBack()
-                is InteractionListNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.userId)
+                is InteractionListNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.interactionType)
                 is InteractionListNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
             }
         }
