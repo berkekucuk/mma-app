@@ -63,7 +63,7 @@ class InteractionRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 val dto = remoteDataSource.addInteraction(userId, fighterId, interactionType)
-                interactionDao.insertInteraction(dto.toEntity())
+                interactionDao.insertInteractions(listOf(dto.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

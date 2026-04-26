@@ -19,9 +19,6 @@ interface PredictionDao {
     fun getPredictions(userId: String): Flow<List<PredictionWithFightRelation>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPrediction(entity: PredictionEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPredictions(entities: List<PredictionEntity>)
 
     @Query("DELETE FROM predictions WHERE user_id = :userId")

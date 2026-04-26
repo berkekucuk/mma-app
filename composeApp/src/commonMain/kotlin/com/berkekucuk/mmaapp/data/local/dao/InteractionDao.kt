@@ -12,14 +12,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface InteractionDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertInteraction(interaction: InteractionEntity)
+    @Transaction
+    @Query("SELECT * FROM user_fighter_interactions WHERE user_id = :userId AND (:type IS NULL OR interaction_type = :type) ORDER BY rank_number ASC")
+    fun getInteractions(userId: String, type: String?): Flow<List<InteractionWithFighterRelation>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertInteractions(interactions: List<InteractionEntity>)
-
-    @Query("SELECT * FROM user_fighter_interactions WHERE user_id = :userId AND (:type IS NULL OR interaction_type = :type) ORDER BY rank_number ASC")
-    fun getInteractions(userId: String, type: String?): Flow<List<InteractionWithFighterRelation>>
 
     @Query("DELETE FROM user_fighter_interactions WHERE id = :interactionId")
     suspend fun deleteInteraction(interactionId: String)

@@ -48,7 +48,7 @@ class PredictionRepositoryImpl(
         }
     }
 
-    override suspend fun submitPrediction(
+    override suspend fun addPrediction(
         userId: String,
         fightId: String,
         predictedWinnerId: String,
@@ -57,7 +57,7 @@ class PredictionRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 val predictionDto = remoteDataSource.submitPrediction(userId, fightId, predictedWinnerId, lockedOdds)
-                predictionDao.insertPrediction(predictionDto.toEntity())
+                predictionDao.insertPredictions(listOf(predictionDto.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

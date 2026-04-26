@@ -229,7 +229,7 @@ class FightDetailViewModel(
 
             _state.update { it.copy(isSubmittingPrediction = true, error = null) }
             
-            predictionRepository.submitPrediction(userId, fight.fightId, predictedWinnerId, lockedOdds)
+            predictionRepository.addPrediction(userId, fight.fightId, predictedWinnerId, lockedOdds)
                 .onSuccess {
                     _state.update { it.copy(isSubmittingPrediction = false) }
                 }
