@@ -16,6 +16,9 @@ interface InteractionDao {
     @Query("SELECT * FROM user_fighter_interactions WHERE user_id = :userId AND (:type IS NULL OR interaction_type = :type) ORDER BY rank_number ASC")
     fun getInteractions(userId: String, type: String?): Flow<List<InteractionWithFighterRelation>>
 
+    @Query("SELECT * FROM user_fighter_interactions WHERE id = :id")
+    suspend fun getInteraction(id: String): InteractionEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertInteractions(interactions: List<InteractionEntity>)
 
@@ -24,6 +27,9 @@ interface InteractionDao {
 
     @Query("DELETE FROM user_fighter_interactions WHERE user_id = :userId")
     suspend fun deleteInteractions(userId: String)
+
+    @Query("UPDATE user_fighter_interactions SET rank_number = rank_number - 1 WHERE user_id = :userId AND interaction_type = :type AND rank_number > :removedRank")
+    suspend fun decrementRanksAbove(userId: String, type: String, removedRank: Int)
 
     @Transaction
     suspend fun replaceInteractions(userId: String, entities: List<InteractionEntity>) {

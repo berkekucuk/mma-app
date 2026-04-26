@@ -76,7 +76,17 @@ class InteractionRepositoryImpl(
     override suspend fun removeInteraction(interactionId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
+                val localInteraction = interactionDao.getInteraction(interactionId)
+                
                 remoteDataSource.removeInteraction(interactionId)
+
+                localInteraction?.let {
+                    interactionDao.decrementRanksAbove(
+                        userId = it.userId,
+                        type = it.interactionType,
+                        removedRank = it.rankNumber
+                    )
+                }
                 interactionDao.deleteInteraction(interactionId)
             }.onFailure {
                 if (it is CancellationException) throw it
