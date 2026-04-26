@@ -155,21 +155,21 @@ fun ProfileScreen(
                         ) {
                             item {
                                 WeightClassCard(
-                                    weightClassName = strings.profileFavoriteFighters,
+                                    weightClassName = strings.toUpperCase(strings.profileFavoriteFighters),
                                     champion = state.profile?.topFavorite?.toRankedFighter(),
                                     onWeightClassClicked = { onInteractionListClicked("favorite") },
                                 )
                             }
                             item {
                                 WeightClassCard(
-                                    weightClassName = strings.profileGoatFighters,
+                                    weightClassName = strings.toUpperCase(strings.profileGoatFighters),
                                     champion = state.profile?.topGoat?.toRankedFighter(),
                                     onWeightClassClicked = { onInteractionListClicked("goat") },
                                 )
                             }
                             item {
                                 WeightClassCard(
-                                    weightClassName = strings.profileHatedFighters,
+                                    weightClassName = strings.toUpperCase(strings.profileHatedFighters),
                                     champion = state.profile?.topHated?.toRankedFighter(),
                                     onWeightClassClicked = { onInteractionListClicked("hated") },
                                 )

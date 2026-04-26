@@ -73,7 +73,7 @@ val TrStrings = AppStrings(
     profileTabOverview = "Genel",
     profileTabPredictions = "Tahminler",
     profileFavoriteFighters = "Favori Dövüşçüler",
-    profileGoatFighters = "Goat listesi",
+    profileGoatFighters = "Goat Listesi",
     profileHatedFighters = "Sevilmeyen Dövüşçüler",
     profileEditTitle = "Profili Düzenle",
     profileEditPersonalInfo = "Kişisel Bilgiler",
@@ -170,10 +170,13 @@ val TrStrings = AppStrings(
     leaderboardInfoText = "Puanlar, tahmininizi yaptığınız andaki oranın sunduğu puan getirisine dayanır.\n" +
             "\n" + "100 Puan Kuralı: Ondalık orandaki her 1.00 birimlik net kâr, 100 puan değerindedir.\n" +
             "\n" + "Yüksek Oranlar: 3.00 oran, 2.00 birim net kâr sunar ve 200 puan kazandırır.\n" +
-            "\n" + "Düşük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
+            "\n" + "Dük Oranlar: 1.25 oran, 0.25 birim net kâr sunar ve 25 puan kazandırır.\n" +
             "\n" + "Sabitleme: Kazanacağınız puan, tahmininizi kilitlediğiniz an sabitlenir.\n" +
             "\n" + "Sonuç: Sadece doğru tahminler puan kazandırır.",
     leaderboardInfoClose = "Kapat",
     notificationChannelName = "Dövüş Sonuçları",
-    notificationChannelDescription = "Dövüş sonuçları hakkında bildirim al"
+    notificationChannelDescription = "Dövüş sonuçları hakkında bildirim al",
+    commonRemove = "Kaldır",
+    commonCancel = "Vazgeç",
+    profileRemoveFighterConfirm = { name -> "$name listenizden kaldırılsın mı?" },
 )

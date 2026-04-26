@@ -73,7 +73,7 @@ val EnStrings = AppStrings(
     profileTabOverview = "Overview",
     profileTabPredictions = "Predictions",
     profileFavoriteFighters = "Favorite Fighters",
-    profileGoatFighters = "Goat Fighters",
+    profileGoatFighters = "Goat List",
     profileHatedFighters = "Hated Fighters",
     profileEditTitle = "Edit Profile",
     profileEditPersonalInfo = "Personal Information",
@@ -167,5 +167,8 @@ val EnStrings = AppStrings(
             "\n" + "Result: Points are only awarded for correct predictions.",
     leaderboardInfoClose = "Close",
     notificationChannelName = "Fight Results",
-    notificationChannelDescription = "Get notified about fight results"
+    notificationChannelDescription = "Get notified about fight results",
+    commonRemove = "Remove",
+    commonCancel = "Cancel",
+    profileRemoveFighterConfirm = { name -> "Remove $name from your list?" },
 )

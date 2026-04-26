@@ -151,5 +151,9 @@ data class AppStrings(
     val leaderboardInfoClose: String,
     // Notifications
     val notificationChannelName: String,
-    val notificationChannelDescription: String
+    val notificationChannelDescription: String,
+    // Common
+    val commonRemove: String,
+    val commonCancel: String,
+    val profileRemoveFighterConfirm: (String) -> String,
 )

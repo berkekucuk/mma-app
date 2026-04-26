@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class InteractionListViewModel(
@@ -29,6 +30,7 @@ class InteractionListViewModel(
     val state: StateFlow<InteractionListUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<InteractionListNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
+    private var syncJob: Job? = null
 
     init {
         observeInteractions()
@@ -63,13 +65,26 @@ class InteractionListViewModel(
             is InteractionListUiAction.OnBackClicked -> navigateTo(InteractionListNavigationEvent.Back)
             is InteractionListUiAction.OnAddFighterClicked -> navigateTo(InteractionListNavigationEvent.ToAddFighter(interactionType))
             is InteractionListUiAction.OnFighterClicked -> navigateTo(InteractionListNavigationEvent.ToFighterDetail(action.fighterId))
-            is InteractionListUiAction.OnRemoveFighterClicked -> removeInteraction(action.fighterId)
+            is InteractionListUiAction.OnRemoveFighterClicked -> _state.update { 
+                it.copy(deletingFighterId = action.fighterId) 
+            }
+            is InteractionListUiAction.OnConfirmRemove -> {
+                val fighterId = _state.value.deletingFighterId
+                if (fighterId != null) {
+                    removeInteraction(fighterId)
+                }
+                _state.update { it.copy(deletingFighterId = null) }
+            }
+            is InteractionListUiAction.OnDismissRemove -> _state.update { 
+                it.copy(deletingFighterId = null) 
+            }
             is InteractionListUiAction.OnRefresh -> syncInteractions()
         }
     }
 
     private fun syncInteractions() {
-        viewModelScope.launch {
+        if (syncJob?.isActive == true) return
+        syncJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true) }
             interactionRepository.syncInteractions(userId)
                 .onSuccess {

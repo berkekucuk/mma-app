@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
@@ -84,20 +85,33 @@ fun InteractionListScreen(
     val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnFighterClicked(fighterId)) } }
     val onAddFighterClicked = remember(onAction) { { onAction(InteractionListUiAction.OnAddFighterClicked) } }
     val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnRemoveFighterClicked(fighterId)) } }
+    val onConfirmRemove = remember(onAction) { { onAction(InteractionListUiAction.OnConfirmRemove) } }
+    val onDismissRemove = remember(onAction) { { onAction(InteractionListUiAction.OnDismissRemove) } }
     val onRefresh = remember(onAction) { { onAction(InteractionListUiAction.OnRefresh) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     val errorMessage = when (state.error) {
         InteractionListError.NETWORK_ERROR -> strings.errorNetwork
         InteractionListError.UNKNOWN_ERROR -> strings.errorUnknown
         null -> null
     }
-
+    val snackbarHostState = remember { SnackbarHostState() }
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
     )
+
+    if (state.deletingFighterId != null) {
+        val fighterName = state.interactions.find { it.fighterId == state.deletingFighterId }?.fighter?.name ?: ""
+        AppAlertDialog(
+            onDismissRequest = onDismissRemove,
+            onConfirmClick = onConfirmRemove,
+            onDismissClick = onDismissRemove,
+            text = strings.profileRemoveFighterConfirm(fighterName),
+            confirmText = strings.commonRemove,
+            dismissText = strings.commonCancel,
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -161,7 +175,7 @@ fun InteractionListScreen(
         }
     ) { innerPadding ->
         ListContainer(
-            isRefreshing = false,
+            isRefreshing = state.isRefreshing,
             onRefresh = onRefresh,
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(top = 8.dp),

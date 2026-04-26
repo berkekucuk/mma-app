@@ -64,7 +64,7 @@ fun WeightClassCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = weightClassName.uppercase(),
+                    text = weightClassName,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = colors.textSecondary,

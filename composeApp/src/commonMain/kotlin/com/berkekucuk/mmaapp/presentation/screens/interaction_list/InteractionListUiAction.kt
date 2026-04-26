@@ -5,5 +5,7 @@ sealed interface InteractionListUiAction {
     data object OnAddFighterClicked : InteractionListUiAction
     data class OnFighterClicked(val fighterId: String) : InteractionListUiAction
     data class OnRemoveFighterClicked(val fighterId: String) : InteractionListUiAction
+    data object OnConfirmRemove : InteractionListUiAction
+    data object OnDismissRemove : InteractionListUiAction
     data object OnRefresh : InteractionListUiAction
 }
