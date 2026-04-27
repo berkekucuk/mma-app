@@ -78,11 +78,8 @@ fun RankingScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    val errorMessage = when (state.error) {
-        RankingError.NETWORK_ERROR -> strings.errorNetwork2
-        RankingError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
+
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,

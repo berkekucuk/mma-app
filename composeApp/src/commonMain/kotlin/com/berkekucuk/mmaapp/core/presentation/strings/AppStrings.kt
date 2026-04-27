@@ -101,11 +101,6 @@ data class AppStrings(
     val fighterSearchPlaceholder: String,
     val fighterSearchEmpty: String,
     // Common Errors
-    val errorNetwork: String,
-    val errorNetwork2: String,
-    val errorUnknown: String,
-    val errorAlreadyExists: String,
-    val errorPleaseSignIn: String,
     val retry: String,
     val dialogAccept: String,
     val dialogCancel: String,
