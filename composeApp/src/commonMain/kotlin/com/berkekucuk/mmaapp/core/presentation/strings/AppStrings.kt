@@ -82,6 +82,8 @@ data class AppStrings(
     val profileSignOut: String,
     val profileTabOverview: String,
     val profileTabPredictions: String,
+    val emptyPredictionList: String,
+    val emptyInteractionList: String,
     val profileFavoriteFighters: String,
     val profileGoatFighters: String,
     val profileHatedFighters: String,

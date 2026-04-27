@@ -46,14 +46,8 @@ class ProfileViewModel(
         viewModelScope.launch {
             userRepository.getUserProfile(userId)
                 .collect { profile ->
-                    _state.update {
-                        it.copy(
-                            profile = profile,
-                            isLoading = false,
-                            isRefreshing = false,
-                        )
-                    }
-                }
+                _state.update { it.copy(profile = profile, isLoading = false) }
+            }
         }
     }
 
