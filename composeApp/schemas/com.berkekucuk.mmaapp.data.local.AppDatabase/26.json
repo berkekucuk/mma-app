@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 26,
-    "identityHash": "0476e6bc5d76b015e95e2358d247c259",
+    "identityHash": "4648a0115a24f8f9cf99e16706d061f4",
     "entities": [
       {
         "tableName": "events",
@@ -214,7 +214,7 @@
       },
       {
         "tableName": "predictions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fight_id` TEXT NOT NULL, `predicted_winner_id` TEXT NOT NULL, `points_earned` INTEGER NOT NULL, `is_correct` INTEGER, `locked_odds` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`fight_id`, `user_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fight_id` TEXT NOT NULL, `predicted_winner_id` TEXT NOT NULL, `points_earned` INTEGER NOT NULL, `is_correct` INTEGER, `locked_odds` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`fight_id`, `user_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -269,11 +269,24 @@
             "fight_id",
             "user_id"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "fight_notifications",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fight_id` TEXT NOT NULL, `user_id` TEXT NOT NULL, PRIMARY KEY(`fight_id`, `user_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fight_id` TEXT NOT NULL, `user_id` TEXT NOT NULL, PRIMARY KEY(`fight_id`, `user_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "fightId",
@@ -294,7 +307,20 @@
             "fight_id",
             "user_id"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "fights",
@@ -421,7 +447,7 @@
       },
       {
         "tableName": "user_fighter_interactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fighter_id` TEXT NOT NULL, `interaction_type` TEXT NOT NULL, `rank_number` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fighter_id` TEXT NOT NULL, `interaction_type` TEXT NOT NULL, `rank_number` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -459,12 +485,25 @@
           "columnNames": [
             "id"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "users",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0476e6bc5d76b015e95e2358d247c259')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4648a0115a24f8f9cf99e16706d061f4')"
     ]
   }
 }
