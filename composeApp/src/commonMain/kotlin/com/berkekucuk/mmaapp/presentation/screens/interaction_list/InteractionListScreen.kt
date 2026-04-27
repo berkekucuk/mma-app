@@ -1,4 +1,4 @@
-package com.berkekucuk.mmaapp.presentation.screens.favorite_fighters
+package com.berkekucuk.mmaapp.presentation.screens.interaction_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
@@ -48,8 +50,8 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankedFighterRo
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FavoriteFightersScreenRoot(
-    viewModel: FavoriteFightersViewModel = koinViewModel(),
+fun InteractionListScreenRoot(
+    viewModel: InteractionListViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToFighterDetail: (String) -> Unit,
     onNavigateToFighterSearch: (String) -> Unit,
@@ -59,14 +61,14 @@ fun FavoriteFightersScreenRoot(
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is FavoriteFightersNavigationEvent.Back -> onNavigateBack()
-                is FavoriteFightersNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.userId)
-                is FavoriteFightersNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
+                is InteractionListNavigationEvent.Back -> onNavigateBack()
+                is InteractionListNavigationEvent.ToAddFighter -> onNavigateToFighterSearch(event.interactionType)
+                is InteractionListNavigationEvent.ToFighterDetail -> onNavigateToFighterDetail(event.fighterId)
             }
         }
     }
 
-    FavoriteFightersScreen(
+    InteractionListScreen(
         state = state,
         onAction = viewModel::onAction,
     )
@@ -74,30 +76,53 @@ fun FavoriteFightersScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FavoriteFightersScreen(
-    state: FavoriteFightersUiState,
-    onAction: (FavoriteFightersUiAction) -> Unit,
+fun InteractionListScreen(
+    state: InteractionListUiState,
+    onAction: (InteractionListUiAction) -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
-    val onBackClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnBackClicked) } }
-    val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnFighterClicked(fighterId)) } }
-    val onAddFighterClicked = remember(onAction) { { onAction(FavoriteFightersUiAction.OnAddFighterClicked) } }
-    val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(FavoriteFightersUiAction.OnRemoveFighterClicked(fighterId)) } }
-    val onRefresh = remember(onAction) { { onAction(FavoriteFightersUiAction.OnRefresh) } }
+    val onBackClicked = remember(onAction) { { onAction(InteractionListUiAction.OnBackClicked) } }
+    val onFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnFighterClicked(fighterId)) } }
+    val onAddFighterClicked = remember(onAction) { { onAction(InteractionListUiAction.OnAddFighterClicked) } }
+    val onRemoveFighterClicked = remember(onAction) { { fighterId: String -> onAction(InteractionListUiAction.OnRemoveFighterClicked(fighterId)) } }
+    val onConfirmRemove = remember(onAction) { { onAction(InteractionListUiAction.OnConfirmRemove) } }
+    val onDismissRemove = remember(onAction) { { onAction(InteractionListUiAction.OnDismissRemove) } }
+    val onRefresh = remember(onAction) { { onAction(InteractionListUiAction.OnRefresh) } }
+    val onErrorDismissed = remember(onAction) { { onAction(InteractionListUiAction.OnErrorDismissed) } }
+    val onDismissLimitAlert = remember(onAction) { { onAction(InteractionListUiAction.OnDismissLimitAlert) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    val errorMessage = strings.mapError(state.error)
     val snackbarHostState = remember { SnackbarHostState() }
-
-    val errorMessage = when (state.error) {
-        FavoriteFightersError.NETWORK_ERROR -> strings.errorNetwork
-        FavoriteFightersError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
-
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
+        duration = SnackbarDuration.Short,
+        onDismiss = onErrorDismissed
     )
+
+    if (state.deletingFighterId != null) {
+        val fighterName = state.interactions.find { it.fighterId == state.deletingFighterId }?.fighter?.name ?: ""
+        AppAlertDialog(
+            onDismissRequest = onDismissRemove,
+            onConfirmClick = onConfirmRemove,
+            onDismissClick = onDismissRemove,
+            text = strings.profileRemoveFighterConfirm(fighterName),
+            confirmText = strings.commonRemove,
+            dismissText = strings.commonCancel,
+        )
+    }
+
+    if (state.showLimitAlert) {
+        AppAlertDialog(
+            onDismissRequest = onDismissLimitAlert,
+            onConfirmClick = onDismissLimitAlert,
+            title = strings.interactionLimitReachedTitle,
+            text = strings.interactionLimitReachedText,
+            confirmText = strings.dialogOkay,
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -119,8 +144,14 @@ fun FavoriteFightersScreen(
             Column(modifier = Modifier.background(colors.rankingTopBarGradient)) {
                 TopAppBar(
                     title = {
+                        val title = when (state.type) {
+                            "favorite" -> strings.profileFavoriteFighters
+                            "goat" -> strings.profileGoatFighters
+                            "hated" -> strings.profileHatedFighters
+                            else -> ""
+                        }
                         Text(
-                            text = strings.toUpperCase(strings.profileFavoriteFighters),
+                            text = strings.toUpperCase(title),
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                         )
@@ -155,7 +186,7 @@ fun FavoriteFightersScreen(
         }
     ) { innerPadding ->
         ListContainer(
-            isRefreshing = false,
+            isRefreshing = state.isRefreshing,
             onRefresh = onRefresh,
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(top = 8.dp),
@@ -169,8 +200,8 @@ fun FavoriteFightersScreen(
                         .clip(RoundedCornerShape(16.dp))
                         .background(colors.fightItemBackground)
                 ) {
-                    state.fighters.forEachIndexed { index, rankedFighter ->
-                        rankedFighter.fighter?.let { fighter ->
+                    state.interactions.forEachIndexed { index, interaction ->
+                        interaction.fighter?.let { fighter ->
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -182,7 +213,7 @@ fun FavoriteFightersScreen(
                                 ) {
                                     Box(modifier = Modifier.weight(1f)) {
                                         RankedFighterRow(
-                                            rankNumber = rankedFighter.rankNumber,
+                                            rankNumber = interaction.rankNumber ?: 0,
                                             isChampion = false,
                                             name = fighter.name,
                                             record = fighter.record.toString(),
@@ -202,7 +233,7 @@ fun FavoriteFightersScreen(
                                     }
                                 }
 
-                                if (index < state.fighters.lastIndex) {
+                                if (index < state.interactions.lastIndex) {
                                     HorizontalDivider(
                                         color = colors.dividerColor,
                                         thickness = 0.8.dp,

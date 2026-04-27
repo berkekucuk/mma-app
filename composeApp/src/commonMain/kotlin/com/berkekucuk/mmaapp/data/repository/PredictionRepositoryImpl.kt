@@ -21,8 +21,7 @@ class PredictionRepositoryImpl(
 ) : PredictionRepository {
 
     override fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?> {
-        return predictionDao.getPrediction(fightId, userId)
-            .map { it?.prediction?.predictedWinnerId }
+        return predictionDao.getPredictedWinnerId(fightId, userId)
     }
 
     override fun getPredictions(userId: String): Flow<List<Prediction>> {
@@ -35,21 +34,20 @@ class PredictionRepositoryImpl(
     override suspend fun syncPredictions(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val predictions = remoteDataSource.fetchPredictions(userId)
-                
-                val fights = predictions.mapNotNull { it.fight }
-                if (fights.isNotEmpty()) {
-                    fightDao.insertFights(fights.map { it.toEntity() })
+                val remotePredictions = remoteDataSource.fetchPredictions(userId)
+                val remoteFights = remotePredictions.mapNotNull { it.fight }
+
+                if (remoteFights.isNotEmpty()) {
+                    fightDao.insertFights(remoteFights.map { it.toEntity() })
                 }
-                
-                predictionDao.replacePredictions(userId, predictions.map { it.toEntity() })
+                predictionDao.replacePredictions(userId, remotePredictions.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
             }
         }
     }
 
-    override suspend fun submitPrediction(
+    override suspend fun addPrediction(
         userId: String,
         fightId: String,
         predictedWinnerId: String,
@@ -57,8 +55,12 @@ class PredictionRepositoryImpl(
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val predictionDto = remoteDataSource.submitPrediction(userId, fightId, predictedWinnerId, lockedOdds)
-                predictionDao.insertPrediction(predictionDto.toEntity())
+                val remotePrediction = remoteDataSource.addPrediction(userId, fightId, predictedWinnerId, lockedOdds)
+
+                remotePrediction.fight?.let { remoteFight ->
+                    fightDao.insertFights(listOf(remoteFight.toEntity()))
+                }
+                predictionDao.insertPredictions(listOf(remotePrediction.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

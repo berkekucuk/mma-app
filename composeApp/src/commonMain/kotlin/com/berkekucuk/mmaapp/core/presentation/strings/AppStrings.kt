@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 data class AppStrings(
     val language: AppLanguage,
@@ -82,6 +83,8 @@ data class AppStrings(
     val profileTabOverview: String,
     val profileTabPredictions: String,
     val profileFavoriteFighters: String,
+    val profileGoatFighters: String,
+    val profileHatedFighters: String,
     // Profile Edit Screen
     val profileEditTitle: String,
     val profileEditPersonalInfo: String,
@@ -103,6 +106,7 @@ data class AppStrings(
     val errorNetwork: String,
     val errorNetwork2: String,
     val errorUnknown: String,
+    val errorAlreadyExists: String,
     val errorPleaseSignIn: String,
     val retry: String,
     val dialogAccept: String,
@@ -149,5 +153,13 @@ data class AppStrings(
     val leaderboardInfoClose: String,
     // Notifications
     val notificationChannelName: String,
-    val notificationChannelDescription: String
+    val notificationChannelDescription: String,
+    // Common
+    val commonRemove: String,
+    val commonCancel: String,
+    val profileRemoveFighterConfirm: (String) -> String,
+    val interactionLimitReachedTitle: String,
+    val interactionLimitReachedText: String,
+    val dialogOkay: String,
+    val mapError: (AppError?) -> String?,
 )

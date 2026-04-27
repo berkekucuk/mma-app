@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.domain.model.Fighter
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import com.berkekucuk.mmaapp.domain.repository.UserRepository
+import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +28,8 @@ import kotlinx.coroutines.launch
 class FighterSearchViewModel(
     private val fighterRepository: FighterRepository,
     private val weightClassRepository: WeightClassRepository,
-    private val userRepository: UserRepository,
+    private val interactionRepository: InteractionRepository,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -35,7 +38,7 @@ class FighterSearchViewModel(
     }
 
     private val route = savedStateHandle.toRoute<Route.FighterSearch>()
-    private val userId: String? = route.userId
+    private val interactionType: String? = route.interactionType
 
     private val _state = MutableStateFlow(FighterSearchUiState())
     val state = _state.asStateFlow()
@@ -72,24 +75,20 @@ class FighterSearchViewModel(
                     if (query.length >= 2) {
                         search(query)
                     } else {
-                        _state.update { it.copy(results = p4pFighters, isLoading = false, error = null) }
+                        _state.update { it.copy(results = p4pFighters, error = null) }
                     }
                 }
         }
     }
 
     private suspend fun search(query: String) {
-        _state.update { it.copy(isLoading = true, error = null) }
+        _state.update { it.copy(error = null) }
         fighterRepository.searchFighters(query)
             .onSuccess { results ->
-                _state.update { it.copy(results = results, isLoading = false) }
+                _state.update { it.copy(results = results) }
             }
             .onFailure { e ->
-                val errorType = when (e) {
-                    is PostgrestRestException -> FighterSearchError.UNKNOWN_ERROR
-                    else -> FighterSearchError.NETWORK_ERROR
-                }
-                _state.update { it.copy(isLoading = false, error = errorType) }
+                _state.update { it.copy(error = AppErrorMapper.map(e)) }
             }
     }
 
@@ -102,8 +101,8 @@ class FighterSearchViewModel(
                 it.copy(query = "", results = p4pFighters, error = null)
             }
             is FighterSearchUiAction.OnFighterClicked -> {
-                if (userId != null) {
-                    addFavoriteFighter(action.fighterId)
+                if (interactionType != null) {
+                    addInteraction(action.fighterId)
                 } else {
                     navigateTo(FighterSearchNavigationEvent.ToFighterDetail(action.fighterId))
                 }
@@ -112,16 +111,26 @@ class FighterSearchViewModel(
         }
     }
 
-    private fun addFavoriteFighter(fighterId: String) {
-        val fighter = _state.value.results.find { it.fighterId == fighterId } ?: return
+    private fun addInteraction(fighterId: String) {
+        val type = interactionType ?: return
         viewModelScope.launch {
-            userRepository.addFavoriteFighter(userId!!, fighter)
-                .onSuccess {
-                    navigateTo(FighterSearchNavigationEvent.Back)
-                }
-                .onFailure {
-                    _state.update { it.copy(error = FighterSearchError.NETWORK_ERROR) }
-                }
+            _state.update { it.copy(error = null) }
+            
+            val userId = authRepository.getAuthenticatedUserId()
+            if (userId == null) {
+                _state.update { it.copy(error = AppError.UNAUTHENTICATED) }
+                return@launch
+            }
+
+            interactionRepository.addInteraction(
+                userId = userId,
+                fighterId = fighterId,
+                interactionType = type
+            ).onSuccess {
+                navigateTo(FighterSearchNavigationEvent.Back)
+            }.onFailure { e ->
+                _state.update { it.copy(error = AppErrorMapper.map(e)) }
+            }
         }
     }
 

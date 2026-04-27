@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
-import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
+import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
 import com.berkekucuk.mmaapp.domain.repository.PredictionRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +24,7 @@ class ProfileViewModel(
     private val authRepository: AuthRepository,
     private val notificationRepository: NotificationRepository,
     private val predictionRepository: PredictionRepository,
+    private val interactionRepository: InteractionRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -37,38 +37,26 @@ class ProfileViewModel(
     private var syncJob: Job? = null
 
     init {
-        observeUser()
-        observePredictions()
-        syncUser()
+        observeProfile()
+        syncProfile()
     }
 
-    private fun observeUser() {
+    private fun observeProfile() {
         viewModelScope.launch {
-            userRepository.getUser(userId)
-                .collect { user ->
-                _state.update {
-                    it.copy(
-                        user = user,
-                        isLoading = false,
-                        isRefreshing = false,
-                    )
-                }
-            }
-        }
-    }
-
-    private fun observePredictions() {
-        viewModelScope.launch {
-            predictionRepository.getPredictions(userId)
-                .collect { predictions ->
+            userRepository.getUserProfile(userId)
+                .collect { profile ->
                     _state.update {
-                        it.copy(predictions = predictions)
+                        it.copy(
+                            profile = profile,
+                            isLoading = false,
+                            isRefreshing = false,
+                        )
                     }
                 }
         }
     }
 
-    private fun syncUser(isRefreshing: Boolean = false) {
+    private fun syncProfile(isRefreshing: Boolean = false) {
         if (syncJob?.isActive == true) return
 
         syncJob = viewModelScope.launch {
@@ -76,26 +64,21 @@ class ProfileViewModel(
 
             userRepository.syncUser(userId)
             predictionRepository.syncPredictions(userId)
+            interactionRepository.syncInteractions(userId)
 
-            val currentUserId = getAuthenticatedUserId()
-            val isOwner = currentUserId == userId
-            if (isOwner) {
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            if (currentUserId == userId) {
                 notificationRepository.syncFightNotifications(userId)
             }
             _state.update { it.copy(isRefreshing = false) }
         }
     }
 
-    private suspend fun getAuthenticatedUserId(): String? {
-        val authState = authRepository.authState.first { it !is AuthState.Loading }
-        return if (authState is AuthState.Authenticated) authState.userId else null
-    }
-
     fun onAction(action: ProfileUiAction) {
         when (action) {
             is ProfileUiAction.OnBackClicked -> navigateTo(ProfileNavigationEvent.Back)
-            is ProfileUiAction.OnRefresh -> syncUser(isRefreshing = true)
-            is ProfileUiAction.OnFavoriteFightersClicked -> navigateTo(ProfileNavigationEvent.ToFavoriteFighters(userId))
+            is ProfileUiAction.OnRefresh -> syncProfile(isRefreshing = true)
+            is ProfileUiAction.OnInteractionListClicked -> navigateTo(ProfileNavigationEvent.ToInteractionList(userId, action.type))
             is ProfileUiAction.OnPredictionClicked -> navigateTo(ProfileNavigationEvent.ToFightDetail(action.fightId))
         }
     }

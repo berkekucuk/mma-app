@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,
@@ -73,6 +74,8 @@ val EnStrings = AppStrings(
     profileTabOverview = "Overview",
     profileTabPredictions = "Predictions",
     profileFavoriteFighters = "Favorite Fighters",
+    profileGoatFighters = "Goat List",
+    profileHatedFighters = "Hated Fighters",
     profileEditTitle = "Edit Profile",
     profileEditPersonalInfo = "Personal Information",
     profileEditFullName = "Full Name",
@@ -91,6 +94,7 @@ val EnStrings = AppStrings(
     errorNetwork = "No internet connection. Please try again.",
     errorNetwork2 = "No internet connection.",
     errorUnknown = "Something went wrong. Please try again.",
+    errorAlreadyExists = "This fighter is already in your list.",
     errorPleaseSignIn = "Please sign in to use this feature.",
     retry = "Retry",
     dialogAccept = "Accept",
@@ -165,5 +169,20 @@ val EnStrings = AppStrings(
             "\n" + "Result: Points are only awarded for correct predictions.",
     leaderboardInfoClose = "Close",
     notificationChannelName = "Fight Results",
-    notificationChannelDescription = "Get notified about fight results"
+    notificationChannelDescription = "Get notified about fight results",
+    commonRemove = "Remove",
+    commonCancel = "Cancel",
+    profileRemoveFighterConfirm = { name -> "Remove $name from your list?" },
+    interactionLimitReachedTitle = "Limit Reached",
+    interactionLimitReachedText = "You can add a maximum of 5 fighters to this list.",
+    dialogOkay = "Okay",
+    mapError = { error ->
+        when (error) {
+            AppError.NETWORK -> "No internet connection. Please try again."
+            AppError.SERVER_ERROR -> "Something went wrong. Please try again."
+            AppError.UNAUTHENTICATED -> "Please sign in to use this feature."
+            AppError.ALREADY_EXISTS -> "This fighter is already in your list."
+            else -> null
+        }
+    }
 )

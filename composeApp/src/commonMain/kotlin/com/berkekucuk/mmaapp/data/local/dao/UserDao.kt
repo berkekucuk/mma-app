@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.berkekucuk.mmaapp.data.local.entity.UserEntity
+import com.berkekucuk.mmaapp.data.local.relation.UserProfileRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,6 +17,10 @@ interface UserDao {
 
     @Query("SELECT * FROM users ORDER BY total_points DESC LIMIT :limit")
     fun getUsers(limit: Int): Flow<List<UserEntity>>
+
+    @Transaction
+    @Query("SELECT * FROM users WHERE id = :userId")
+    fun getUserProfile(userId: String): Flow<UserProfileRelation?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)

@@ -19,6 +19,8 @@ import com.berkekucuk.mmaapp.data.remote.api.FightRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.FightSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.FighterRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.FighterSupabaseAPI
+import com.berkekucuk.mmaapp.data.remote.api.InteractionRemoteDataSource
+import com.berkekucuk.mmaapp.data.remote.api.InteractionSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.WeightClassSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
@@ -38,16 +40,18 @@ import com.berkekucuk.mmaapp.data.remote.api.NotificationSupabaseAPI
 import com.berkekucuk.mmaapp.data.remote.api.PredictionRemoteDataSource
 import com.berkekucuk.mmaapp.data.remote.api.PredictionSupabaseAPI
 import com.berkekucuk.mmaapp.data.repository.FightRepositoryImpl
+import com.berkekucuk.mmaapp.data.repository.InteractionRepositoryImpl
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
 import com.berkekucuk.mmaapp.domain.repository.FightRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
+import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.menu.MenuViewModel
-import com.berkekucuk.mmaapp.presentation.screens.favorite_fighters.FavoriteFightersViewModel
+import com.berkekucuk.mmaapp.presentation.screens.interaction_list.InteractionListViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileViewModel
 import com.berkekucuk.mmaapp.presentation.screens.home.HomeViewModel
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditViewModel
@@ -120,6 +124,10 @@ val appModule = module {
         get<AppDatabase>().fightDao()
     }
 
+    single {
+        get<AppDatabase>().interactionDao()
+    }
+
     // remote data source
     single<EventRemoteDataSource> {
         EventSupabaseAPI(client = get())
@@ -151,6 +159,10 @@ val appModule = module {
 
     single<FightRemoteDataSource> {
         FightSupabaseAPI(client = get())
+    }
+
+    single<InteractionRemoteDataSource> {
+        InteractionSupabaseAPI(client = get())
     }
 
     // repository
@@ -221,6 +233,15 @@ val appModule = module {
         )
     }
 
+    single<InteractionRepository> {
+        InteractionRepositoryImpl(
+            remoteDataSource = get(),
+            interactionDao = get(),
+            fighterDao = get(),
+            rateLimiter = get()
+        )
+    }
+
     // view model
     viewModel {
         HomeViewModel(
@@ -270,7 +291,8 @@ val appModule = module {
         FighterSearchViewModel(
             fighterRepository = get(),
             weightClassRepository = get(),
-            userRepository = get(),
+            interactionRepository = get(),
+            authRepository = get(),
             savedStateHandle = get()
         )
     }
@@ -281,6 +303,7 @@ val appModule = module {
             authRepository = get(),
             notificationRepository = get(),
             predictionRepository = get(),
+            interactionRepository = get(),
             savedStateHandle = get()
         )
     }
@@ -302,9 +325,9 @@ val appModule = module {
     }
 
     viewModel {
-        FavoriteFightersViewModel(
-            userRepository = get(),
+        InteractionListViewModel(
             authRepository = get(),
+            interactionRepository = get(),
             savedStateHandle = get()
         )
     }

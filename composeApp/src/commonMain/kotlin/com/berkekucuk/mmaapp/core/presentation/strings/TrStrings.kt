@@ -1,6 +1,7 @@
 package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
+import com.berkekucuk.mmaapp.core.utils.AppError
 
 val TrStrings = AppStrings(
     language = AppLanguage.TR,
@@ -73,6 +74,8 @@ val TrStrings = AppStrings(
     profileTabOverview = "Genel",
     profileTabPredictions = "Tahminler",
     profileFavoriteFighters = "Favori Dövüşçüler",
+    profileGoatFighters = "Goat Listesi",
+    profileHatedFighters = "Sevilmeyen Dövüşçüler",
     profileEditTitle = "Profili Düzenle",
     profileEditPersonalInfo = "Kişisel Bilgiler",
     profileEditFullName = "Ad Soyad",
@@ -91,6 +94,7 @@ val TrStrings = AppStrings(
     errorNetwork = "İnternet bağlantısı yok. Lütfen tekrar deneyin.",
     errorNetwork2 = "İnternet bağlantısı yok.",
     errorUnknown = "Bir hata oluştu. Lütfen tekrar deneyin.",
+    errorAlreadyExists = "Bu dövüşçü zaten listenizde.",
     errorPleaseSignIn = "Bu özelliği kullanmak için lütfen giriş yapın.",
     retry = "Yenile",
     dialogAccept = "Onayla",
@@ -173,5 +177,20 @@ val TrStrings = AppStrings(
             "\n" + "Sonuç: Sadece doğru tahminler puan kazandırır.",
     leaderboardInfoClose = "Kapat",
     notificationChannelName = "Dövüş Sonuçları",
-    notificationChannelDescription = "Dövüş sonuçları hakkında bildirim al"
+    notificationChannelDescription = "Dövüş sonuçları hakkında bildirim al",
+    commonRemove = "Kaldır",
+    commonCancel = "Vazgeç",
+    profileRemoveFighterConfirm = { name -> "$name listenizden kaldırılsın mı?" },
+    interactionLimitReachedTitle = "Limit Doldu",
+    interactionLimitReachedText = "Bu listeye en fazla 5 dövüşçü ekleyebilirsiniz.",
+    dialogOkay = "Tamam",
+    mapError = { error ->
+        when (error) {
+            AppError.NETWORK -> "İnternet bağlantısı yok. Lütfen tekrar deneyin."
+            AppError.SERVER_ERROR -> "Bir hata oluştu. Lütfen tekrar deneyin."
+            AppError.UNAUTHENTICATED -> "Bu özelliği kullanmak için lütfen giriş yapın."
+            AppError.ALREADY_EXISTS -> "Bu dövüşçü zaten listenizde."
+            else -> null
+        }
+    }
 )

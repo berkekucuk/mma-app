@@ -17,7 +17,7 @@ class PredictionSupabaseAPI(
         }.decodeList<PredictionDto>()
     }
 
-    override suspend fun submitPrediction(
+    override suspend fun addPrediction(
         userId: String,
         fightId: String,
         predictedWinnerId: String,

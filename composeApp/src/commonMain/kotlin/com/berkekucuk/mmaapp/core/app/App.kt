@@ -35,7 +35,7 @@ import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailScreen
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
-import com.berkekucuk.mmaapp.presentation.screens.favorite_fighters.FavoriteFightersScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.interaction_list.InteractionListScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreenRoot
@@ -234,8 +234,8 @@ fun App(
             ) {
                 ProfileScreenRoot(
                     onNavigateBack = { rootNavController.navigateUp() },
-                    onNavigateToFavoriteFighters = { userId ->
-                        rootNavController.navigate(Route.FavoriteFighters(userId))
+                    onNavigateToInteractionList = { userId, type ->
+                        rootNavController.navigate(Route.InteractionList(userId, type))
                     },
                     onNavigateToFightDetail = { fightId ->
                         rootNavController.navigate(Route.FightDetail(fightId = fightId))
@@ -243,19 +243,19 @@ fun App(
                 )
             }
 
-            composable<Route.FavoriteFighters>(
+            composable<Route.InteractionList>(
                 enterTransition = NavTransitions.slideFromRight,
                 exitTransition = NavTransitions.slideOutToLeft,
                 popEnterTransition = NavTransitions.slideFromLeft,
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
-                FavoriteFightersScreenRoot(
+                InteractionListScreenRoot(
                     onNavigateBack = { rootNavController.navigateUp() },
                     onNavigateToFighterDetail = { fighterId ->
                         rootNavController.navigate(Route.FighterDetail(fighterId))
                     },
-                    onNavigateToFighterSearch = { userId ->
-                        rootNavController.navigate(Route.FighterSearch(userId))
+                    onNavigateToFighterSearch = { interactionType ->
+                        rootNavController.navigate(Route.FighterSearch(interactionType))
                     }
                 )
             }
