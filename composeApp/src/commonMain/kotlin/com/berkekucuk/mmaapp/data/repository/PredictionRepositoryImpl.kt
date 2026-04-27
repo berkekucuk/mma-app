@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
+import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.FightDao
 import com.berkekucuk.mmaapp.data.local.dao.PredictionDao
 import com.berkekucuk.mmaapp.data.remote.api.PredictionRemoteDataSource
@@ -17,8 +18,11 @@ import kotlinx.coroutines.withContext
 class PredictionRepositoryImpl(
     private val predictionDao: PredictionDao,
     private val fightDao: FightDao,
-    private val remoteDataSource: PredictionRemoteDataSource
+    private val remoteDataSource: PredictionRemoteDataSource,
+    private val rateLimiter: RateLimiter
 ) : PredictionRepository {
+
+    private fun syncKey(userId: String) = "sync_predictions_$userId"
 
     override fun getPredictedWinnerId(fightId: String, userId: String): Flow<String?> {
         return predictionDao.getPredictedWinnerId(fightId, userId)
@@ -34,6 +38,9 @@ class PredictionRepositoryImpl(
     override suspend fun syncPredictions(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
+                if (!rateLimiter.shouldFetch(syncKey(userId))) {
+                    return@runCatching
+                }
                 val remotePredictions = remoteDataSource.fetchPredictions(userId)
                 val remoteFights = remotePredictions.mapNotNull { it.fight }
 
@@ -43,6 +50,7 @@ class PredictionRepositoryImpl(
                 predictionDao.replacePredictions(userId, remotePredictions.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(syncKey(userId))
             }
         }
     }

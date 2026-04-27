@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.data.repository
 
+import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.NotificationDao
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import com.berkekucuk.mmaapp.data.mapper.toEntity
@@ -15,8 +16,11 @@ import kotlinx.coroutines.withContext
 
 class NotificationRepositoryImpl(
     private val dao: NotificationDao,
-    private val remoteDataSource: NotificationRemoteDataSource
+    private val remoteDataSource: NotificationRemoteDataSource,
+    private val rateLimiter: RateLimiter
 ) : NotificationRepository {
+
+    private fun syncKey(userId: String) = "sync_notifications_$userId"
 
     override fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean> {
         return dao.getFightNotificationStatus(fightId, userId)
@@ -27,10 +31,14 @@ class NotificationRepositoryImpl(
     override suspend fun syncFightNotifications(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                val notifications = remoteDataSource.fetchFightNotifications(userId)
-                dao.insertFightNotifications(notifications.map { it.toEntity() })
+                if (!rateLimiter.shouldFetch(syncKey(userId))) {
+                    return@runCatching
+                }
+                val remoteNotifications = remoteDataSource.fetchFightNotifications(userId)
+                dao.insertFightNotifications(remoteNotifications.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
+                rateLimiter.reset(syncKey(userId))
             }
         }
     }
