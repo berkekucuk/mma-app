@@ -19,7 +19,7 @@ fun FighterHistoryContainer(
     fighter: Fighter,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onFightClicked: (eventId: String, fightId: String) -> Unit,
+    onFightClicked: (fightId: String) -> Unit,
     extraBottomPadding: Dp = 0.dp,
 ) {
     ListContainer(
@@ -41,7 +41,7 @@ fun FighterHistoryContainer(
                     FightHistoryRow(
                         fight = fight,
                         fighterId = fighterId,
-                        onClick = { onFightClicked(fight.eventId, fight.fightId) }
+                        onClick = { onFightClicked(fight.fightId) }
                     )
                     if (index < fights.lastIndex) {
                         HorizontalDivider(

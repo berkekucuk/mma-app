@@ -101,11 +101,6 @@ data class AppStrings(
     val fighterSearchPlaceholder: String,
     val fighterSearchEmpty: String,
     // Common Errors
-    val errorNetwork: String,
-    val errorNetwork2: String,
-    val errorUnknown: String,
-    val errorAlreadyExists: String,
-    val errorPleaseSignIn: String,
     val retry: String,
     val dialogAccept: String,
     val dialogCancel: String,
@@ -141,10 +136,6 @@ data class AppStrings(
     val toUpperCase: (String) -> String,
     // Fight Prediction
     val predictionQuestionTitle: String,
-    val errorOddsNotPublished: String,
-    val errorEventOver: String,
-    val errorFightOver: String,
-    val errorFightPending: String,
     // Leaderboard
     val leaderboardInfoTitle: String,
     val leaderboardInfoText: String,

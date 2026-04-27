@@ -53,8 +53,8 @@ class UserRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncUserKey(userId))) {
                     return@runCatching
                 }
-                val userDto = remoteDataSource.fetchUser(userId)
-                dao.insertUser(userDto.toEntity())
+                val remoteUser = remoteDataSource.fetchUser(userId)
+                dao.insertUsers(listOf(remoteUser.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncUserKey(userId))
@@ -68,8 +68,8 @@ class UserRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncUsersKey)) {
                     return@runCatching
                 }
-                val users = remoteDataSource.fetchUsers(limit)
-                dao.insertUsers(users.map { it.toEntity() })
+                val remoteUsers = remoteDataSource.fetchUsers(limit)
+                dao.insertUsers(remoteUsers.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncUsersKey)

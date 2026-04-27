@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.core.utils.NotificationPermissionHandler
 import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
@@ -141,17 +142,9 @@ fun FightDetailScreen(
     val onPredict = remember(onAction) { { id: String -> onAction(FightDetailUiAction.OnSubmitPredictionClicked(id)) } }
     val onLeaderboardClick = remember(onAction) { { onAction(FightDetailUiAction.OnLeaderboardClicked) } }
 
-    val isRetryableError = state.error == FightDetailError.NETWORK_ERROR || state.error == FightDetailError.UNKNOWN_ERROR
-    val errorMessage = when (state.error) {
-        FightDetailError.NETWORK_ERROR -> strings.errorNetwork2
-        FightDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        FightDetailError.NOT_AUTHENTICATED -> strings.errorPleaseSignIn
-        FightDetailError.ODDS_NOT_PUBLISHED -> strings.errorOddsNotPublished
-        FightDetailError.EVENT_OVER -> strings.errorEventOver
-        FightDetailError.FIGHT_OVER -> strings.errorFightOver
-        FightDetailError.FIGHT_PENDING -> strings.errorFightPending
-        else -> null
-    }
+    val isRetryableError = state.error == AppError.NETWORK
+    val errorMessage = strings.mapError(state.error)
+
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,

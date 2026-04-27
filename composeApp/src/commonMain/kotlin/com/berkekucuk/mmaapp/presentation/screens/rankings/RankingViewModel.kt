@@ -2,8 +2,8 @@ package com.berkekucuk.mmaapp.presentation.screens.rankings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +20,7 @@ class RankingViewModel(
     val state: StateFlow<RankingUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<RankingNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
+
     init {
         observeRankings()
         syncRankings()
@@ -49,13 +50,10 @@ class RankingViewModel(
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = if (!repository.hasData()) {
-                        when (e) {
-                            is PostgrestRestException -> RankingError.UNKNOWN_ERROR
-                            else -> RankingError.NETWORK_ERROR
-                        }
+                    val error = if (!repository.hasData()) {
+                        AppErrorMapper.map(e)
                     } else null
-                    _state.update { it.copy(isRefreshing = false, error = errorType) }
+                    _state.update { it.copy(isRefreshing = false, error = error) }
                 }
         }
     }

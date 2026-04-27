@@ -2,9 +2,9 @@ package com.berkekucuk.mmaapp.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.core.utils.DateTimeProvider
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -91,8 +91,7 @@ class HomeViewModel(
             eventRepository.initializeEvents()
                 .onFailure { e ->
                     if (isDataReady && _state.value.upcomingEvents.isEmpty()) {
-                        val errorType = if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
-                        _state.update { it.copy(error = errorType) }
+                        _state.update { it.copy(error = AppErrorMapper.map(e)) }
                     }
                 }
         }
@@ -118,23 +117,21 @@ class HomeViewModel(
                 }
                 .onFailure { e ->
                     val isSynced = eventRepository.isYearSynced(year)
-                    val errorType = if (!isSynced) {
-                        if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
-                    } else null
-                    _state.update { it.copy(isRefreshingCompletedTab = false, error = errorType) }
+                    val error = if (!isSynced) AppErrorMapper.map(e) else null
+                    _state.update { it.copy(isRefreshingCompletedTab = false, error = error) }
                 }
         }
     }
 
     private fun onRefreshUpcomingTab() {
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshingUpcomingTab = true) }
+            _state.update { it.copy(isRefreshingUpcomingTab = true, error = null) }
             eventRepository.syncPendingEvents()
                 .onSuccess {
                     _state.update { it.copy(isRefreshingUpcomingTab = false) }
                 }
-                .onFailure {
-                    _state.update { it.copy(isRefreshingUpcomingTab = false) }
+                .onFailure { e ->
+                    _state.update { it.copy(isRefreshingUpcomingTab = false, error = AppErrorMapper.map(e)) }
                 }
         }
     }
@@ -149,10 +146,8 @@ class HomeViewModel(
                 }
                 .onFailure { e ->
                     val isSynced = eventRepository.isYearSynced(selectedYear)
-                    val errorType = if (!isSynced) {
-                        if (e is PostgrestRestException) HomeError.UNKNOWN_ERROR else HomeError.NETWORK_ERROR
-                    } else null
-                    _state.update { it.copy(isRefreshingCompletedTab = false, error = errorType) }
+                    val error = if (!isSynced) AppErrorMapper.map(e) else null
+                    _state.update { it.copy(isRefreshingCompletedTab = false, error = error) }
                 }
         }
     }

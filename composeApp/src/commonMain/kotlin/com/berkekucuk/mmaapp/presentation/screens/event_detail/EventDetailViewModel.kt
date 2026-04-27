@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.EventRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -63,13 +63,10 @@ class EventDetailViewModel(
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = if (!eventRepository.hasEventById(eventId)) {
-                        when (e) {
-                            is PostgrestRestException -> EventDetailError.UNKNOWN_ERROR
-                            else -> EventDetailError.NETWORK_ERROR
-                        }
+                    val error = if (!eventRepository.hasEventById(eventId)) {
+                        AppErrorMapper.map(e)
                     } else null
-                    _state.update { it.copy(isRefreshing = false, isLoading = false, error = errorType) }
+                    _state.update { it.copy(isRefreshing = false, isLoading = false, error = error) }
                 }
         }
     }
