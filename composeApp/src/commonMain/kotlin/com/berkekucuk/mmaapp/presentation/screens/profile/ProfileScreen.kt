@@ -35,9 +35,15 @@ import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.toRankedFighter
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
 import com.berkekucuk.mmaapp.presentation.screens.rankings.WeightClassCard
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
+import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -83,6 +89,19 @@ fun ProfileScreen(
     val onRefresh = remember(onAction) { { onAction(ProfileUiAction.OnRefresh) } }
     val onInteractionListClicked = remember(onAction) { { type: String -> onAction(ProfileUiAction.OnInteractionListClicked(type)) } }
     val onPredictionClicked = remember(onAction) { { fightId: String -> onAction(ProfileUiAction.OnPredictionClicked(fightId)) } }
+    val onErrorDismissed = remember(onAction) { { onAction(ProfileUiAction.OnErrorDismissed) } }
+
+    val isRetryableError = state.error == AppError.NETWORK
+    val errorMessage = strings.mapError(state.error)
+    val snackbarHostState = remember { SnackbarHostState() }
+    SnackbarEffect(
+        message = errorMessage,
+        snackbarHostState = snackbarHostState,
+        duration = if (isRetryableError) SnackbarDuration.Indefinite else SnackbarDuration.Short,
+        actionLabel = if (isRetryableError) strings.retry else null,
+        onAction = if (isRetryableError) onRefresh else null,
+        onDismiss = if (!isRetryableError) onErrorDismissed else null
+    )
 
     Scaffold(
         modifier = Modifier
@@ -90,6 +109,18 @@ fun ProfileScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = colors.pagerBackground,
         contentWindowInsets = WindowInsets(0),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = navBarBottomPadding),
+                snackbar = { snackbarData ->
+                    ErrorSnackbar(
+                        snackbarData = snackbarData,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    )
+                }
+            )
+        },
         topBar = {
             Column(
                 modifier = Modifier.background(colors.fighterBarBackground)

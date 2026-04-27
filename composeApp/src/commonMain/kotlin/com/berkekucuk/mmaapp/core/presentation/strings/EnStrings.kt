@@ -178,8 +178,8 @@ val EnStrings = AppStrings(
     dialogOkay = "Okay",
     mapError = { error ->
         when (error) {
-            AppError.NETWORK -> "No internet connection. Please try again."
-            AppError.SERVER_ERROR -> "Something went wrong. Please try again."
+            AppError.NETWORK -> "No internet connection."
+            AppError.SERVER_ERROR -> "Something went wrong."
             AppError.UNAUTHENTICATED -> "Please sign in to use this feature."
             AppError.ALREADY_EXISTS -> "This fighter is already in your list."
             else -> null

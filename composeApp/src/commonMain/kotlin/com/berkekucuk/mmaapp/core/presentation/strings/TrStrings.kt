@@ -186,8 +186,8 @@ val TrStrings = AppStrings(
     dialogOkay = "Tamam",
     mapError = { error ->
         when (error) {
-            AppError.NETWORK -> "İnternet bağlantısı yok. Lütfen tekrar deneyin."
-            AppError.SERVER_ERROR -> "Bir hata oluştu. Lütfen tekrar deneyin."
+            AppError.NETWORK -> "İnternet bağlantısı yok."
+            AppError.SERVER_ERROR -> "Bir hata oluştu."
             AppError.UNAUTHENTICATED -> "Bu özelliği kullanmak için lütfen giriş yapın."
             AppError.ALREADY_EXISTS -> "Bu dövüşçü zaten listenizde."
             else -> null

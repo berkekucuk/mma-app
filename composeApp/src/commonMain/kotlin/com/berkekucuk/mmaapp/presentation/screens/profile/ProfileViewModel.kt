@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
@@ -60,16 +61,26 @@ class ProfileViewModel(
         if (syncJob?.isActive == true) return
 
         syncJob = viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = isRefreshing) }
+            _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
 
-            userRepository.syncUser(userId)
-            predictionRepository.syncPredictions(userId)
-            interactionRepository.syncInteractions(userId)
-
+            val userResult = userRepository.syncUser(userId)
+            val predictionResult = predictionRepository.syncPredictions(userId)
+            val interactionResult = interactionRepository.syncInteractions(userId)
+            
             val currentUserId = authRepository.getAuthenticatedUserId()
-            if (currentUserId == userId) {
+            val notificationResult = if (currentUserId == userId) {
                 notificationRepository.syncFightNotifications(userId)
+            } else Result.success(Unit)
+
+            val firstError = userResult.exceptionOrNull() 
+                ?: predictionResult.exceptionOrNull() 
+                ?: interactionResult.exceptionOrNull()
+                ?: notificationResult.exceptionOrNull()
+
+            if (firstError != null) {
+                _state.update { it.copy(error = AppErrorMapper.map(firstError)) }
             }
+
             _state.update { it.copy(isRefreshing = false) }
         }
     }
@@ -80,6 +91,7 @@ class ProfileViewModel(
             is ProfileUiAction.OnRefresh -> syncProfile(isRefreshing = true)
             is ProfileUiAction.OnInteractionListClicked -> navigateTo(ProfileNavigationEvent.ToInteractionList(userId, action.type))
             is ProfileUiAction.OnPredictionClicked -> navigateTo(ProfileNavigationEvent.ToFightDetail(action.fightId))
+            is ProfileUiAction.OnErrorDismissed -> _state.update { it.copy(error = null) }
         }
     }
 
