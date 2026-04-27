@@ -168,16 +168,14 @@ fun FighterSearchScreen(
         ) {
             when {
                 state.error != null -> {
-                    val errorMessage = when (state.error) {
-                        FighterSearchError.NETWORK_ERROR -> strings.errorNetwork
-                        FighterSearchError.UNKNOWN_ERROR -> strings.errorUnknown
+                    strings.mapError(state.error)?.let { errorMessage ->
+                        ErrorBox(
+                            message = errorMessage,
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .padding(horizontal = 16.dp, vertical = 12.dp)
+                        )
                     }
-                    ErrorBox(
-                        message = errorMessage,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                    )
                 }
                 state.results.isNotEmpty() -> {
                     FighterSearchListContainer(

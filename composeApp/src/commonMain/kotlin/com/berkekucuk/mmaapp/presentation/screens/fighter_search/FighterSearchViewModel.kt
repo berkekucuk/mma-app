@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
-import com.berkekucuk.mmaapp.domain.model.AuthState
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -76,24 +75,20 @@ class FighterSearchViewModel(
                     if (query.length >= 2) {
                         search(query)
                     } else {
-                        _state.update { it.copy(results = p4pFighters, isLoading = false, error = null) }
+                        _state.update { it.copy(results = p4pFighters, error = null) }
                     }
                 }
         }
     }
 
     private suspend fun search(query: String) {
-        _state.update { it.copy(isLoading = true, error = null) }
+        _state.update { it.copy(error = null) }
         fighterRepository.searchFighters(query)
             .onSuccess { results ->
-                _state.update { it.copy(results = results, isLoading = false) }
+                _state.update { it.copy(results = results) }
             }
             .onFailure { e ->
-                val errorType = when (e) {
-                    is PostgrestRestException -> FighterSearchError.UNKNOWN_ERROR
-                    else -> FighterSearchError.NETWORK_ERROR
-                }
-                _state.update { it.copy(isLoading = false, error = errorType) }
+                _state.update { it.copy(error = AppErrorMapper.map(e)) }
             }
     }
 
@@ -119,23 +114,22 @@ class FighterSearchViewModel(
     private fun addInteraction(fighterId: String) {
         val type = interactionType ?: return
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(error = null) }
             
-            val authState = authRepository.authState.first { it !is AuthState.Loading }
-            if (authState !is AuthState.Authenticated) {
-                _state.update { it.copy(isLoading = false, error = FighterSearchError.UNKNOWN_ERROR) }
+            val userId = authRepository.getAuthenticatedUserId()
+            if (userId == null) {
+                _state.update { it.copy(error = AppError.UNAUTHENTICATED) }
                 return@launch
             }
 
             interactionRepository.addInteraction(
-                userId = authState.userId,
+                userId = userId,
                 fighterId = fighterId,
                 interactionType = type
             ).onSuccess {
-                _state.update { it.copy(isLoading = false) }
                 navigateTo(FighterSearchNavigationEvent.Back)
-            }.onFailure {
-                _state.update { it.copy(isLoading = false, error = FighterSearchError.NETWORK_ERROR) }
+            }.onFailure { e ->
+                _state.update { it.copy(error = AppErrorMapper.map(e)) }
             }
         }
     }

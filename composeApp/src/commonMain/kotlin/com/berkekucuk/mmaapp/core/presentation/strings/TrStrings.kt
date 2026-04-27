@@ -94,6 +94,7 @@ val TrStrings = AppStrings(
     errorNetwork = "İnternet bağlantısı yok. Lütfen tekrar deneyin.",
     errorNetwork2 = "İnternet bağlantısı yok.",
     errorUnknown = "Bir hata oluştu. Lütfen tekrar deneyin.",
+    errorAlreadyExists = "Bu dövüşçü zaten listenizde.",
     errorPleaseSignIn = "Bu özelliği kullanmak için lütfen giriş yapın.",
     retry = "Yenile",
     dialogAccept = "Onayla",
@@ -187,6 +188,8 @@ val TrStrings = AppStrings(
         when (error) {
             AppError.NETWORK -> "İnternet bağlantısı yok. Lütfen tekrar deneyin."
             AppError.SERVER_ERROR -> "Bir hata oluştu. Lütfen tekrar deneyin."
+            AppError.UNAUTHENTICATED -> "Bu özelliği kullanmak için lütfen giriş yapın."
+            AppError.ALREADY_EXISTS -> "Bu dövüşçü zaten listenizde."
             else -> null
         }
     }

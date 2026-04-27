@@ -9,6 +9,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -67,5 +68,10 @@ class AuthRepositoryImpl(
         } catch (e: Exception) {
             println("Token deletion failed: ${e.message}")
         }
+    }
+
+    override suspend fun getAuthenticatedUserId(): String? {
+        val state = authState.first { it !is AuthState.Loading }
+        return if (state is AuthState.Authenticated) state.userId else null
     }
 }

@@ -94,6 +94,7 @@ val EnStrings = AppStrings(
     errorNetwork = "No internet connection. Please try again.",
     errorNetwork2 = "No internet connection.",
     errorUnknown = "Something went wrong. Please try again.",
+    errorAlreadyExists = "This fighter is already in your list.",
     errorPleaseSignIn = "Please sign in to use this feature.",
     retry = "Retry",
     dialogAccept = "Accept",
@@ -179,6 +180,8 @@ val EnStrings = AppStrings(
         when (error) {
             AppError.NETWORK -> "No internet connection. Please try again."
             AppError.SERVER_ERROR -> "Something went wrong. Please try again."
+            AppError.UNAUTHENTICATED -> "Please sign in to use this feature."
+            AppError.ALREADY_EXISTS -> "This fighter is already in your list."
             else -> null
         }
     }

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
-import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -68,18 +66,12 @@ class ProfileViewModel(
             predictionRepository.syncPredictions(userId)
             interactionRepository.syncInteractions(userId)
 
-            val currentUserId = getAuthenticatedUserId()
-            val isOwner = currentUserId == userId
-            if (isOwner) {
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            if (currentUserId == userId) {
                 notificationRepository.syncFightNotifications(userId)
             }
             _state.update { it.copy(isRefreshing = false) }
         }
-    }
-
-    private suspend fun getAuthenticatedUserId(): String? {
-        val authState = authRepository.authState.first { it !is AuthState.Loading }
-        return if (authState is AuthState.Authenticated) authState.userId else null
     }
 
     fun onAction(action: ProfileUiAction) {
