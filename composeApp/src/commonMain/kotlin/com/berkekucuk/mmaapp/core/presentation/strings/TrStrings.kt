@@ -180,6 +180,9 @@ val TrStrings = AppStrings(
     commonRemove = "Kaldır",
     commonCancel = "Vazgeç",
     profileRemoveFighterConfirm = { name -> "$name listenizden kaldırılsın mı?" },
+    interactionLimitReachedTitle = "Limit Doldu",
+    interactionLimitReachedText = "Bu listeye en fazla 5 dövüşçü ekleyebilirsiniz.",
+    dialogOkay = "Tamam",
     mapError = { error ->
         when (error) {
             AppError.NETWORK -> "İnternet bağlantısı yok. Lütfen tekrar deneyin."

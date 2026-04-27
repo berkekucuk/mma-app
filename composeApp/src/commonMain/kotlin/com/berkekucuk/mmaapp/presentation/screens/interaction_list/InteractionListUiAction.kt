@@ -9,4 +9,5 @@ sealed interface InteractionListUiAction {
     data object OnDismissRemove : InteractionListUiAction
     data object OnRefresh : InteractionListUiAction
     data object OnErrorDismissed : InteractionListUiAction
+    data object OnDismissLimitAlert : InteractionListUiAction
 }

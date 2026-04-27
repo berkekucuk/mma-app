@@ -64,7 +64,13 @@ class InteractionListViewModel(
     fun onAction(action: InteractionListUiAction) {
         when (action) {
             is InteractionListUiAction.OnBackClicked -> navigateTo(InteractionListNavigationEvent.Back)
-            is InteractionListUiAction.OnAddFighterClicked -> navigateTo(InteractionListNavigationEvent.ToAddFighter(interactionType))
+            is InteractionListUiAction.OnAddFighterClicked -> {
+                if (_state.value.interactions.size >= 5) {
+                    _state.update { it.copy(showLimitAlert = true) }
+                } else {
+                    navigateTo(InteractionListNavigationEvent.ToAddFighter(interactionType))
+                }
+            }
             is InteractionListUiAction.OnFighterClicked -> navigateTo(InteractionListNavigationEvent.ToFighterDetail(action.fighterId))
             is InteractionListUiAction.OnRemoveFighterClicked -> _state.update { 
                 it.copy(deletingFighterId = action.fighterId) 
@@ -81,6 +87,7 @@ class InteractionListViewModel(
             }
             is InteractionListUiAction.OnRefresh -> syncInteractions()
             is InteractionListUiAction.OnErrorDismissed -> _state.update { it.copy(error = null) }
+            is InteractionListUiAction.OnDismissLimitAlert -> _state.update { it.copy(showLimitAlert = false) }
         }
     }
 

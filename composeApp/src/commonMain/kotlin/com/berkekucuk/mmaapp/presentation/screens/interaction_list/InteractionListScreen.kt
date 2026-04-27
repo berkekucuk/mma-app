@@ -90,6 +90,7 @@ fun InteractionListScreen(
     val onDismissRemove = remember(onAction) { { onAction(InteractionListUiAction.OnDismissRemove) } }
     val onRefresh = remember(onAction) { { onAction(InteractionListUiAction.OnRefresh) } }
     val onErrorDismissed = remember(onAction) { { onAction(InteractionListUiAction.OnErrorDismissed) } }
+    val onDismissLimitAlert = remember(onAction) { { onAction(InteractionListUiAction.OnDismissLimitAlert) } }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     val errorMessage = strings.mapError(state.error)
@@ -110,6 +111,16 @@ fun InteractionListScreen(
             text = strings.profileRemoveFighterConfirm(fighterName),
             confirmText = strings.commonRemove,
             dismissText = strings.commonCancel,
+        )
+    }
+
+    if (state.showLimitAlert) {
+        AppAlertDialog(
+            onDismissRequest = onDismissLimitAlert,
+            onConfirmClick = onDismissLimitAlert,
+            title = strings.interactionLimitReachedTitle,
+            text = strings.interactionLimitReachedText,
+            confirmText = strings.dialogOkay,
         )
     }
 

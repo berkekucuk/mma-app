@@ -12,6 +12,7 @@ object AppErrorMapper {
             message.contains("connection") || 
             message.contains("host") ||
             message.contains("resolv") -> AppError.NETWORK
+
             
             e is PostgrestRestException -> AppError.SERVER_ERROR
             else -> AppError.UNKNOWN

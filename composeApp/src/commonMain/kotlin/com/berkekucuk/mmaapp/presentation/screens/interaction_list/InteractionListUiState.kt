@@ -9,5 +9,6 @@ data class InteractionListUiState(
     val isOwner: Boolean = false,
     val isRefreshing: Boolean = false,
     val deletingFighterId: String? = null,
+    val showLimitAlert: Boolean = false,
     val error: AppError? = null,
 )

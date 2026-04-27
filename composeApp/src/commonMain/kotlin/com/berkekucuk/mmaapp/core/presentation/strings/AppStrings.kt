@@ -157,5 +157,8 @@ data class AppStrings(
     val commonRemove: String,
     val commonCancel: String,
     val profileRemoveFighterConfirm: (String) -> String,
+    val interactionLimitReachedTitle: String,
+    val interactionLimitReachedText: String,
+    val dialogOkay: String,
     val mapError: (AppError?) -> String?,
 )

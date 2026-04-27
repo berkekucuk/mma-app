@@ -172,6 +172,9 @@ val EnStrings = AppStrings(
     commonRemove = "Remove",
     commonCancel = "Cancel",
     profileRemoveFighterConfirm = { name -> "Remove $name from your list?" },
+    interactionLimitReachedTitle = "Limit Reached",
+    interactionLimitReachedText = "You can add a maximum of 5 fighters to this list.",
+    dialogOkay = "Okay",
     mapError = { error ->
         when (error) {
             AppError.NETWORK -> "No internet connection. Please try again."
