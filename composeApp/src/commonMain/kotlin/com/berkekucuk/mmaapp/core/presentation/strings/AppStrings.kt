@@ -141,10 +141,6 @@ data class AppStrings(
     val toUpperCase: (String) -> String,
     // Fight Prediction
     val predictionQuestionTitle: String,
-    val errorOddsNotPublished: String,
-    val errorEventOver: String,
-    val errorFightOver: String,
-    val errorFightPending: String,
     // Leaderboard
     val leaderboardInfoTitle: String,
     val leaderboardInfoText: String,

@@ -101,11 +101,8 @@ fun EventDetailScreen(
     val onRefresh = remember(onAction) { { onAction(EventDetailUiAction.OnRefresh) } }
     val onBackClick = remember(onAction) { { onAction(EventDetailUiAction.OnBackClicked) } }
 
-    val errorMessage = when (state.error) {
-        EventDetailError.NETWORK_ERROR -> strings.errorNetwork2
-        EventDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
+
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,

@@ -162,10 +162,6 @@ val TrStrings = AppStrings(
         }.joinToString("")
     },
     predictionQuestionTitle = "Kim kazanır?",
-    errorOddsNotPublished = "Oranlar bekleniyor. Tahminler yakında açılacak.",
-    errorEventOver = "Etkinlik zaten tamamlandı.",
-    errorFightOver = "Bu dövüş zaten tamamlandı.",
-    errorFightPending = "Sonuç bekleniyor. Tahminler kapandı.",
     leaderboardInfoTitle = "Puan Sistemi",
     leaderboardInfoText = "Puanlar, tahmininizi yaptığınız andaki oranın sunduğu puan getirisine dayanır.\n" +
             "\n" + "100 Puan Kuralı: Ondalık orandaki her 1.00 birimlik net kâr, 100 puan değerindedir.\n" +
@@ -188,7 +184,6 @@ val TrStrings = AppStrings(
             AppError.SERVER_ERROR -> "Bir hata oluştu."
             AppError.UNAUTHENTICATED -> "Bu özelliği kullanmak için lütfen giriş yapın."
             AppError.ALREADY_EXISTS -> "Bu dövüşçü zaten listenizde."
-
             AppError.USERNAME_TAKEN -> "Bu kullanıcı adı zaten alınmış."
             AppError.EMPTY_USERNAME -> "Kullanıcı adı boş olamaz."
             AppError.INVALID_USERNAME -> "Kullanıcı adı yalnızca a-z, 0-9, _ ve nokta içerebilir."
@@ -197,6 +192,10 @@ val TrStrings = AppStrings(
             AppError.EMPTY_FULLNAME -> "Ad boş olamaz."
             AppError.FULLNAME_TOO_SHORT -> "Ad en az 3 karakter olmalıdır."
             AppError.FULLNAME_TOO_LONG -> "Ad en fazla 50 karakter olmalıdır."
+            AppError.ODDS_NOT_PUBLISHED -> "Oranlar bekleniyor. Tahminler yakında açılacak."
+            AppError.EVENT_OVER -> "Etkinlik zaten tamamlandı."
+            AppError.FIGHT_OVER -> "Bu dövüş zaten tamamlandı."
+            AppError.FIGHT_PENDING -> "Sonuç bekleniyor. Tahminler kapandı."
             else -> null
         }
     }

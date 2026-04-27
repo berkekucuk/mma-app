@@ -9,6 +9,12 @@ object AppErrorMapper {
         return when {
             message.contains("profiles_username_key") -> AppError.USERNAME_TAKEN
             message.contains("unique_user_fighter_interaction") -> AppError.ALREADY_EXISTS
+            message.contains("not authenticated") || message.contains("unauthenticated") -> AppError.UNAUTHENTICATED
+            
+            message.contains("Odds pending. Predictions opening soon.") -> AppError.ODDS_NOT_PUBLISHED
+            message.contains("Event already over.") -> AppError.EVENT_OVER
+            message.contains("Fight already over.") -> AppError.FIGHT_OVER
+            message.contains("Result pending. Predictions locked.") -> AppError.FIGHT_PENDING
 
             message.contains("network") ||
             message.contains("timeout") || 
@@ -35,5 +41,9 @@ enum class AppError {
     INVALID_USERNAME,
     USERNAME_TOO_SHORT,
     USERNAME_TOO_LONG,
+    ODDS_NOT_PUBLISHED,
+    EVENT_OVER,
+    FIGHT_OVER,
+    FIGHT_PENDING,
     UNKNOWN
 }

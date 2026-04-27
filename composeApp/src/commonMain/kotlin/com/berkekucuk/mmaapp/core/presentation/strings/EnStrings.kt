@@ -154,10 +154,6 @@ val EnStrings = AppStrings(
     },
     toUpperCase = { it.uppercase() },
     predictionQuestionTitle = "Who will win?",
-    errorOddsNotPublished = "Odds pending. Predictions opening soon.",
-    errorEventOver = "Event already over.",
-    errorFightOver = "This fight is already over.",
-    errorFightPending = "Result pending. Predictions locked.",
     leaderboardInfoTitle = "Points System",
     leaderboardInfoText = "Points are based on the reward value of the odds at the time of your prediction.\n" +
             "\n" + "The 100-Point Rule: Each 1.00 unit of net profit in decimal odds equals 100 points.\n" +
@@ -180,7 +176,6 @@ val EnStrings = AppStrings(
             AppError.SERVER_ERROR -> "Something went wrong."
             AppError.UNAUTHENTICATED -> "Please sign in to use this feature."
             AppError.ALREADY_EXISTS -> "This fighter is already in your list."
-
             AppError.USERNAME_TAKEN -> "This username is already taken."
             AppError.EMPTY_USERNAME -> "Username cannot be empty."
             AppError.INVALID_USERNAME -> "Username can only contain a-z, 0-9, _, and dots."
@@ -189,6 +184,10 @@ val EnStrings = AppStrings(
             AppError.EMPTY_FULLNAME -> "Name cannot be empty."
             AppError.FULLNAME_TOO_SHORT -> "Name must be at least 3 characters."
             AppError.FULLNAME_TOO_LONG -> "Name cannot exceed 50 characters."
+            AppError.ODDS_NOT_PUBLISHED -> "Odds pending. Predictions opening soon."
+            AppError.EVENT_OVER -> "Event already over."
+            AppError.FIGHT_OVER -> "Fight already over."
+            AppError.FIGHT_PENDING -> "Result pending. Predictions locked."
             else -> null
         }
     }

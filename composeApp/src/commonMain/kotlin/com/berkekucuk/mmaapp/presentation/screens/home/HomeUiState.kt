@@ -1,5 +1,6 @@
 package com.berkekucuk.mmaapp.presentation.screens.home
 
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.domain.model.Event
 
 data class HomeUiState(
@@ -10,11 +11,6 @@ data class HomeUiState(
     val availableYears: List<Int> = emptyList(),
     val upcomingEvents: List<Event> = emptyList(),
     val completedEvents: List<Event> = emptyList(),
-    val error: HomeError? = null,
+    val error: AppError? = null,
 )
-
-enum class HomeError {
-    NETWORK_ERROR,
-    UNKNOWN_ERROR,
-}
 

@@ -96,11 +96,8 @@ fun HomeScreen(
     val onEventClicked = remember(onAction) { { eventId: String -> onAction(HomeUiAction.OnEventClicked(eventId)) } }
     val onYearSelected = remember(onAction) { { year: Int -> onAction(HomeUiAction.OnYearSelected(year)) } }
 
-    val errorMessage = when (state.error) {
-        HomeError.NETWORK_ERROR -> strings.errorNetwork2
-        HomeError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
+
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
-
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +27,6 @@ class MenuViewModel(
 
     private val _state = MutableStateFlow(MenuUiState())
     val state: StateFlow<MenuUiState> = _state.asStateFlow()
-
     private val _navigation = MutableSharedFlow<MenuNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
 

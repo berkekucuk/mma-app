@@ -82,15 +82,12 @@ fun FighterDetailScreen(
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val coroutineScope = rememberCoroutineScope()
 
-    val onFightClicked = remember(onAction) { { eventId: String, fightId: String -> onAction(FighterDetailUiAction.OnFightClicked(eventId, fightId)) } }
+    val onFightClicked = remember(onAction) { { fightId: String -> onAction(FighterDetailUiAction.OnFightClicked(fightId)) } }
     val onRefresh = remember(onAction) { { onAction(FighterDetailUiAction.OnRefresh) } }
     val onBackClick = remember(onAction) { { onAction(FighterDetailUiAction.OnBackClicked) } }
 
-    val errorMessage = when (state.error) {
-        FighterDetailError.NETWORK_ERROR -> strings.errorNetwork2
-        FighterDetailError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
+
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,

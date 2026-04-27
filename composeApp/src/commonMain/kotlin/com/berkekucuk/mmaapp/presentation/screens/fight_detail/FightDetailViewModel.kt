@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
@@ -14,7 +16,6 @@ import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.domain.model.Fight
 import com.berkekucuk.mmaapp.domain.model.Fighter
 import com.berkekucuk.mmaapp.domain.repository.FightRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,11 +108,7 @@ class FightDetailViewModel(
             if (sync) {
                 fighterRepository.syncFighter(fighterId)
                     .onFailure { e ->
-                        val errorType = when (e) {
-                            is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
-                            else -> FightDetailError.NETWORK_ERROR
-                        }
-                        _state.update { it.copy(error = errorType) }
+                        _state.update { it.copy(error = AppErrorMapper.map(e)) }
                     }
             }
 
@@ -149,7 +146,7 @@ class FightDetailViewModel(
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId == null) {
-                _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
+                _state.update { it.copy(error = AppError.UNAUTHENTICATED) }
                 return@launch
             }
 
@@ -171,7 +168,7 @@ class FightDetailViewModel(
 
     private fun canToggleNotification(fight: Fight, isNotificationEnabled: Boolean): Boolean {
         if (isFightCompleted(fight) && !isNotificationEnabled) {
-            _state.update { it.copy(error = FightDetailError.FIGHT_OVER) }
+            _state.update { it.copy(error = AppError.FIGHT_OVER) }
             return false
         }
         return true
@@ -179,8 +176,8 @@ class FightDetailViewModel(
 
     private suspend fun removeNotification(fightId: String, userId: String) {
         notificationRepository.removeFightNotification(fightId, userId)
-            .onFailure {
-                _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
+            .onFailure { e ->
+                _state.update { it.copy(error = AppErrorMapper.map(e)) }
             }
     }
 
@@ -191,8 +188,8 @@ class FightDetailViewModel(
         }
 
         notificationRepository.addFightNotification(fightId, userId)
-            .onFailure {
-            _state.update { it.copy(error = FightDetailError.NETWORK_ERROR) }
+            .onFailure { e ->
+            _state.update { it.copy(error = AppErrorMapper.map(e)) }
         }
     }
 
@@ -210,18 +207,18 @@ class FightDetailViewModel(
         viewModelScope.launch {
             val userId = getAuthenticatedUserId()
             if (userId == null) {
-                _state.update { it.copy(error = FightDetailError.NOT_AUTHENTICATED) }
+                _state.update { it.copy(error = AppError.UNAUTHENTICATED) }
                 return@launch
             }
 
             val fight = _state.value.fight ?: return@launch
             if (isFightCompleted(fight)) {
-                _state.update { it.copy(error = FightDetailError.FIGHT_OVER) }
+                _state.update { it.copy(error = AppError.FIGHT_OVER) }
                 return@launch
             }
 
             if(!areOddsPublished(fight)){
-                _state.update { it.copy(error = FightDetailError.ODDS_NOT_PUBLISHED) }
+                _state.update { it.copy(error = AppError.ODDS_NOT_PUBLISHED) }
                 return@launch
             }
 
@@ -234,21 +231,8 @@ class FightDetailViewModel(
                     _state.update { it.copy(isSubmittingPrediction = false) }
                 }
                 .onFailure { e ->
-                    val error = mapRemoteError(e)
-                    _state.update { it.copy(isSubmittingPrediction = false, error = error) }
+                    _state.update { it.copy(isSubmittingPrediction = false, error = AppErrorMapper.map(e)) }
                 }
-        }
-    }
-
-    private fun mapRemoteError(e: Throwable): FightDetailError {
-        val message = e.message ?: ""
-        return when {
-            message.contains("Odds pending. Predictions opening soon.", ignoreCase = true) -> FightDetailError.ODDS_NOT_PUBLISHED
-            message.contains("Event already over.", ignoreCase = true) -> FightDetailError.EVENT_OVER
-            message.contains("Fight already over.", ignoreCase = true) -> FightDetailError.FIGHT_OVER
-            message.contains("Result pending. Predictions locked.", ignoreCase = true) -> FightDetailError.FIGHT_PENDING
-            e is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
-            else -> FightDetailError.NETWORK_ERROR
         }
     }
 
@@ -279,11 +263,7 @@ class FightDetailViewModel(
                 _state.update { it.copy(isRefreshing = false) }
             }
                 .onFailure { e ->
-                val errorType = when (e) {
-                    is PostgrestRestException -> FightDetailError.UNKNOWN_ERROR
-                    else -> FightDetailError.NETWORK_ERROR
-                }
-                _state.update { it.copy(isRefreshing = false, error = errorType) }
+                _state.update { it.copy(isRefreshing = false, error = AppErrorMapper.map(e)) }
             }
         }
     }

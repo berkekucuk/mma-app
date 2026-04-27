@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.FighterRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,13 +57,10 @@ class FighterDetailViewModel(
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = if (!repository.isFighterExists(fighterId)) {
-                        when (e) {
-                            is PostgrestRestException -> FighterDetailError.UNKNOWN_ERROR
-                            else -> FighterDetailError.NETWORK_ERROR
-                        }
+                    val error = if (!repository.isFighterExists(fighterId)) {
+                        AppErrorMapper.map(e)
                     } else null
-                    _state.update { it.copy(isLoading = false, isRefreshing = false, error = errorType) }
+                    _state.update { it.copy(isLoading = false, isRefreshing = false, error = error) }
                 }
         }
     }
@@ -71,7 +68,7 @@ class FighterDetailViewModel(
     fun onAction(action: FighterDetailUiAction) {
         when (action) {
             is FighterDetailUiAction.OnFightClicked -> navigateTo(
-                FighterDetailNavigationEvent.ToFightDetail(action.eventId, action.fightId, fighterId)
+                FighterDetailNavigationEvent.ToFightDetail(action.fightId, fighterId)
             )
             is FighterDetailUiAction.OnBackClicked -> navigateTo(FighterDetailNavigationEvent.Back)
             is FighterDetailUiAction.OnRefresh -> syncFighter(isRefreshing = true)
