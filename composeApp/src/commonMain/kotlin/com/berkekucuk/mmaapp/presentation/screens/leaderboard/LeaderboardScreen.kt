@@ -12,6 +12,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -72,6 +73,7 @@ fun LeaderboardScreen(
     val onBackClicked = remember(onAction) { { onAction(LeaderboardUiAction.OnBackClicked) } }
     val onUserClicked = remember(onAction) { { userId: String -> onAction(LeaderboardUiAction.OnUserClicked(userId)) } }
     val onRefresh = remember(onAction) { { onAction(LeaderboardUiAction.OnRefresh) } }
+    val onErrorShown = remember(onAction) { { onAction(LeaderboardUiAction.OnErrorShown) } }
     val showInfoDialog = remember { mutableStateOf(false) }
     val onInfoDialogDismiss = remember { { showInfoDialog.value = false } }
     val onInfoDialogConfirmed = remember { { showInfoDialog.value = false} }
@@ -80,17 +82,13 @@ fun LeaderboardScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val navBarBottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    val errorMessage = when (state.error) {
-        LeaderboardError.NETWORK_ERROR -> strings.errorNetwork2
-        LeaderboardError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
 
     SnackbarEffect(
         message = errorMessage,
         snackbarHostState = snackbarHostState,
-        actionLabel = strings.retry,
-        onAction = onRefresh,
+        duration = SnackbarDuration.Short,
+        onDismiss = onErrorShown,
     )
 
     Scaffold(

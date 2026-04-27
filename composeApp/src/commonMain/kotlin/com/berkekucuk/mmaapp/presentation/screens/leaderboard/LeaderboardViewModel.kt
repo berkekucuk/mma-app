@@ -2,8 +2,8 @@ package com.berkekucuk.mmaapp.presentation.screens.leaderboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
-import io.github.jan.supabase.postgrest.exception.PostgrestRestException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,6 @@ class LeaderboardViewModel(
 
     private val _state = MutableStateFlow(LeaderboardUiState())
     val state = _state.asStateFlow()
-
     private val _navigation = MutableSharedFlow<LeaderboardNavigationEvent>()
     val navigation = _navigation.asSharedFlow()
     private var syncJob: Job? = null
@@ -30,9 +29,9 @@ class LeaderboardViewModel(
 
     private fun observeLeaderboard() {
         viewModelScope.launch {
-            userRepository.getUsers(15)
+            userRepository.getUsers(50)
                 .collect { users ->
-                _state.update { it.copy(leaderboard = users) }
+                _state.update { it.copy(isLoading = false, leaderboard = users) }
             }
         }
     }
@@ -43,19 +42,15 @@ class LeaderboardViewModel(
         syncJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
 
-            userRepository.syncUsers(15)
+            userRepository.syncUsers(50)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val errorType = when (e) {
-                         is PostgrestRestException -> LeaderboardError.UNKNOWN_ERROR
-                         else -> LeaderboardError.NETWORK_ERROR
+                    _state.update { 
+                        it.copy(isRefreshing = false, error = AppErrorMapper.map(e))
                     }
-                    _state.update { it.copy(isLoading = false, isRefreshing = false, error = errorType) }
                 }
-
-            _state.update { it.copy(isLoading = false) }
         }
     }
 
@@ -64,6 +59,7 @@ class LeaderboardViewModel(
             LeaderboardUiAction.OnBackClicked -> navigateTo(LeaderboardNavigationEvent.Back)
             is LeaderboardUiAction.OnUserClicked -> navigateTo(LeaderboardNavigationEvent.ToUserProfile(action.userId))
             LeaderboardUiAction.OnRefresh -> syncLeaderboard(isRefreshing = true)
+            LeaderboardUiAction.OnErrorShown -> _state.update { it.copy(error = null) }
         }
     }
 
