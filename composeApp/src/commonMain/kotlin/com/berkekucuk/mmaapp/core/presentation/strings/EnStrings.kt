@@ -80,17 +80,9 @@ val EnStrings = AppStrings(
     profileHatedFighters = "Hated Fighters",
     profileEditTitle = "Edit Profile",
     profileEditPersonalInfo = "Personal Information",
-    profileEditFullName = "Full Name",
+    profileEditFullName = "Name",
     profileEditUsernameLabel = "Username",
     profileEditSaveChanges = "Save Changes",
-    profileEditErrorUsernameTaken = "This username is already taken.",
-    profileEditErrorEmptyUsername = "Username cannot be empty.",
-    profileEditErrorInvalidUsername = "Username can only contain a-z, 0-9, _, and dots.",
-    profileEditErrorUsernameShort = "Username must be at least 3 characters.",
-    profileEditErrorUsernameLong = "Username must be at most 20 characters.",
-    profileEditErrorEmptyFullname = "Full name cannot be empty.",
-    profileEditErrorFullnameShort = "Full name must be at least 3 characters.",
-    profileEditErrorFullnameLong = "Full name must be at most 50 characters.",
     fighterSearchPlaceholder = "Search fighters...",
     fighterSearchEmpty = "No fighters found",
     errorNetwork = "No internet connection. Please try again.",
@@ -184,6 +176,15 @@ val EnStrings = AppStrings(
             AppError.SERVER_ERROR -> "Something went wrong."
             AppError.UNAUTHENTICATED -> "Please sign in to use this feature."
             AppError.ALREADY_EXISTS -> "This fighter is already in your list."
+
+            AppError.USERNAME_TAKEN -> "This username is already taken."
+            AppError.EMPTY_USERNAME -> "Username cannot be empty."
+            AppError.INVALID_USERNAME -> "Username can only contain a-z, 0-9, _, and dots."
+            AppError.USERNAME_TOO_SHORT -> "Username must be at least 3 characters."
+            AppError.USERNAME_TOO_LONG -> "Username cannot exceed 20 characters."
+            AppError.EMPTY_FULLNAME -> "Name cannot be empty."
+            AppError.FULLNAME_TOO_SHORT -> "Name must be at least 3 characters."
+            AppError.FULLNAME_TOO_LONG -> "Name cannot exceed 50 characters."
             else -> null
         }
     }

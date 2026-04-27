@@ -80,17 +80,9 @@ val TrStrings = AppStrings(
     profileHatedFighters = "Sevilmeyen Dövüşçüler",
     profileEditTitle = "Profili Düzenle",
     profileEditPersonalInfo = "Kişisel Bilgiler",
-    profileEditFullName = "Ad Soyad",
+    profileEditFullName = "Ad",
     profileEditUsernameLabel = "Kullanıcı Adı",
     profileEditSaveChanges = "Değişiklikleri Kaydet",
-    profileEditErrorUsernameTaken = "Bu kullanıcı adı zaten alınmış.",
-    profileEditErrorEmptyUsername = "Kullanıcı adı boş olamaz.",
-    profileEditErrorInvalidUsername = "Kullanıcı adı yalnızca a-z, 0-9, _ ve nokta içerebilir.",
-    profileEditErrorUsernameShort = "Kullanıcı adı en az 3 karakter olmalıdır.",
-    profileEditErrorUsernameLong = "Kullanıcı adı en fazla 20 karakter olmalıdır.",
-    profileEditErrorEmptyFullname = "Ad soyad boş olamaz.",
-    profileEditErrorFullnameShort = "Ad soyad en az 3 karakter olmalıdır.",
-    profileEditErrorFullnameLong = "Ad soyad en fazla 50 karakter olmalıdır.",
     fighterSearchPlaceholder = "Dövüşçü ara...",
     fighterSearchEmpty = "Dövüşçü bulunamadı",
     errorNetwork = "İnternet bağlantısı yok. Lütfen tekrar deneyin.",
@@ -192,6 +184,15 @@ val TrStrings = AppStrings(
             AppError.SERVER_ERROR -> "Bir hata oluştu."
             AppError.UNAUTHENTICATED -> "Bu özelliği kullanmak için lütfen giriş yapın."
             AppError.ALREADY_EXISTS -> "Bu dövüşçü zaten listenizde."
+
+            AppError.USERNAME_TAKEN -> "Bu kullanıcı adı zaten alınmış."
+            AppError.EMPTY_USERNAME -> "Kullanıcı adı boş olamaz."
+            AppError.INVALID_USERNAME -> "Kullanıcı adı yalnızca a-z, 0-9, _ ve nokta içerebilir."
+            AppError.USERNAME_TOO_SHORT -> "Kullanıcı adı en az 3 karakter olmalıdır."
+            AppError.USERNAME_TOO_LONG -> "Kullanıcı adı en fazla 20 karakter olmalıdır."
+            AppError.EMPTY_FULLNAME -> "Ad boş olamaz."
+            AppError.FULLNAME_TOO_SHORT -> "Ad en az 3 karakter olmalıdır."
+            AppError.FULLNAME_TOO_LONG -> "Ad en fazla 50 karakter olmalıdır."
             else -> null
         }
     }

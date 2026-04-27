@@ -74,19 +74,7 @@ fun ProfileEditScreen(
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val focusManager = LocalFocusManager.current
-    val errorMessage = when (state.error) {
-        ProfileEditError.NETWORK_ERROR -> strings.errorNetwork
-        ProfileEditError.USERNAME_TAKEN -> strings.profileEditErrorUsernameTaken
-        ProfileEditError.EMPTY_USERNAME -> strings.profileEditErrorEmptyUsername
-        ProfileEditError.INVALID_USERNAME -> strings.profileEditErrorInvalidUsername
-        ProfileEditError.USERNAME_TOO_SHORT -> strings.profileEditErrorUsernameShort
-        ProfileEditError.USERNAME_TOO_LONG -> strings.profileEditErrorUsernameLong
-        ProfileEditError.EMPTY_FULLNAME -> strings.profileEditErrorEmptyFullname
-        ProfileEditError.FULLNAME_TOO_SHORT -> strings.profileEditErrorFullnameShort
-        ProfileEditError.FULLNAME_TOO_LONG -> strings.profileEditErrorFullnameLong
-        ProfileEditError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
-    }
+    val errorMessage = strings.mapError(state.error)
 
     Scaffold(
         modifier = Modifier
