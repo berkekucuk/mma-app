@@ -1,12 +1,10 @@
 package com.berkekucuk.mmaapp.presentation.screens.profile_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
-import com.berkekucuk.mmaapp.core.app.Route
 import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,11 +16,9 @@ import kotlinx.coroutines.launch
 
 class ProfileEditViewModel(
     private val userRepository: UserRepository,
-    private val savedStateHandle: SavedStateHandle,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
 
-    private val route = savedStateHandle.toRoute<Route.ProfileEdit>()
-    private val userId: String = route.userId
     private val _state = MutableStateFlow(ProfileEditUiState())
     val state: StateFlow<ProfileEditUiState> = _state.asStateFlow()
     private val _navigation = MutableSharedFlow<ProfileEditNavigationEvent>()
@@ -36,6 +32,16 @@ class ProfileEditViewModel(
 
     private fun loadUser() {
         viewModelScope.launch {
+            val userId = authRepository.getAuthenticatedUserId()
+            val email = authRepository.getAuthenticatedUserEmail()
+            
+            if (userId == null) {
+                navigateTo(ProfileEditNavigationEvent.Back)
+                return@launch
+            }
+
+            _state.update { it.copy(email = email ?: "") }
+
             userRepository.getUser(userId)
                 .collect { user ->
                 _state.update {
@@ -84,6 +90,23 @@ class ProfileEditViewModel(
 
             is ProfileEditUiAction.OnSaveClicked -> validateAndSave()
             is ProfileEditUiAction.OnBackClicked -> navigateTo(ProfileEditNavigationEvent.Back)
+            is ProfileEditUiAction.OnDeleteAccountClicked -> deleteAccount()
+        }
+    }
+
+    private fun deleteAccount() {
+        if (_state.value.isSaving) return
+
+        viewModelScope.launch {
+            val userId = authRepository.getAuthenticatedUserId() ?: return@launch
+            userRepository.deleteUser(userId)
+                .onSuccess {
+                    authRepository.signOut()
+                    navigateTo(ProfileEditNavigationEvent.AccountDeleted)
+                }
+                .onFailure { e ->
+                    _state.update { it.copy(error = AppErrorMapper.map(e)) }
+                }
         }
     }
 
@@ -111,6 +134,7 @@ class ProfileEditViewModel(
         }
 
         viewModelScope.launch {
+            val userId = authRepository.getAuthenticatedUserId() ?: return@launch
             _state.update { it.copy(isSaving = true) }
 
             val result = userRepository.updateUser(

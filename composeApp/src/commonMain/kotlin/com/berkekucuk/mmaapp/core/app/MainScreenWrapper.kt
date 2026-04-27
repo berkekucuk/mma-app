@@ -30,7 +30,7 @@ fun MainScreenWrapper(
     onNavigateToEventDetail: (String) -> Unit,
     onNavigateToRankingDetail: (String) -> Unit,
     onNavigateToProfile: (String) -> Unit,
-    onNavigateToProfileEdit: (String) -> Unit,
+    onNavigateToProfileEdit: () -> Unit,
     onNavigateToFighterSearch: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToLeaderboard: () -> Unit,

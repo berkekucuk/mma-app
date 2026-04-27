@@ -322,7 +322,7 @@ val appModule = module {
     viewModel {
         ProfileEditViewModel(
             userRepository = get(),
-            savedStateHandle = get()
+            authRepository = get(),
         )
     }
 

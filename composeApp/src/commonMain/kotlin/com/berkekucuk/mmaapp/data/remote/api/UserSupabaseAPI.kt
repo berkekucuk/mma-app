@@ -3,6 +3,7 @@ package com.berkekucuk.mmaapp.data.remote.api
 import com.berkekucuk.mmaapp.data.remote.dto.UserDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 
 class UserSupabaseAPI(
     private val client: SupabaseClient
@@ -31,5 +32,9 @@ class UserSupabaseAPI(
                 eq("id", userId)
             }
         }
+    }
+
+    override suspend fun deleteUser(userId: String) {
+        client.postgrest.rpc("delete_my_account")
     }
 }

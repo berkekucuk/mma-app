@@ -87,4 +87,15 @@ class UserRepositoryImpl(
             }
         }
     }
+
+    override suspend fun deleteUser(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.deleteUser(userId)
+                dao.deleteUser(userId)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
 }

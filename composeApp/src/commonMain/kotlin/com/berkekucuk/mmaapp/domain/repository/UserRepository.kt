@@ -11,4 +11,5 @@ interface UserRepository {
     suspend fun syncUser(userId: String): Result<Unit>
     suspend fun syncUsers(limit: Int): Result<Unit>
     suspend fun updateUser(userId: String, fullName: String, username: String): Result<Unit>
+    suspend fun deleteUser(userId: String): Result<Unit>
 }

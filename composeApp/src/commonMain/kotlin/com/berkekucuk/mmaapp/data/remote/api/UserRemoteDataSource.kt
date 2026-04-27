@@ -8,4 +8,5 @@ interface UserRemoteDataSource {
     suspend fun fetchUsers(limit: Int): List<UserDto>
 
     suspend fun updateUser(userId: String, fullName: String, username: String)
+    suspend fun deleteUser(userId: String)
 }

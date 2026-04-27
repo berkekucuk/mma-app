@@ -15,6 +15,7 @@ fun AppAlertDialog(
     text: String,
     confirmText: String,
     dismissText: String? = null,
+    isDestructive: Boolean = false,
 ) {
     val colors = LocalAppColors.current
 
@@ -36,7 +37,10 @@ fun AppAlertDialog(
         },
         confirmButton = {
             TextButton(onClick = onConfirmClick) {
-                Text(text = confirmText, color = colors.winnerFrame)
+                Text(
+                    text = confirmText,
+                    color = if (isDestructive) colors.ufcRed else colors.winnerFrame
+                )
             }
         },
         dismissButton = dismissText?.let {

@@ -5,6 +5,7 @@ import com.berkekucuk.mmaapp.core.utils.AppError
 data class ProfileEditUiState(
     val fullName: String = "",
     val username: String = "",
+    val email: String = "",
     val originalFullName: String = "",
     val originalUsername: String = "",
     val isSaving: Boolean = false,

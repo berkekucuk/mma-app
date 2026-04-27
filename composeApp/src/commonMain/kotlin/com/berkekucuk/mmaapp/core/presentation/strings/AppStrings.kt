@@ -90,9 +90,13 @@ data class AppStrings(
     // Profile Edit Screen
     val profileEditTitle: String,
     val profileEditPersonalInfo: String,
+    val profileEditEmail: String,
     val profileEditFullName: String,
     val profileEditUsernameLabel: String,
     val profileEditSaveChanges: String,
+    val profileEditDeleteAccount: String,
+    val profileEditDeleteAccountTitle: String,
+    val profileEditDeleteAccountConfirm: String,
     // Fighter Search Screen
     val fighterSearchPlaceholder: String,
     val fighterSearchEmpty: String,
