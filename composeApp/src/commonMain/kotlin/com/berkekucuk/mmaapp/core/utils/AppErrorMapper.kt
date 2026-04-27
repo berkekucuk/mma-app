@@ -7,8 +7,8 @@ object AppErrorMapper {
         val message = e.message?.lowercase() ?: ""
         
         return when {
-            message.contains("duplicate key") || 
-            message.contains("23505") -> AppError.ALREADY_EXISTS
+            message.contains("profiles_username_key") -> AppError.USERNAME_TAKEN
+            message.contains("unique_user_fighter_interaction") -> AppError.ALREADY_EXISTS
 
             message.contains("network") ||
             message.contains("timeout") || 
@@ -27,5 +27,13 @@ enum class AppError {
     SERVER_ERROR,
     UNAUTHENTICATED,
     ALREADY_EXISTS,
+    USERNAME_TAKEN,
+    EMPTY_FULLNAME,
+    FULLNAME_TOO_SHORT,
+    FULLNAME_TOO_LONG,
+    EMPTY_USERNAME,
+    INVALID_USERNAME,
+    USERNAME_TOO_SHORT,
+    USERNAME_TOO_LONG,
     UNKNOWN
 }

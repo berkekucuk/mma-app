@@ -8,7 +8,7 @@ sealed interface Route {
     @Serializable data object Rankings : Route
     @Serializable data object Menu : Route
     @Serializable data class Profile(val userId: String) : Route
-    @Serializable data class ProfileEdit(val userId: String) : Route
+    @Serializable data object ProfileEdit : Route
     @Serializable data class EventDetail(val eventId: String, val fromFightDetail: Boolean = false) : Route
     @Serializable data class FightDetail(val fightId: String, val fighterId: String? = null, val fromEventDetail: Boolean = false) : Route
     @Serializable data class FighterDetail(val fighterId: String) : Route

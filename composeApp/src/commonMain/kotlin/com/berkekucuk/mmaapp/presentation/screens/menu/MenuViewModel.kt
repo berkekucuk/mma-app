@@ -81,9 +81,7 @@ class MenuViewModel(
                 }
             }
             MenuUiAction.OnProfileEditClicked -> {
-                _state.value.userId?.let { userId ->
-                    navigateTo(MenuNavigationEvent.ToProfileEdit(userId))
-                }
+                    navigateTo(MenuNavigationEvent.ToProfileEdit)
             }
 
             MenuUiAction.OnSettingsClicked -> {

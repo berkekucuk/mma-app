@@ -70,7 +70,7 @@ fun FightsContainer(
                     Text(
                         text = emptyMessage,
                         style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = colors.textSecondary
                     )
                 }
             }

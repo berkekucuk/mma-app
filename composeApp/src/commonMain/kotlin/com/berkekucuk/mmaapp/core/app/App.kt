@@ -141,8 +141,8 @@ fun App(
                     onNavigateToProfile = { userId ->
                         rootNavController.navigate(Route.Profile(userId))
                     },
-                    onNavigateToProfileEdit = { userId ->
-                        rootNavController.navigate(Route.ProfileEdit(userId))
+                    onNavigateToProfileEdit = {
+                        rootNavController.navigate(Route.ProfileEdit)
                     },
                     onNavigateToFighterSearch = {
                         rootNavController.navigate(Route.FighterSearch())

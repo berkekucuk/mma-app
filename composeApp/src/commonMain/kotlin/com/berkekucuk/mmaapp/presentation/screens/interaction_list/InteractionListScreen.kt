@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -193,51 +194,66 @@ fun InteractionListScreen(
             verticalSpacing = 0.dp,
             extraBottomPadding = navBarBottomPadding,
         ) {
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(colors.fightItemBackground)
-                ) {
-                    state.interactions.forEachIndexed { index, interaction ->
-                        interaction.fighter?.let { fighter ->
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 12.dp)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
+            if (state.interactions.isEmpty()) {
+                item(contentType = "EmptyState") {
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = strings.emptyInteractionList,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = colors.textSecondary
+                        )
+                    }
+                }
+            } else {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(colors.fightItemBackground)
+                    ) {
+                        state.interactions.forEachIndexed { index, interaction ->
+                            interaction.fighter?.let { fighter ->
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp)
                                 ) {
-                                    Box(modifier = Modifier.weight(1f)) {
-                                        RankedFighterRow(
-                                            rankNumber = interaction.rankNumber ?: 0,
-                                            isChampion = false,
-                                            name = fighter.name,
-                                            record = fighter.record.toString(),
-                                            imageUrl = fighter.imageUrl,
-                                            countryCode = fighter.countryCode,
-                                            onFighterClicked = { onFighterClicked(fighter.fighterId) },
-                                        )
-                                    }
-                                    if (state.isOwner) {
-                                        IconButton(onClick = { onRemoveFighterClicked(fighter.fighterId) }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Remove,
-                                                contentDescription = null,
-                                                tint = colors.textSecondary,
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            RankedFighterRow(
+                                                rankNumber = interaction.rankNumber ?: 0,
+                                                isChampion = false,
+                                                name = fighter.name,
+                                                record = fighter.record.toString(),
+                                                imageUrl = fighter.imageUrl,
+                                                countryCode = fighter.countryCode,
+                                                onFighterClicked = { onFighterClicked(fighter.fighterId) },
                                             )
                                         }
+                                        if (state.isOwner) {
+                                            IconButton(onClick = { onRemoveFighterClicked(fighter.fighterId) }) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Remove,
+                                                    contentDescription = null,
+                                                    tint = colors.textSecondary,
+                                                )
+                                            }
+                                        }
                                     }
-                                }
 
-                                if (index < state.interactions.lastIndex) {
-                                    HorizontalDivider(
-                                        color = colors.dividerColor,
-                                        thickness = 0.8.dp,
-                                    )
+                                    if (index < state.interactions.lastIndex) {
+                                        HorizontalDivider(
+                                            color = colors.dividerColor,
+                                            thickness = 0.8.dp,
+                                        )
+                                    }
                                 }
                             }
                         }

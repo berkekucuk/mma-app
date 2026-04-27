@@ -37,7 +37,12 @@ import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorBox
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
 
 @Composable
 fun ProfileEditScreenRoot(
@@ -50,6 +55,7 @@ fun ProfileEditScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is ProfileEditNavigationEvent.Back -> onNavigateBack()
+                is ProfileEditNavigationEvent.AccountDeleted -> onNavigateBack()
             }
         }
     }
@@ -70,22 +76,32 @@ fun ProfileEditScreen(
     val onFullNameChanged = remember(onAction) { { name: String -> onAction(ProfileEditUiAction.OnFullNameChanged(name)) } }
     val onUsernameChanged = remember(onAction) { { username: String -> onAction(ProfileEditUiAction.OnUsernameChanged(username)) } }
     val onSaveClicked = remember(onAction) { { onAction(ProfileEditUiAction.OnSaveClicked) } }
+    val onDeleteAccountClicked = remember(onAction) { { onAction(ProfileEditUiAction.OnDeleteAccountClicked) } }
+
+    val showDeleteDialog = remember { mutableStateOf(false) }
+    val onDeleteDialogDismiss = remember { { showDeleteDialog.value = false } }
+    val onDeleteConfirmed = remember(onAction) {
+        {
+            showDeleteDialog.value = false
+            onDeleteAccountClicked()
+        }
+    }
 
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val focusManager = LocalFocusManager.current
-    val errorMessage = when (state.error) {
-        ProfileEditError.NETWORK_ERROR -> strings.errorNetwork
-        ProfileEditError.USERNAME_TAKEN -> strings.profileEditErrorUsernameTaken
-        ProfileEditError.EMPTY_USERNAME -> strings.profileEditErrorEmptyUsername
-        ProfileEditError.INVALID_USERNAME -> strings.profileEditErrorInvalidUsername
-        ProfileEditError.USERNAME_TOO_SHORT -> strings.profileEditErrorUsernameShort
-        ProfileEditError.USERNAME_TOO_LONG -> strings.profileEditErrorUsernameLong
-        ProfileEditError.EMPTY_FULLNAME -> strings.profileEditErrorEmptyFullname
-        ProfileEditError.FULLNAME_TOO_SHORT -> strings.profileEditErrorFullnameShort
-        ProfileEditError.FULLNAME_TOO_LONG -> strings.profileEditErrorFullnameLong
-        ProfileEditError.UNKNOWN_ERROR -> strings.errorUnknown
-        null -> null
+    val errorMessage = strings.mapError(state.error)
+
+    if (showDeleteDialog.value) {
+        AppAlertDialog(
+            onDismissRequest = onDeleteDialogDismiss,
+            onConfirmClick = onDeleteConfirmed,
+            title = strings.profileEditDeleteAccountTitle,
+            text = strings.profileEditDeleteAccountConfirm,
+            confirmText = strings.profileEditDeleteAccount,
+            dismissText = strings.commonCancel,
+            isDestructive = true
+        )
     }
 
     Scaffold(
@@ -140,6 +156,28 @@ fun ProfileEditScreen(
                 color = colors.textSecondary,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            OutlinedTextField(
+                value = state.email,
+                onValueChange = {},
+                readOnly = true,
+                textStyle = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
+                label = { Text(strings.profileEditEmail, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal)) },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = colors.textSecondary,
+                    unfocusedTextColor = colors.textSecondary,
+                    focusedBorderColor = colors.cardBorder,
+                    unfocusedBorderColor = colors.cardBorder,
+                    focusedLabelColor = colors.textSecondary,
+                    unfocusedLabelColor = colors.textSecondary,
+                    cursorColor = Color.Transparent
+                ),
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = state.fullName,
@@ -201,6 +239,24 @@ fun ProfileEditScreen(
                 onClick = onSaveClicked,
                 isSaving = state.isSaving,
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                TextButton(
+                    onClick = { showDeleteDialog.value = true }
+                ) {
+                    Text(
+                        text = strings.profileEditDeleteAccount,
+                        color = colors.ufcRed,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }

@@ -221,7 +221,8 @@ val appModule = module {
     single<NotificationRepository> {
         NotificationRepositoryImpl(
             remoteDataSource = get(),
-            dao = get()
+            dao = get(),
+            rateLimiter = get()
         )
     }
 
@@ -229,7 +230,8 @@ val appModule = module {
         PredictionRepositoryImpl(
             predictionDao = get(),
             fightDao = get(),
-            remoteDataSource = get()
+            remoteDataSource = get(),
+            rateLimiter = get()
         )
     }
 
@@ -320,7 +322,7 @@ val appModule = module {
     viewModel {
         ProfileEditViewModel(
             userRepository = get(),
-            savedStateHandle = get()
+            authRepository = get(),
         )
     }
 

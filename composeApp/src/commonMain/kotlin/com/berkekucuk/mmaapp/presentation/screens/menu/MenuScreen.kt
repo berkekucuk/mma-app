@@ -46,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun MenuScreenRoot(
     onNavigateToProfile: (String) -> Unit,
-    onNavigateToProfileEdit: (String) -> Unit,
+    onNavigateToProfileEdit: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToLeaderboard: () -> Unit,
     viewModel: MenuViewModel = koinViewModel(),
@@ -58,7 +58,7 @@ fun MenuScreenRoot(
         viewModel.navigation.collect { event ->
             when (event) {
                 is MenuNavigationEvent.ToProfile -> onNavigateToProfile(event.userId)
-                is MenuNavigationEvent.ToProfileEdit -> onNavigateToProfileEdit(event.userId)
+                is MenuNavigationEvent.ToProfileEdit -> onNavigateToProfileEdit()
                 is MenuNavigationEvent.ToSettings -> onNavigateToSettings()
                 is MenuNavigationEvent.ToLeaderboard -> onNavigateToLeaderboard()
             }

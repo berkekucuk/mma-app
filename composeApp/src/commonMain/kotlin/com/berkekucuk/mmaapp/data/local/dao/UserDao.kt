@@ -30,4 +30,7 @@ interface UserDao {
 
     @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")
     suspend fun updateUser(userId: String, fullName: String, username: String)
+
+    @Query("DELETE FROM users WHERE id = :userId")
+    suspend fun deleteUser(userId: String)
 }

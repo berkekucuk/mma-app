@@ -5,4 +5,5 @@ sealed interface ProfileEditUiAction {
     data class OnUsernameChanged(val value: String) : ProfileEditUiAction
     data object OnSaveClicked : ProfileEditUiAction
     data object OnBackClicked : ProfileEditUiAction
+    data object OnDeleteAccountClicked : ProfileEditUiAction
 }

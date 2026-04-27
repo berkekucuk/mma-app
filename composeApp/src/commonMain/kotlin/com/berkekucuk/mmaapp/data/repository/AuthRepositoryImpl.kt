@@ -74,4 +74,9 @@ class AuthRepositoryImpl(
         val state = authState.first { it !is AuthState.Loading }
         return if (state is AuthState.Authenticated) state.userId else null
     }
+
+    override suspend fun getAuthenticatedUserEmail(): String? {
+        val state = authState.first { it !is AuthState.Loading }
+        return if (state is AuthState.Authenticated) state.email else null
+    }
 }

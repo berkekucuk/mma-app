@@ -2,9 +2,21 @@ package com.berkekucuk.mmaapp.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import kotlin.time.Instant
 
-@Entity(tableName = "predictions", primaryKeys = ["fight_id", "user_id"])
+@Entity(
+    tableName = "predictions",
+    primaryKeys = ["fight_id", "user_id"],
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["user_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class PredictionEntity(
     @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
