@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 val LightColors = AppColors(
     isDark = false,
     topBarBackground = Color(0xFFFFFFFF),
-    pagerBackground = Color(0xFFF8F6F3),
+    pagerBackground = Color(0xFFFAFAFA),
     dropdownMenuBackground = Color(0xFFEBE7E2),
     textPrimary = Color(0xFF1C1917),
     textSecondary = Color(0xFF78716C),
@@ -30,10 +30,10 @@ val LightColors = AppColors(
     black = Color.Black,
     fightItemBackground = Color(0xFFFFFFFF),
     dividerColor = Color(0xFFE5E0DA),
-    cardHeaderBackground = Color(0xFFF0ECE8),
+    cardHeaderBackground = Color(0xFFF5F5F5),
     cardBorder = Color(0xFFE8E3DD),
     fighterBarBackground = Brush.verticalGradient(
-        colors = listOf(Color(0xFFEBE7E2), Color(0xFFF8F6F3))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
     ),
     eventDetailTopBarGradient = Brush.verticalGradient(
         colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
@@ -42,7 +42,7 @@ val LightColors = AppColors(
         colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
     ),
     rankingTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFF5F0F0), Color(0xFFEDE5E5), Color(0xFFE8DCDC))
+        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
     ),
     rankingChampionBadge = Brush.horizontalGradient(
         colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))

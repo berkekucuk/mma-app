@@ -31,13 +31,14 @@ fun MenuItemRow(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val colors = LocalAppColors.current
+    val indicationColor = if(colors.isDark) colors.white else colors.black
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = interactionSource,
-                indication = ripple(color = colors.white),
+                indication = ripple(color = indicationColor),
                 onClick = onClick
             )
             .padding(horizontal = 20.dp, vertical = 16.dp),
