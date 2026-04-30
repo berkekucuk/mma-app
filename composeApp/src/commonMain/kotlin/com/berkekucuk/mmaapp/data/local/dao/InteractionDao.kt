@@ -1,10 +1,9 @@
 package com.berkekucuk.mmaapp.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.berkekucuk.mmaapp.data.local.entity.InteractionEntity
 import com.berkekucuk.mmaapp.data.local.relation.InteractionWithFighterRelation
 import kotlinx.coroutines.flow.Flow
@@ -19,8 +18,8 @@ interface InteractionDao {
     @Query("SELECT * FROM user_fighter_interactions WHERE id = :id")
     suspend fun getInteraction(id: String): InteractionEntity?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertInteractions(interactions: List<InteractionEntity>)
+    @Upsert
+    suspend fun upsertInteractions(interactions: List<InteractionEntity>)
 
     @Query("DELETE FROM user_fighter_interactions WHERE id = :interactionId")
     suspend fun deleteInteraction(interactionId: String)
@@ -31,9 +30,17 @@ interface InteractionDao {
     @Query("UPDATE user_fighter_interactions SET rank_number = rank_number - 1 WHERE user_id = :userId AND interaction_type = :type AND rank_number > :removedRank")
     suspend fun decrementRanksAbove(userId: String, type: String, removedRank: Int)
 
+    @Query("DELETE FROM user_fighter_interactions WHERE user_id = :userId AND id NOT IN (:retainedIds)")
+    suspend fun deleteInteractionsExcept(userId: String, retainedIds: List<String>)
+
     @Transaction
     suspend fun replaceInteractions(userId: String, entities: List<InteractionEntity>) {
-        deleteInteractions(userId)
-        insertInteractions(entities)
+        val newIds = entities.map { it.id }
+        if (newIds.isEmpty()) {
+            deleteInteractions(userId)
+        } else {
+            deleteInteractionsExcept(userId, newIds)
+            upsertInteractions(entities)
+        }
     }
 }

@@ -54,7 +54,7 @@ class UserRepositoryImpl(
                     return@runCatching
                 }
                 val remoteUser = remoteDataSource.fetchUser(userId)
-                dao.insertUsers(listOf(remoteUser.toEntity()))
+                dao.upsertUsers(listOf(remoteUser.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncUserKey(userId))
@@ -62,14 +62,18 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun syncUsers(limit: Int): Result<Unit> {
+    override suspend fun syncUsers(limit: Int, currentUserId: String?): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
                 if (!rateLimiter.shouldFetch(syncUsersKey)) {
                     return@runCatching
                 }
                 val remoteUsers = remoteDataSource.fetchUsers(limit)
-                dao.insertUsers(remoteUsers.map { it.toEntity() })
+                
+                dao.replaceUsers(
+                    users = remoteUsers.map { it.toEntity() },
+                    currentUserId = currentUserId ?: ""
+                )
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncUsersKey)

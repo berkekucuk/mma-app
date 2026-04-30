@@ -44,7 +44,7 @@ class InteractionRepositoryImpl(
                 val remoteFighters = remoteInteractions.mapNotNull { it.fighter }
 
                 if (remoteFighters.isNotEmpty()) {
-                    fighterDao.insertFighters(remoteFighters.map { it.toEntity() })
+                    fighterDao.upsertFighters(remoteFighters.map { it.toEntity() })
                 }
                 interactionDao.replaceInteractions(userId, remoteInteractions.map { it.toEntity() })
             }.onFailure {
@@ -64,9 +64,9 @@ class InteractionRepositoryImpl(
                 val remoteInteraction = remoteDataSource.addInteraction(userId, fighterId, interactionType)
                 
                 remoteInteraction.fighter?.let { remoteFighter ->
-                    fighterDao.insertFighters(listOf(remoteFighter.toEntity()))
+                    fighterDao.upsertFighters(listOf(remoteFighter.toEntity()))
                 }
-                interactionDao.insertInteractions(listOf(remoteInteraction.toEntity()))
+                interactionDao.upsertInteractions(listOf(remoteInteraction.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

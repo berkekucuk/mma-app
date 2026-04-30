@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import com.berkekucuk.mmaapp.domain.repository.AuthRepository
+
 class LeaderboardViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LeaderboardUiState())
@@ -42,7 +45,8 @@ class LeaderboardViewModel(
         syncJob = viewModelScope.launch {
             _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
 
-            userRepository.syncUsers(50)
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            userRepository.syncUsers(50, currentUserId)
                 .onSuccess {
                     _state.update { it.copy(isRefreshing = false) }
                 }

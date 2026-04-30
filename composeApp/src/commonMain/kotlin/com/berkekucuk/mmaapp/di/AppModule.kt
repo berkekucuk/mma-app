@@ -336,7 +336,8 @@ val appModule = module {
 
     viewModel {
         LeaderboardViewModel(
-            userRepository = get()
+            userRepository = get(),
+            authRepository = get()
         )
     }
 }

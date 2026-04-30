@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 26,
-    "identityHash": "4648a0115a24f8f9cf99e16706d061f4",
+    "identityHash": "2eb282716ef9c5ef92814beff133da52",
     "entities": [
       {
         "tableName": "events",
@@ -214,7 +214,7 @@
       },
       {
         "tableName": "predictions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fight_id` TEXT NOT NULL, `predicted_winner_id` TEXT NOT NULL, `points_earned` INTEGER NOT NULL, `is_correct` INTEGER, `locked_odds` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`fight_id`, `user_id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `fight_id` TEXT NOT NULL, `predicted_winner_id` TEXT NOT NULL, `points_earned` INTEGER NOT NULL, `is_correct` INTEGER, `locked_odds` INTEGER, `created_at` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`user_id`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -266,8 +266,7 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "fight_id",
-            "user_id"
+            "id"
           ]
         },
         "foreignKeys": [
@@ -503,7 +502,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4648a0115a24f8f9cf99e16706d061f4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2eb282716ef9c5ef92814beff133da52')"
     ]
   }
 }

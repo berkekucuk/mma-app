@@ -54,13 +54,13 @@ class FighterRepositoryImpl(
 
     private suspend fun saveFighterAndFights(fighterDto: FighterDto) {
         // 1. Save fighter to local database
-        fighterDao.insertFighter(fighterDto.toEntity())
+        fighterDao.upsertFighters(listOf(fighterDto.toEntity()))
         
         // 2. Save fights to centralized table
         val fights = fighterDto.fights ?: emptyList()
         val fightEntities = fights.map { it.toEntity() }
         if (fightEntities.isNotEmpty()) {
-            fightDao.insertFights(fightEntities)
+            fightDao.upsertFights(fightEntities)
         }
         
         // 3. Update Junction table (Fighter <-> Fights)

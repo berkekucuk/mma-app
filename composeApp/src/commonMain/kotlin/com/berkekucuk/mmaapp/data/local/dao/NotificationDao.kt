@@ -1,9 +1,8 @@
 package com.berkekucuk.mmaapp.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.berkekucuk.mmaapp.data.local.entity.FightNotificationEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,11 +11,11 @@ interface NotificationDao {
     @Query("SELECT COUNT(*) > 0 FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
     fun getFightNotificationStatus(fightId: String, userId: String): Flow<Boolean>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFightNotification(entity: FightNotificationEntity)
+    @Upsert
+    suspend fun upsertFightNotification(entity: FightNotificationEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFightNotifications(entities: List<FightNotificationEntity>)
+    @Upsert
+    suspend fun upsertFightNotifications(entities: List<FightNotificationEntity>)
 
     @Query("DELETE FROM fight_notifications WHERE fight_id = :fightId AND user_id = :userId")
     suspend fun deleteFightNotification(fightId: String, userId: String)

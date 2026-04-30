@@ -45,7 +45,7 @@ class PredictionRepositoryImpl(
                 val remoteFights = remotePredictions.mapNotNull { it.fight }
 
                 if (remoteFights.isNotEmpty()) {
-                    fightDao.insertFights(remoteFights.map { it.toEntity() })
+                    fightDao.upsertFights(remoteFights.map { it.toEntity() })
                 }
                 predictionDao.replacePredictions(userId, remotePredictions.map { it.toEntity() })
             }.onFailure {
@@ -66,9 +66,9 @@ class PredictionRepositoryImpl(
                 val remotePrediction = remoteDataSource.addPrediction(userId, fightId, predictedWinnerId, lockedOdds)
 
                 remotePrediction.fight?.let { remoteFight ->
-                    fightDao.insertFights(listOf(remoteFight.toEntity()))
+                    fightDao.upsertFights(listOf(remoteFight.toEntity()))
                 }
-                predictionDao.insertPredictions(listOf(remotePrediction.toEntity()))
+                predictionDao.upsertPredictions(listOf(remotePrediction.toEntity()))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

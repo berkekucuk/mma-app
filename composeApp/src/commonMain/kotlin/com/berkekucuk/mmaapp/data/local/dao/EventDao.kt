@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
 import com.berkekucuk.mmaapp.data.local.entity.EventEntity
 import com.berkekucuk.mmaapp.data.local.relation.EventWithFightsRelation
 import com.berkekucuk.mmaapp.data.local.entity.SyncedYearEntity
@@ -38,9 +39,8 @@ interface EventDao {
     @Query("SELECT EXISTS(SELECT 1 FROM synced_years WHERE year = :year)")
     suspend fun isYearFullySynced(year: Int): Boolean
 
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEvents(events: List<EventEntity>)
+    @Upsert
+    suspend fun upsertEvents(events: List<EventEntity>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun markYearSynced(entity: SyncedYearEntity)

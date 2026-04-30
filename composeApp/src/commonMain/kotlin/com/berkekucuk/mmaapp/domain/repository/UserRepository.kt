@@ -9,7 +9,7 @@ interface UserRepository {
     fun getUsers(limit: Int): Flow<List<User>>
     fun getUserProfile(userId: String): Flow<UserProfile?>
     suspend fun syncUser(userId: String): Result<Unit>
-    suspend fun syncUsers(limit: Int): Result<Unit>
+    suspend fun syncUsers(limit: Int, currentUserId: String? = null): Result<Unit>
     suspend fun updateUser(userId: String, fullName: String, username: String): Result<Unit>
     suspend fun deleteUser(userId: String): Result<Unit>
 }

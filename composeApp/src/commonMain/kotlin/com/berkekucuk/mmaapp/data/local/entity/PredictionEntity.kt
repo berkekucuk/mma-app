@@ -3,11 +3,11 @@ package com.berkekucuk.mmaapp.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import kotlin.time.Instant
 
 @Entity(
     tableName = "predictions",
-    primaryKeys = ["fight_id", "user_id"],
     foreignKeys = [
         ForeignKey(
             entity = UserEntity::class,
@@ -18,7 +18,7 @@ import kotlin.time.Instant
     ]
 )
 data class PredictionEntity(
-    @ColumnInfo(name = "id") val id: String,
+    @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
     @ColumnInfo(name = "fight_id") val fightId: String,
     @ColumnInfo(name = "predicted_winner_id") val predictedWinnerId: String,

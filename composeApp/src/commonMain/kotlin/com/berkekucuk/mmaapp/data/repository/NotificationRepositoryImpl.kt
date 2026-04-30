@@ -35,7 +35,7 @@ class NotificationRepositoryImpl(
                     return@runCatching
                 }
                 val remoteNotifications = remoteDataSource.fetchFightNotifications(userId)
-                dao.insertFightNotifications(remoteNotifications.map { it.toEntity() })
+                dao.upsertFightNotifications(remoteNotifications.map { it.toEntity() })
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncKey(userId))
@@ -47,7 +47,7 @@ class NotificationRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 remoteDataSource.upsertFightNotification(fightId, userId)
-                dao.insertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
+                dao.upsertFightNotification(FightNotificationEntity(fightId = fightId, userId = userId))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

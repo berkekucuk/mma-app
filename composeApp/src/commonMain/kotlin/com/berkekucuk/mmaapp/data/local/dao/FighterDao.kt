@@ -9,6 +9,7 @@ import com.berkekucuk.mmaapp.data.local.entity.FighterFightCrossRef
 import com.berkekucuk.mmaapp.data.local.relation.FighterWithFightsRelation
 import kotlinx.coroutines.flow.Flow
 import androidx.room.Transaction
+import androidx.room.Upsert
 
 @Dao
 interface FighterDao {
@@ -17,11 +18,8 @@ interface FighterDao {
     @Query("SELECT * FROM fighters WHERE fighter_id = :fighterId")
     fun getFighter(fighterId: String): Flow<FighterWithFightsRelation?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFighter(fighter: FighterEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFighters(fighters: List<FighterEntity>)
+    @Upsert
+    suspend fun upsertFighters(fighters: List<FighterEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFighterFightCrossRefs(refs: List<FighterFightCrossRef>)

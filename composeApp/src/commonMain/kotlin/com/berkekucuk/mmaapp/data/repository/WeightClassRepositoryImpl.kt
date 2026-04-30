@@ -54,7 +54,7 @@ class WeightClassRepositoryImpl(
                 }
                 val dtos = remoteDataSource.fetchWeightClasses()
                 if (dtos.isNotEmpty()) {
-                    dao.insertWeightClasses(dtos.map { it.toEntity() })
+                    dao.upsertWeightClasses(dtos.map { it.toEntity() })
                 }
             }.onFailure {
                 if (it is CancellationException) throw it

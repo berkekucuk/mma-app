@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.NotificationRepository
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
@@ -58,16 +58,16 @@ class ProfileViewModel(
             _state.update { it.copy(isRefreshing = isRefreshing, error = null) }
 
             val userResult = userRepository.syncUser(userId)
-            val predictionResult = predictionRepository.syncPredictions(userId)
             val interactionResult = interactionRepository.syncInteractions(userId)
-            
+            val predictionResult = predictionRepository.syncPredictions(userId)
+
             val currentUserId = authRepository.getAuthenticatedUserId()
             val notificationResult = if (currentUserId == userId) {
                 notificationRepository.syncFightNotifications(userId)
             } else Result.success(Unit)
 
-            val firstError = userResult.exceptionOrNull() 
-                ?: predictionResult.exceptionOrNull() 
+            val firstError = userResult.exceptionOrNull()
+                ?: predictionResult.exceptionOrNull()
                 ?: interactionResult.exceptionOrNull()
                 ?: notificationResult.exceptionOrNull()
 

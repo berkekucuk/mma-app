@@ -41,7 +41,7 @@ class FightRepositoryImpl(
                 }
                 val fightDto = remoteDataSource.fetchFight(fightId)
                 if (fightDto != null) {
-                    fightDao.insertFight(fightDto.toEntity())
+                    fightDao.upsertFights(listOf(fightDto.toEntity()))
                 }
             }.onFailure {
                 if (it is CancellationException) throw it

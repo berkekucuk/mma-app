@@ -126,12 +126,12 @@ class EventRepositoryImpl(
 
     private suspend fun saveEventsAndFights(events: List<EventDto>) {
         if (events.isEmpty()) return
-        eventDao.insertEvents(events.map { it.toEntity() })
+        eventDao.upsertEvents(events.map { it.toEntity() })
 
         val allFights = events.flatMap { event ->
             event.fights?.map { it.toEntity() } ?: emptyList()
         }
-        fightDao.insertFights(allFights)
+        fightDao.upsertFights(allFights)
     }
 
     private suspend fun needsInitialSync(year: Int): Boolean {
