@@ -122,6 +122,7 @@ data class AppStrings(
     val menuItemSettings: String,
     val menuSignInButton: String,
     val menuSignInTerms: String,
+    val menuSignInPrivacyPolicy: String,
     val menuProfileSettings: String,
     val menuSignInWithGoogle: String,
     val menuNotificationsEnabled: String,

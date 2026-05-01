@@ -1,12 +1,9 @@
 package com.berkekucuk.mmaapp.presentation.screens.menu
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -15,12 +12,10 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,13 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
-import com.berkekucuk.mmaapp.presentation.components.GoogleSignInButton
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
 import io.github.jan.supabase.compose.auth.composeAuth
@@ -74,8 +65,7 @@ fun MenuScreenRoot(
         {
             try {
                 signInAction.startFlow()
-            } catch (_: Exception) {
-            }
+            } catch (_: Exception) { }
         }
     }
 
@@ -185,45 +175,10 @@ fun MenuScreen(
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     if (showSignInSheet) {
-        val sheetState = rememberModalBottomSheetState()
-        ModalBottomSheet(
-            onDismissRequest = onDismissSignIn,
-            sheetState = sheetState,
-            containerColor = colors.dropdownMenuBackground
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = strings.menuSignInButton,
-                    color = colors.textPrimary,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                GoogleSignInButton(
-                    onClick = onStartSignIn,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = strings.menuSignInTerms,
-                    color = colors.textSecondary,
-                    fontSize = 13.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                Spacer(modifier = Modifier.height(32.dp))
-            }
-        }
+        SignInBottomSheet(
+            onDismiss = onDismissSignIn,
+            onStartSignIn = onStartSignIn
+        )
     }
 }
