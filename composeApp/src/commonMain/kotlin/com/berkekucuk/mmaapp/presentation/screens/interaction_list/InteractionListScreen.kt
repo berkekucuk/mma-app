@@ -142,7 +142,7 @@ fun InteractionListScreen(
             )
         },
         topBar = {
-            Column(modifier = Modifier.background(colors.rankingTopBarGradient)) {
+            Column(modifier = Modifier.background(colors.rankingTopBar)) {
                 TopAppBar(
                     title = {
                         val title = when (state.type) {

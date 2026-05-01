@@ -2,12 +2,13 @@ package com.berkekucuk.mmaapp.core.presentation.colors
 
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 
 val LightColors = AppColors(
     isDark = false,
     topBarBackground = Color(0xFFFFFFFF),
-    pagerBackground = Color(0xFFFAFAFA),
+    pagerBackground = Color(0xFFEAEAEA),
     dropdownMenuBackground = Color(0xFFEBE7E2),
     textPrimary = Color(0xFF1C1917),
     textSecondary = Color(0xFF78716C),
@@ -32,18 +33,10 @@ val LightColors = AppColors(
     dividerColor = Color(0xFFE5E0DA),
     cardHeaderBackground = Color(0xFFF5F5F5),
     cardBorder = Color(0xFFE8E3DD),
-    fighterBarBackground = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
-    ),
-    eventDetailTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
-    ),
-    eventsTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
-    ),
-    rankingTopBarGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFFFFFFFF), Color(0xFFFBF9F7), Color(0xFFF5F2EE))
-    ),
+    fighterDetailTopBar = SolidColor(Color.White),
+    eventDetailTopBar = SolidColor(Color.White),
+    eventsTopBar = SolidColor(Color.White),
+    rankingTopBar = SolidColor(Color.White),
     rankingChampionBadge = Brush.horizontalGradient(
         colors = listOf(Color(0xFFD4A843), Color(0xFFB8922E))
     ),

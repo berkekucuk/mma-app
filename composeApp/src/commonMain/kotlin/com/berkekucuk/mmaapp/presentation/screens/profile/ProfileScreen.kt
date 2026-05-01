@@ -127,7 +127,7 @@ fun ProfileScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(colors.fighterBarBackground)
+                modifier = Modifier.background(colors.fighterDetailTopBar)
             ) {
                 MediumTopAppBar(
                     navigationIcon = {

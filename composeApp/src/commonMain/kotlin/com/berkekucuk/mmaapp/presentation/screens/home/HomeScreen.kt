@@ -124,7 +124,7 @@ fun HomeScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(colors.eventsTopBarGradient)
+                modifier = Modifier.background(colors.eventsTopBar)
             ) {
                 TopAppBar(
                     title = {

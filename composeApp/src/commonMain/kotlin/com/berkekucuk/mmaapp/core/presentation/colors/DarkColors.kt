@@ -32,16 +32,16 @@ val DarkColors = AppColors(
     dividerColor = Color(0xFF2C2C2C),
     cardHeaderBackground = Color(0xFF20232A),
     cardBorder = Color(0xFF3E4149),
-    fighterBarBackground = Brush.verticalGradient(
+    fighterDetailTopBar = Brush.verticalGradient(
         colors = listOf(Color(0xFF111E2E), Color(0xFF0B141E), Color(0xFF070A11))
     ),
-    eventDetailTopBarGradient = Brush.verticalGradient(
+    eventDetailTopBar = Brush.verticalGradient(
         colors = listOf(Color(0xFF200000), Color(0xFF150000), Color(0xFF0A0000))
     ),
-    eventsTopBarGradient = Brush.verticalGradient(
+    eventsTopBar = Brush.verticalGradient(
         colors = listOf(Color(0xFF161B1F), Color(0xFF101418), Color(0xFF0A0C0F))
     ),
-    rankingTopBarGradient = Brush.verticalGradient(
+    rankingTopBar = Brush.verticalGradient(
         colors = listOf(Color(0xFF1A1020), Color(0xFF14121C), Color(0xFF100E18))
     ),
     rankingChampionBadge = Brush.horizontalGradient(

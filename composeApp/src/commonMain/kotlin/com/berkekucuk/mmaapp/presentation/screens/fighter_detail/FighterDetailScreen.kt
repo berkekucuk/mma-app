@@ -115,7 +115,7 @@ fun FighterDetailScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(colors.fighterBarBackground)
+                modifier = Modifier.background(colors.fighterDetailTopBar)
             ){
                 MediumTopAppBar(
                     title = {

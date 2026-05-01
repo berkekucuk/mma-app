@@ -191,7 +191,7 @@ fun FightDetailScreen(
             )
         },
         topBar = {
-            Column(modifier = Modifier.background(colors.eventDetailTopBarGradient)) {
+            Column(modifier = Modifier.background(colors.eventDetailTopBar)) {
                 TopAppBar(
                     title = {},
                     navigationIcon = {

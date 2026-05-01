@@ -130,7 +130,7 @@ fun EventDetailScreen(
         },
         topBar = {
             Column(
-                modifier = Modifier.background(colors.eventDetailTopBarGradient)
+                modifier = Modifier.background(colors.eventDetailTopBar)
             ) {
                 TopAppBar(
                     title = {

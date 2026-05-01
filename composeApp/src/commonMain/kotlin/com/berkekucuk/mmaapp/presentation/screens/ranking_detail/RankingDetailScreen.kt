@@ -80,7 +80,7 @@ fun RankingDetailScreen(
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(
-                modifier = Modifier.background(colors.rankingTopBarGradient)
+                modifier = Modifier.background(colors.rankingTopBar)
             ) {
                 TopAppBar(
                     title = {
