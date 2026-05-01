@@ -43,8 +43,8 @@ class FighterRepositoryImpl(
                 if (!rateLimiter.shouldFetch(syncKey(fighterId))) {
                     return@runCatching
                 }
-                val fighterDto = remoteDataSource.fetchFighter(fighterId)
-                saveFighterAndFights(fighterDto)
+                val remoteFighter = remoteDataSource.fetchFighter(fighterId)
+                saveFighterAndFights(remoteFighter)
             }.onFailure {
                 if (it is CancellationException) throw it
                 rateLimiter.reset(syncKey(fighterId))
@@ -52,29 +52,25 @@ class FighterRepositoryImpl(
         }
     }
 
-    private suspend fun saveFighterAndFights(fighterDto: FighterDto) {
+    private suspend fun saveFighterAndFights(remoteFighter: FighterDto) {
         // 1. Save fighter to local database
-        fighterDao.upsertFighters(listOf(fighterDto.toEntity()))
+        fighterDao.upsertFighters(listOf(remoteFighter.toEntity()))
         
         // 2. Save fights to centralized table
-        val fights = fighterDto.fights ?: emptyList()
+        val fights = remoteFighter.fights ?: emptyList()
         val fightEntities = fights.map { it.toEntity() }
         if (fightEntities.isNotEmpty()) {
             fightDao.upsertFights(fightEntities)
         }
         
         // 3. Update Junction table (Fighter <-> Fights)
-        fighterDao.deleteFighterFightCrossRefs(fighterDto.fighterId)
+        fighterDao.deleteFighterFightCrossRefs(remoteFighter.fighterId)
         val crossRefs = fights.map { 
-            FighterFightCrossRef(fighterId = fighterDto.fighterId, fightId = it.fightId) 
+            FighterFightCrossRef(fighterId = remoteFighter.fighterId, fightId = it.fightId)
         }
         if (crossRefs.isNotEmpty()) {
-            fighterDao.insertFighterFightCrossRefs(crossRefs)
+            fighterDao.upsertFighterFightCrossRefs(crossRefs)
         }
-    }
-
-    override suspend fun isFighterExists(fighterId: String): Boolean {
-        return withContext(Dispatchers.IO) { fighterDao.isFighterExists(fighterId) }
     }
 
     override suspend fun searchFighters(query: String): Result<List<Fighter>> {

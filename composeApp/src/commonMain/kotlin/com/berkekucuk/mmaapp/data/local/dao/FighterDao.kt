@@ -1,8 +1,6 @@
 package com.berkekucuk.mmaapp.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berkekucuk.mmaapp.data.local.entity.FighterEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterFightCrossRef
@@ -21,12 +19,9 @@ interface FighterDao {
     @Upsert
     suspend fun upsertFighters(fighters: List<FighterEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFighterFightCrossRefs(refs: List<FighterFightCrossRef>)
+    @Upsert
+    suspend fun upsertFighterFightCrossRefs(refs: List<FighterFightCrossRef>)
 
     @Query("DELETE FROM fighter_fights WHERE fighter_id = :fighterId")
     suspend fun deleteFighterFightCrossRefs(fighterId: String)
-
-    @Query("SELECT EXISTS(SELECT 1 FROM fighters WHERE fighter_id = :fighterId)")
-    suspend fun isFighterExists(fighterId: String): Boolean
 }

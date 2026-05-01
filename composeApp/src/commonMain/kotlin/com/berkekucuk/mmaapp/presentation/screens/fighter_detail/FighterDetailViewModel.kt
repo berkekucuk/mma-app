@@ -57,10 +57,7 @@ class FighterDetailViewModel(
                     _state.update { it.copy(isRefreshing = false) }
                 }
                 .onFailure { e ->
-                    val error = if (!repository.isFighterExists(fighterId)) {
-                        AppErrorMapper.map(e)
-                    } else null
-                    _state.update { it.copy(isLoading = false, isRefreshing = false, error = error) }
+                    _state.update { it.copy(isLoading = false, isRefreshing = false, error = AppErrorMapper.map(e)) }
                 }
         }
     }

@@ -7,5 +7,4 @@ interface FighterRepository {
     fun getFighter(fighterId: String): Flow<Fighter>
     suspend fun syncFighter(fighterId: String): Result<Unit>
     suspend fun searchFighters(query: String): Result<List<Fighter>>
-    suspend fun isFighterExists(fighterId: String): Boolean
 }
