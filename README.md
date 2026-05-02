@@ -1,35 +1,33 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🥊 Clinch - MMA Statistics & Event Tracker
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A modern, cross-platform Mixed Martial Arts application built with **Kotlin Multiplatform (KMP)** for Android and iOS. Stay up to date with the latest MMA events, analyze fight statistics, create predictions, and compete on the global leaderboard!
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## ✨ Key Features
 
-### Build and Run Android Application
+* **Cross-Platform Experience:** Built natively for both Android and iOS, sharing business logic and UI components via Compose Multiplatform.
+* **Events & Detailed Stats:** Track upcoming and past MMA events, explore fight cards, and check detailed fighter statistics, fight histories, and radar chart comparisons.
+* **Fight Predictions:** Predict the outcome of fights before they happen! Earn points based on real odds.
+* **Leaderboard:** Compete with other MMA fans. Check out other users' profiles to see their prediction history and favorite fighters.
+* **Personalized Profiles:** Build your own custom MMA identity. Curate your "Goat List", "Favorite Fighters", and "Hated Fighters".
+* **Real-time Notifications:** Get notified before your tracked fights start and exactly when the results are announced.
+* **Adaptive Theme & Localization:** Seamless Light and Dark mode support that adapts to your OS settings, fully localized in English and Turkish.
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## 📱 Screenshots
 
-### Build and Run iOS Application
+<div align="center">
+  <img src="assets/home_screen.png" width="23%" />
+  <img src="assets/event_detail.png" width="23%" />
+  <img src="assets/fight_detail.png" width="23%" />
+  <img src="assets/fighter_page.png" width="23%" />
+</div>
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+## 🛠️ Tech Stack
 
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+* **UI Framework:** Jetpack Compose & Compose Multiplatform
+* **Architecture:** Clean Architecture (MVVM/MVI pattern)
+* **Local Database:** Room Database (KMP implementation)
+* **Backend & Authentication:** Supabase (PostgreSQL, Auth)
+* **Dependency Injection:** Koin
+* **Asynchronous Operations:** Kotlin Coroutines & Flows
+* **Image Loading:** Coil 3
+* **Networking:** Ktor
