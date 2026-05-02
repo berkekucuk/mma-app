@@ -11,10 +11,10 @@ object AppErrorMapper {
             message.contains("unique_user_fighter_interaction") -> AppError.ALREADY_EXISTS
             message.contains("not authenticated") || message.contains("unauthenticated") -> AppError.UNAUTHENTICATED
             
-            message.contains("Odds pending. Predictions opening soon.") -> AppError.ODDS_NOT_PUBLISHED
-            message.contains("Event already over.") -> AppError.EVENT_OVER
-            message.contains("Fight already over.") -> AppError.FIGHT_OVER
-            message.contains("Result pending. Predictions locked.") -> AppError.FIGHT_PENDING
+            message.contains("odds pending.") -> AppError.ODDS_NOT_PUBLISHED
+            message.contains("event already over.") -> AppError.EVENT_OVER
+            message.contains("fight already over.") -> AppError.FIGHT_OVER
+            message.contains("result pending.") -> AppError.FIGHT_PENDING
 
             message.contains("network") ||
             message.contains("timeout") || 
