@@ -25,7 +25,6 @@ data class AppColors(
     val noContestColor: Color,
     val noContestColor2: Color,
     val signInButton: Color,
-    val googleSignInButtonText: Color,
     val white: Color,
     val black: Color,
     val fightItemBackground: Color,

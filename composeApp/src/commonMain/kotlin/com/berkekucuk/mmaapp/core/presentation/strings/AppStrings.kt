@@ -125,6 +125,7 @@ data class AppStrings(
     val menuSignInPrivacyPolicy: String,
     val menuProfileSettings: String,
     val menuSignInWithGoogle: String,
+    val menuSignInWithApple: String,
     val menuNotificationsEnabled: String,
     val menuNotificationsDisabled: String,
     // Bottom Nav

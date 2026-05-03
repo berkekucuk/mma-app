@@ -90,10 +90,17 @@ fun MenuScreen(
 
     val onSignInClick = remember(setShowSignInSheet) { { setShowSignInSheet(true) } }
     val onDismissSignIn = remember(setShowSignInSheet) { { setShowSignInSheet(false) } }
-    val onStartSignIn = remember(setShowSignInSheet, onStartGoogleSignIn) {
+    val onStartGoogleSignInClick = remember(setShowSignInSheet, onStartGoogleSignIn) {
         {
             setShowSignInSheet(false)
             onStartGoogleSignIn()
+        }
+    }
+    
+    val onStartAppleSignInClick = remember(setShowSignInSheet) {
+        {
+            setShowSignInSheet(false)
+            // TODO: Call Apple Sign In action here
         }
     }
 
@@ -178,7 +185,8 @@ fun MenuScreen(
     if (showSignInSheet) {
         SignInBottomSheet(
             onDismiss = onDismissSignIn,
-            onStartSignIn = onStartSignIn
+            onStartGoogleSignIn = onStartGoogleSignInClick,
+            onStartAppleSignIn = onStartAppleSignInClick
         )
     }
 }
