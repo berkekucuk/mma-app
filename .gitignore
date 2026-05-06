@@ -21,3 +21,4 @@ google-services.json
 **/release/
 *.aab
 *.apk
+AGENTS.md

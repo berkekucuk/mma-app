@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +29,13 @@ import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.AuthState
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.Apple
+import io.github.jan.supabase.auth.providers.Google
+import io.github.jan.supabase.compose.auth.composable.rememberSignInWithApple
 import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
 import io.github.jan.supabase.compose.auth.composeAuth
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -56,15 +62,42 @@ fun MenuScreenRoot(
         }
     }
 
-    val signInAction = supabaseClient.composeAuth.rememberSignInWithGoogle(
+    val coroutineScope = rememberCoroutineScope()
+
+    val signInWithGoogleAction = supabaseClient.composeAuth.rememberSignInWithGoogle(
         onResult = {},
-        fallback = {}
+        fallback = {
+            coroutineScope.launch {
+                try {
+                    supabaseClient.auth.signInWith(Google)
+                } catch (_: Exception) { }
+            }
+        }
     )
 
-    val onStartGoogleSignIn = remember(signInAction) {
+    val signInWithAppleAction = supabaseClient.composeAuth.rememberSignInWithApple(
+        onResult = {},
+        fallback = {
+            coroutineScope.launch {
+                try {
+                    supabaseClient.auth.signInWith(Apple)
+                } catch (_: Exception) { }
+            }
+        }
+    )
+
+    val onStartGoogleSignIn = remember(signInWithGoogleAction) {
         {
             try {
-                signInAction.startFlow()
+                signInWithGoogleAction.startFlow()
+            } catch (_: Exception) { }
+        }
+    }
+
+    val onStartAppleSignIn = remember(signInWithAppleAction) {
+        {
+            try {
+                signInWithAppleAction.startFlow()
             } catch (_: Exception) { }
         }
     }
@@ -72,7 +105,8 @@ fun MenuScreenRoot(
     MenuScreen(
         state = state,
         onAction = viewModel::onAction,
-        onStartGoogleSignIn = onStartGoogleSignIn
+        onStartGoogleSignIn = onStartGoogleSignIn,
+        onStartAppleSignIn = onStartAppleSignIn
     )
 }
 
@@ -82,6 +116,7 @@ fun MenuScreen(
     state: MenuUiState,
     onAction: (MenuUiAction) -> Unit,
     onStartGoogleSignIn: () -> Unit,
+    onStartAppleSignIn: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
@@ -97,10 +132,10 @@ fun MenuScreen(
         }
     }
     
-    val onStartAppleSignInClick = remember(setShowSignInSheet) {
+    val onStartAppleSignInClick = remember(setShowSignInSheet, onStartAppleSignIn) {
         {
             setShowSignInSheet(false)
-            // TODO: Call Apple Sign In action here
+            onStartAppleSignIn()
         }
     }
 

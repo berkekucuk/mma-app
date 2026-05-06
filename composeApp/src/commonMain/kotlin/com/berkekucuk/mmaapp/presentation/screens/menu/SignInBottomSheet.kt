@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.core.utils.isIos
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.PrivacyPolicyText
@@ -53,19 +54,21 @@ fun SignInBottomSheet(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            SocialSignInButton(
-                text = strings.menuSignInWithGoogle,
-                icon = Res.drawable.ic_google_logo,
-                onClick = onStartGoogleSignIn,
-                modifier = Modifier.fillMaxWidth()
-            )
-            
-            SocialSignInButton(
-                text = strings.menuSignInWithApple,
-                icon = Res.drawable.apple_logo,
-                onClick = onStartAppleSignIn,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (!isIos) {
+                SocialSignInButton(
+                    text = strings.menuSignInWithGoogle,
+                    icon = Res.drawable.ic_google_logo,
+                    onClick = onStartGoogleSignIn,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                SocialSignInButton(
+                    text = strings.menuSignInWithApple,
+                    icon = Res.drawable.apple_logo,
+                    onClick = onStartAppleSignIn,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
