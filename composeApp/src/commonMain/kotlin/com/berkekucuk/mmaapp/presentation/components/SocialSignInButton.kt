@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,36 +18,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
-import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
-import mmaapp.composeapp.generated.resources.Res
-import mmaapp.composeapp.generated.resources.ic_google_logo
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun GoogleSignInButton(
+fun SocialSignInButton(
+    text: String,
+    icon: DrawableResource,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
+
+    val borderModifier = if (!colors.isDark) {
+        Modifier.border(1.dp, colors.dividerColor, RoundedCornerShape(14.dp))
+    } else {
+        Modifier
+    }
 
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
             .background(colors.white)
+            .then(borderModifier)
             .clickable { onClick() }
             .padding(horizontal = 28.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Image(
-            painter = painterResource(Res.drawable.ic_google_logo),
+            painter = painterResource(icon),
             contentDescription = null,
             modifier = Modifier.size(24.dp),
         )
         Text(
-            text = strings.menuSignInWithGoogle,
-            color = colors.googleSignInButtonText,
+            text = text,
+            color = colors.black,
             fontSize = 17.sp,
             fontWeight = FontWeight.Medium,
         )

@@ -111,6 +111,7 @@ val TrStrings = AppStrings(
     menuSignInPrivacyPolicy = "Gizlilik Politikası",
     menuProfileSettings = "Profil Ayarları",
     menuSignInWithGoogle = "Google ile giriş yap",
+    menuSignInWithApple = "Apple ile giriş yap",
     menuNotificationsDisabled = "Bildirimleri kapattınız",
     menuNotificationsEnabled = "Açık",
     navEvents = "Etkinlikler",

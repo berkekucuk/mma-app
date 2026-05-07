@@ -25,7 +25,6 @@ val DarkColors = AppColors(
     noContestColor = Color(0xFFF9D03B),
     noContestColor2 = Color(0xFFFBECB6),
     signInButton = Color(0xFF4CAF50),
-    googleSignInButtonText = Color(0xFF1F1F1F),
     white = Color.White,
     black = Color.Black,
     fightItemBackground = Color(0xFF171C1F),

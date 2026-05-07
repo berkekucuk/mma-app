@@ -12,28 +12,29 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.berkekucuk.mmaapp.core.utils.isIos
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
-import com.berkekucuk.mmaapp.presentation.components.GoogleSignInButton
+import com.berkekucuk.mmaapp.presentation.components.PrivacyPolicyText
+import com.berkekucuk.mmaapp.presentation.components.SocialSignInButton
+import mmaapp.composeapp.generated.resources.Res
+import mmaapp.composeapp.generated.resources.apple_logo
+import mmaapp.composeapp.generated.resources.ic_google_logo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInBottomSheet(
     onDismiss: () -> Unit,
-    onStartSignIn: () -> Unit,
+    onStartGoogleSignIn: () -> Unit,
+    onStartAppleSignIn: () -> Unit,
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val sheetState = rememberModalBottomSheetState()
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -53,51 +54,25 @@ fun SignInBottomSheet(
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
-            GoogleSignInButton(
-                onClick = onStartSignIn,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (!isIos) {
+                SocialSignInButton(
+                    text = strings.menuSignInWithGoogle,
+                    icon = Res.drawable.ic_google_logo,
+                    onClick = onStartGoogleSignIn,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                SocialSignInButton(
+                    text = strings.menuSignInWithApple,
+                    icon = Res.drawable.apple_logo,
+                    onClick = onStartAppleSignIn,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val termsText = strings.menuSignInTerms
-            val privacyStr = strings.menuSignInPrivacyPolicy
-
-            val annotatedString = buildAnnotatedString {
-                val startIndex = termsText.indexOf(privacyStr)
-
-                if (startIndex >= 0) {
-                    val endIndex = startIndex + privacyStr.length
-                    append(termsText.substring(0, startIndex))
-
-                    pushLink(
-                        LinkAnnotation.Url(
-                            url = "https://www.termsfeed.com/live/0be34d50-def3-48ea-b982-75635a10803b"
-                        )
-                    )
-                    withStyle(
-                        style = SpanStyle(
-                            color = colors.textPrimary,
-                            textDecoration = TextDecoration.Underline
-                        )
-                    ) {
-                        append(termsText.substring(startIndex, endIndex))
-                    }
-                    pop()
-
-                    append(termsText.substring(endIndex))
-                } else {
-                    append(termsText)
-                }
-            }
-
-            Text(
-                text = annotatedString,
-                color = colors.textSecondary,
-                fontSize = 13.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            PrivacyPolicyText()
 
             Spacer(modifier = Modifier.height(32.dp))
         }
