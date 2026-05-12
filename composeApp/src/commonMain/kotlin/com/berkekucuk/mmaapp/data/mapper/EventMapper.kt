@@ -23,10 +23,13 @@ fun EventWithFightsRelation.toDomain(): Event {
         eventId = event.eventId,
         name = event.name,
         status = EventStatus.fromString(event.status),
-        datetimeUtc = event.datetimeUtc ,
+        datetimeUtc = event.datetimeUtc,
         venue = event.venue,
         location = event.location,
         eventYear = event.eventYear,
-        fights = fights.map { it.toDomain() }.sortedByDescending { it.fightOrder }
+        fights = fights
+            .filter { !it.boutType.equals("cancelled", ignoreCase = true) }
+            .map { it.toDomain() }
+            .sortedByDescending { it.fightOrder }
     )
 }
