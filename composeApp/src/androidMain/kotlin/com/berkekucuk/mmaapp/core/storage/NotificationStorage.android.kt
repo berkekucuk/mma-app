@@ -11,7 +11,7 @@ class AndroidNotificationStorage(private val context: Context) : NotificationSto
         // Controlled by system
     }
 
-    override fun load(): Boolean {
+    override suspend fun load(): Boolean {
         return NotificationManagerCompat.from(context).areNotificationsEnabled()
     }
 

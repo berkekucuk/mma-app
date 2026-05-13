@@ -1,5 +1,6 @@
-package com.berkekucuk.mmaapp.core.utils
+package com.berkekucuk.mmaapp.data.remote.fcm
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -16,10 +17,10 @@ import com.berkekucuk.mmaapp.core.presentation.strings.TrStrings
 import com.berkekucuk.mmaapp.core.storage.LanguageStorage
 import kotlin.random.Random
 
-class AndroidNotificationService(
+class NotificationService(
     private val context: Context,
     private val languageStorage: LanguageStorage
-) : NotificationService {
+) {
 
     private val notificationManager =
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -48,12 +49,12 @@ class AndroidNotificationService(
             description = strings.notificationChannelDescription
             enableLights(true)
             enableVibration(true)
-            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+            lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
         notificationManager.createNotificationChannel(channel)
     }
 
-    override fun showNotification(title: String, body: String, data: Map<String, String>) {
+    fun showNotification(title: String, body: String, data: Map<String, String>) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             data.forEach { (key, value) -> putExtra(key, value) }

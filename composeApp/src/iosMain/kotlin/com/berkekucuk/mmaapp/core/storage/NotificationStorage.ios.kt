@@ -1,31 +1,43 @@
 package com.berkekucuk.mmaapp.core.storage
 
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSURL
+import platform.Foundation.NSUserDefaults.Companion.standardUserDefaults
 import platform.UIKit.UIApplication
-import platform.UIKit.UIApplicationOpenSettingsURLString
-import platform.UIKit.isRegisteredForRemoteNotifications
+import platform.UIKit.UIApplicationOpenNotificationSettingsURLString
+import platform.UserNotifications.UNUserNotificationCenter
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import kotlin.coroutines.resume
 
 class IosNotificationStorage : NotificationStorage {
     override fun save(isEnabled: Boolean) {
         // Controlled by system
     }
 
-    override fun load(): Boolean {
-        return UIApplication.sharedApplication.isRegisteredForRemoteNotifications()
+    override suspend fun load(): Boolean = suspendCancellableCoroutine { continuation ->
+        UNUserNotificationCenter.currentNotificationCenter()
+            .getNotificationSettingsWithCompletionHandler { settings ->
+                val isEnabled = settings?.authorizationStatus == UNAuthorizationStatusAuthorized
+                continuation.resume(isEnabled)
+            }
     }
 
     override fun openNotificationSettings() {
-        val url = NSURL.URLWithString(UIApplicationOpenSettingsURLString)
+        val url = NSURL.URLWithString(UIApplicationOpenNotificationSettingsURLString)
         if (url != null) {
-            UIApplication.sharedApplication.openURL(url)
+            UIApplication.sharedApplication.openURL(
+                url = url,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = null
+            )
         }
     }
 
     override fun hasRequestedPermission(): Boolean {
-        return platform.Foundation.NSUserDefaults.standardUserDefaults.boolForKey("has_requested_permission")
+        return standardUserDefaults.boolForKey("has_requested_permission")
     }
 
     override fun setRequestedPermission(requested: Boolean) {
-        platform.Foundation.NSUserDefaults.standardUserDefaults.setBool(requested, "has_requested_permission")
+        standardUserDefaults.setBool(requested, "has_requested_permission")
     }
 }

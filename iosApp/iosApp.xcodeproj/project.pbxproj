@@ -55,11 +55,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D4B36C8B2FAD0CA400766833 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F73109C1828161C04F4B1615 = {
 			isa = PBXGroup;
 			children = (
 				5E2E81CD4E6089ACD8973752 /* Configuration */,
 				CDB41ED9C70ADD69BA80E045 /* iosApp */,
+				D4B36C8B2FAD0CA400766833 /* Frameworks */,
 				7BCB599AD78B8A84CFF5FB71 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -114,6 +122,8 @@
 			);
 			mainGroup = F73109C1828161C04F4B1615;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7BCB599AD78B8A84CFF5FB71 /* Products */;
 			projectDirPath = "";

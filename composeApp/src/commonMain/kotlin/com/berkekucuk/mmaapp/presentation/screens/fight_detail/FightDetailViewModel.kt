@@ -132,9 +132,13 @@ class FightDetailViewModel(
             is FightDetailUiAction.OnNotificationClicked -> onNotificationClicked()
             is FightDetailUiAction.OnErrorShown -> _state.update { it.copy(error = null) }
             is FightDetailUiAction.OnResume -> {
-                if (isPendingNotificationRequest && notificationStorage.load()) {
-                    isPendingNotificationRequest = false
-                    onNotificationClicked()
+                if (isPendingNotificationRequest) {
+                    viewModelScope.launch {
+                        if (notificationStorage.load()) {
+                            isPendingNotificationRequest = false
+                            onNotificationClicked()
+                        }
+                    }
                 }
             }
             is FightDetailUiAction.OnSubmitPredictionClicked -> submitPrediction(action.predictedWinnerId)
