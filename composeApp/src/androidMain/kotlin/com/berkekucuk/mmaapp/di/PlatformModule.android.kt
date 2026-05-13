@@ -11,8 +11,7 @@ import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.core.storage.MeasurementUnitStorage
 import com.berkekucuk.mmaapp.core.storage.OddsFormatStorage
 import com.berkekucuk.mmaapp.core.storage.ThemeStorage
-import com.berkekucuk.mmaapp.core.utils.AndroidNotificationService
-import com.berkekucuk.mmaapp.core.utils.NotificationService
+import com.berkekucuk.mmaapp.data.remote.fcm.NotificationService
 import com.berkekucuk.mmaapp.data.local.AppDatabase
 import com.berkekucuk.mmaapp.data.remote.fcm.AndroidDeviceTokenProvider
 import com.berkekucuk.mmaapp.data.remote.fcm.DeviceTokenProvider
@@ -40,7 +39,7 @@ actual val platformModule = module {
         AndroidThemeStorage(androidContext())
     }
     single<NotificationService>(createdAtStart = true) {
-        AndroidNotificationService(androidContext(), get())
+        NotificationService(androidContext(), get())
     }
     single<DeviceTokenProvider> {
         AndroidDeviceTokenProvider()

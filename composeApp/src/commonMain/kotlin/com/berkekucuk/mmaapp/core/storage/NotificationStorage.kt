@@ -2,7 +2,7 @@ package com.berkekucuk.mmaapp.core.storage
 
 interface NotificationStorage {
     fun save(isEnabled: Boolean)
-    fun load(): Boolean
+    suspend fun load(): Boolean
     fun openNotificationSettings()
     fun hasRequestedPermission(): Boolean
     fun setRequestedPermission(requested: Boolean)

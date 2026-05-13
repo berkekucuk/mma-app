@@ -1,6 +1,5 @@
 package com.berkekucuk.mmaapp.data.remote.fcm
 
-import com.berkekucuk.mmaapp.core.utils.NotificationService
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.koin.core.component.KoinComponent

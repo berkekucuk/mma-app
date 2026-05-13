@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.channels.Channel
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.presentation.colors.DarkColors
 import com.berkekucuk.mmaapp.core.presentation.strings.EnStrings
@@ -42,11 +44,17 @@ import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreen
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardScreenRoot
 
+object DeepLinkManager {
+    private val _route = Channel<Route>(Channel.BUFFERED)
+    val route = _route.receiveAsFlow()
+
+    fun navigateToFight(fightId: String) {
+        _route.trySend(Route.FightDetail(fightId))
+    }
+}
+
 @Composable
-fun App(
-    initialRoute: Route? = null,
-    onRouteConsumed: () -> Unit = {}
-) {
+fun App() {
     val rootNavController = rememberNavController()
 
     val languageStorage: LanguageStorage = koinInject()
@@ -104,10 +112,9 @@ fun App(
     }
     val oddsFormat by oddsFormatState
 
-    LaunchedEffect(initialRoute) {
-        initialRoute?.let {
-            rootNavController.navigate(it)
-            onRouteConsumed()
+    LaunchedEffect(Unit) {
+        DeepLinkManager.route.collect { route ->
+            rootNavController.navigate(route)
         }
     }
 

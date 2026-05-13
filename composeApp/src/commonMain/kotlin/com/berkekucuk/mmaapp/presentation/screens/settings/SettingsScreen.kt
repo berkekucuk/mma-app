@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -41,9 +42,17 @@ fun SettingsScreen(
     onThemeModeChange: (ThemeMode) -> Unit,
     notificationStorage: NotificationStorage = koinInject()
 ) {
-    var notificationsEnabled by remember { mutableStateOf(notificationStorage.load()) }
-    OnResumeEffect {
+    var notificationsEnabled by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
         notificationsEnabled = notificationStorage.load()
+    }
+    
+    OnResumeEffect {
+        scope.launch {
+            notificationsEnabled = notificationStorage.load()
+        }
     }
 
     val strings = LocalAppStrings.current
