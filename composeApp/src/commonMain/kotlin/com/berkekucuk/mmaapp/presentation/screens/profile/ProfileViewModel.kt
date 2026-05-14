@@ -94,11 +94,15 @@ class ProfileViewModel(
             is ProfileUiAction.OnReportClicked -> _state.update { it.copy(showReportDialog = true) }
             is ProfileUiAction.OnReportReasonChanged -> _state.update { it.copy(reportReason = action.reason) }
             is ProfileUiAction.OnDismissReportDialog -> _state.update { it.copy(showReportDialog = false, reportReason = null) }
-            is ProfileUiAction.OnSubmitReport -> submitReport()
+            is ProfileUiAction.OnSubmitReport -> reportUser()
+
+            is ProfileUiAction.OnBlockClicked -> _state.update { it.copy(showBlockDialog = true) }
+            is ProfileUiAction.OnDismissBlockDialog -> _state.update { it.copy(showBlockDialog = false) }
+            is ProfileUiAction.OnConfirmBlock -> blockUser()
         }
     }
 
-    private fun submitReport() {
+    private fun reportUser() {
         val reasonEnum = _state.value.reportReason ?: return
         val reasonDbValue = reasonEnum.dbValue
 
@@ -122,6 +126,25 @@ class ProfileViewModel(
                     _state.update { 
                         it.copy(isReporting = false, showReportDialog = false, reportReason = null, error = AppErrorMapper.map(e))
                     }
+                }
+        }
+    }
+
+    private fun blockUser() {
+        viewModelScope.launch {
+            _state.update { it.copy(showBlockDialog = false, error = null) }
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            if (currentUserId == null) {
+                _state.update { it.copy(error = AppError.UNAUTHENTICATED) }
+                return@launch
+            }
+
+            userRepository.blockUser(userId)
+                .onSuccess {
+                    navigateTo(ProfileNavigationEvent.Back)
+                }
+                .onFailure { e ->
+                    _state.update { it.copy(error = AppErrorMapper.map(e)) }
                 }
         }
     }

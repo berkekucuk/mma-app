@@ -13,4 +13,8 @@ sealed interface ProfileUiAction {
     data class OnReportReasonChanged(val reason: ReportReason) : ProfileUiAction
     data object OnSubmitReport : ProfileUiAction
     data object OnDismissReportDialog : ProfileUiAction
+
+    data object OnBlockClicked : ProfileUiAction
+    data object OnDismissBlockDialog : ProfileUiAction
+    data object OnConfirmBlock : ProfileUiAction
 }

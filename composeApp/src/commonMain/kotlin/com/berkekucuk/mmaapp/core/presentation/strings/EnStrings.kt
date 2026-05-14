@@ -88,7 +88,7 @@ val EnStrings = AppStrings(
     profileEditDeleteAccount = "Delete Account",
     profileEditDeleteAccountTitle = "Delete Account",
     profileEditDeleteAccountConfirm = "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.",
-    reportUserTitle = "Report User",
+    reportUserTitle = "Report",
     reportUserSubmit = "Submit",
     reportReasonDisplayName = { reason ->
         when (reason) {
@@ -99,6 +99,8 @@ val EnStrings = AppStrings(
             ReportReason.OTHER -> "Other"
         }
     },
+    blockUserTitle = "Block",
+    blockUserConfirm = "Are you sure you want to block this user? You will no longer see their profile.",
     fighterSearchPlaceholder = "Search fighters...",
     fighterSearchEmpty = "No fighters found",
     retry = "Retry",

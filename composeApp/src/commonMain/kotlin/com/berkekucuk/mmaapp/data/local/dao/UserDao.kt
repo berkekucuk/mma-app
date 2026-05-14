@@ -3,6 +3,8 @@ package com.berkekucuk.mmaapp.data.local.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Upsert
+import com.berkekucuk.mmaapp.data.local.entity.BlockedUserEntity
 import com.berkekucuk.mmaapp.data.local.entity.UserEntity
 import com.berkekucuk.mmaapp.data.local.relation.UserProfileRelation
 import kotlinx.coroutines.flow.Flow
@@ -13,14 +15,17 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUser(userId: String): Flow<UserEntity?>
 
-    @Query("SELECT * FROM users ORDER BY total_points DESC, full_name ASC LIMIT :limit")
+    @Query("SELECT * FROM users WHERE id NOT IN (SELECT blocked_user_id FROM blocked_users) ORDER BY total_points DESC, full_name ASC LIMIT :limit")
     fun getUsers(limit: Int): Flow<List<UserEntity>>
 
     @Transaction
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUserProfile(userId: String): Flow<UserProfileRelation?>
 
-    @androidx.room.Upsert
+    @Upsert
+    suspend fun insertBlockedUser(blockedUser: BlockedUserEntity)
+
+    @Upsert
     suspend fun upsertUsers(users: List<UserEntity>)
 
     @Query("UPDATE users SET username = :username, full_name = :fullName WHERE id = :userId")

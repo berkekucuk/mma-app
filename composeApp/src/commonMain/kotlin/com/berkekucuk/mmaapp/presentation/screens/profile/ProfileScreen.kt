@@ -16,6 +16,10 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -94,6 +101,7 @@ fun ProfileScreen(
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
+    var showOverflowMenu by rememberSaveable { mutableStateOf(false) }
     val tabs = listOf(strings.profileTabOverview, strings.profileTabPredictions)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
@@ -162,11 +170,48 @@ fun ProfileScreen(
                     },
                     actions = {
                         if (!state.isCurrentUser) {
-                            IconButton(onClick = { onAction(ProfileUiAction.OnReportClicked) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Report,
-                                    contentDescription = "Report User"
-                                )
+                            Box {
+                                IconButton(onClick = { showOverflowMenu = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = "More options"
+                                    )
+                                }
+                                DropdownMenu(
+                                    expanded = showOverflowMenu,
+                                    onDismissRequest = { showOverflowMenu = false },
+                                    containerColor = colors.dropdownMenuBackground
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text(strings.reportUserTitle, color = colors.textPrimary) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Report,
+                                                contentDescription = strings.reportUserTitle,
+                                                tint = colors.textPrimary
+                                            )
+                                        },
+                                        onClick = {
+                                            showOverflowMenu = false
+                                            onAction(ProfileUiAction.OnReportClicked)
+                                        }
+                                    )
+
+                                    DropdownMenuItem(
+                                        text = { Text(strings.blockUserTitle, color = colors.textPrimary) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Block,
+                                                contentDescription = strings.blockUserTitle,
+                                                tint = colors.textPrimary
+                                            )
+                                        },
+                                        onClick = {
+                                            showOverflowMenu = false
+                                            onAction(ProfileUiAction.OnBlockClicked)
+                                        }
+                                    )
+                                }
                             }
                         }
                     },
@@ -273,6 +318,18 @@ fun ProfileScreen(
                 }
             }
         }
+    }
+
+    if (state.showBlockDialog) {
+        AppAlertDialog(
+            onDismissRequest = { onAction(ProfileUiAction.OnDismissBlockDialog) },
+            onConfirmClick = { onAction(ProfileUiAction.OnConfirmBlock) },
+            title = strings.blockUserTitle,
+            text = strings.blockUserConfirm,
+            confirmText = strings.dialogAccept,
+            dismissText = strings.commonCancel,
+            isDestructive = true
+        )
     }
 
     if (state.showReportDialog) {

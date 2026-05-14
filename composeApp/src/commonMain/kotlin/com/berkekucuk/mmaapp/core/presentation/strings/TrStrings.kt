@@ -88,7 +88,7 @@ val TrStrings = AppStrings(
     profileEditDeleteAccount = "Hesabı Sil",
     profileEditDeleteAccountTitle = "Hesabı Sil",
     profileEditDeleteAccountConfirm = "Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm verileriniz kalıcı olarak silinecektir.",
-    reportUserTitle = "Kullanıcıyı Şikayet Et",
+    reportUserTitle = "Şikayet Et",
     reportUserSubmit = "Gönder",
     reportReasonDisplayName = { reason ->
         when (reason) {
@@ -99,6 +99,8 @@ val TrStrings = AppStrings(
             ReportReason.OTHER -> "Diğer"
         }
     },
+    blockUserTitle = "Engelle",
+    blockUserConfirm = "Bu kullanıcıyı engellemek istediğinizden emin misiniz? Artık bu kullanıcının profilini görmeyeceksiniz.",
     fighterSearchPlaceholder = "Dövüşçü ara...",
     fighterSearchEmpty = "Dövüşçü bulunamadı",
     retry = "Yenile",

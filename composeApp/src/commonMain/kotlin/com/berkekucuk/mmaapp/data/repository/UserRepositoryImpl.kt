@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.UserDao
+import com.berkekucuk.mmaapp.data.local.entity.BlockedUserEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
@@ -107,6 +108,16 @@ class UserRepositoryImpl(
         return withContext(Dispatchers.IO) {
             runCatching {
                 remoteDataSource.reportUser(reporterId, reportedId, reason)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun blockUser(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                dao.insertBlockedUser(BlockedUserEntity(userId))
             }.onFailure {
                 if (it is CancellationException) throw it
             }

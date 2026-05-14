@@ -10,6 +10,7 @@ data class ProfileUiState(
     val profile: UserProfile? = null,
     val isCurrentUser: Boolean = false,
     val showReportDialog: Boolean = false,
+    val showBlockDialog: Boolean = false,
     val reportReason: ReportReason? = null,
     val isReporting: Boolean = false,
     val error: AppError? = null,

@@ -101,6 +101,8 @@ data class AppStrings(
     val reportUserTitle: String,
     val reportUserSubmit: String,
     val reportReasonDisplayName: (ReportReason) -> String,
+    val blockUserTitle: String,
+    val blockUserConfirm: String,
     // Fighter Search Screen
     val fighterSearchPlaceholder: String,
     val fighterSearchEmpty: String,
