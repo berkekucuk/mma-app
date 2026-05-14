@@ -12,4 +12,5 @@ interface UserRepository {
     suspend fun syncUsers(limit: Int, currentUserId: String? = null): Result<Unit>
     suspend fun updateUser(userId: String, fullName: String, username: String): Result<Unit>
     suspend fun deleteUser(userId: String): Result<Unit>
+    suspend fun reportUser(reporterId: String, reportedId: String, reason: String): Result<Unit>
 }

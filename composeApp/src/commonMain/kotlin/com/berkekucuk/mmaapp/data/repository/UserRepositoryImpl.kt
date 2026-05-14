@@ -102,4 +102,14 @@ class UserRepositoryImpl(
             }
         }
     }
+
+    override suspend fun reportUser(reporterId: String, reportedId: String, reason: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.reportUser(reporterId, reportedId, reason)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
 }
