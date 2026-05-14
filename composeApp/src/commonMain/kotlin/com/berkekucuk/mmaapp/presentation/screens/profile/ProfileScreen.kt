@@ -11,12 +11,21 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Report
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -25,11 +34,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
@@ -37,6 +53,8 @@ import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.domain.model.toRankedFighter
 import com.berkekucuk.mmaapp.presentation.components.AppTabRow
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
+import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
+import com.berkekucuk.mmaapp.domain.enums.ReportReason
 import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterTopBarTitle
@@ -83,6 +101,7 @@ fun ProfileScreen(
 ) {
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
+    var showOverflowMenu by rememberSaveable { mutableStateOf(false) }
     val tabs = listOf(strings.profileTabOverview, strings.profileTabPredictions)
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val coroutineScope = rememberCoroutineScope()
@@ -147,6 +166,53 @@ fun ProfileScreen(
                                 nickname = "@${it?.username ?: ""}",
                                 showQuotes = false,
                             )
+                        }
+                    },
+                    actions = {
+                        if (!state.isCurrentUser) {
+                            Box {
+                                IconButton(onClick = { showOverflowMenu = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = "More options"
+                                    )
+                                }
+                                DropdownMenu(
+                                    expanded = showOverflowMenu,
+                                    onDismissRequest = { showOverflowMenu = false },
+                                    containerColor = colors.dropdownMenuBackground
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text(strings.reportUserTitle, color = colors.textPrimary) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Report,
+                                                contentDescription = strings.reportUserTitle,
+                                                tint = colors.textPrimary
+                                            )
+                                        },
+                                        onClick = {
+                                            showOverflowMenu = false
+                                            onAction(ProfileUiAction.OnReportClicked)
+                                        }
+                                    )
+
+                                    DropdownMenuItem(
+                                        text = { Text(strings.blockUserTitle, color = colors.textPrimary) },
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Block,
+                                                contentDescription = strings.blockUserTitle,
+                                                tint = colors.textPrimary
+                                            )
+                                        },
+                                        onClick = {
+                                            showOverflowMenu = false
+                                            onAction(ProfileUiAction.OnBlockClicked)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -252,5 +318,63 @@ fun ProfileScreen(
                 }
             }
         }
+    }
+
+    if (state.showBlockDialog) {
+        AppAlertDialog(
+            onDismissRequest = { onAction(ProfileUiAction.OnDismissBlockDialog) },
+            onConfirmClick = { onAction(ProfileUiAction.OnConfirmBlock) },
+            title = strings.blockUserTitle,
+            text = strings.blockUserConfirm,
+            confirmText = strings.dialogAccept,
+            dismissText = strings.commonCancel,
+            isDestructive = true
+        )
+    }
+
+    if (state.showReportDialog) {
+        AppAlertDialog(
+            onDismissRequest = { onAction(ProfileUiAction.OnDismissReportDialog) },
+            onConfirmClick = { onAction(ProfileUiAction.OnSubmitReport) },
+            title = strings.reportUserTitle,
+            confirmText = strings.reportUserSubmit,
+            dismissText = strings.commonCancel,
+            confirmEnabled = state.reportReason != null,
+            isConfirmLoading = state.isReporting,
+            isDestructive = true,
+            content = {
+                Column(modifier = Modifier.selectableGroup()) {
+                    ReportReason.entries.forEach { reason ->
+                        val displayName = strings.reportReasonDisplayName(reason)
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .selectable(
+                                    selected = (reason == state.reportReason),
+                                    onClick = { onAction(ProfileUiAction.OnReportReasonChanged(reason)) },
+                                    role = Role.RadioButton
+                                )
+                                .padding(horizontal = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (reason == state.reportReason),
+                                onClick = null,
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = colors.textPrimary,
+                                    unselectedColor = colors.textSecondary
+                                )
+                            )
+                            Text(
+                                text = displayName,
+                                color = colors.textPrimary,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        )
     }
 }

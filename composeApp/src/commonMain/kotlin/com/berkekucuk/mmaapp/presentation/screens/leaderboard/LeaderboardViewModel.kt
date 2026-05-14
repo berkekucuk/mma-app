@@ -32,7 +32,8 @@ class LeaderboardViewModel(
 
     private fun observeLeaderboard() {
         viewModelScope.launch {
-            userRepository.getUsers(50)
+            val currentUserId = authRepository.getAuthenticatedUserId() ?: ""
+            userRepository.getUsers(50, currentUserId)
                 .collect { users ->
                 _state.update { it.copy(isLoading = false, leaderboard = users) }
             }

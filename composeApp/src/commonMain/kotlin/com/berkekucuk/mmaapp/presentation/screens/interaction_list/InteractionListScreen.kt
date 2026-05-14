@@ -229,7 +229,6 @@ fun InteractionListScreen(
                                         Box(modifier = Modifier.weight(1f)) {
                                             RankedFighterRow(
                                                 rankNumber = interaction.rankNumber ?: 0,
-                                                isChampion = false,
                                                 name = fighter.name,
                                                 record = fighter.record.toString(),
                                                 imageUrl = fighter.imageUrl,

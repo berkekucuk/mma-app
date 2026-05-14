@@ -24,7 +24,7 @@ import com.berkekucuk.mmaapp.data.local.entity.WeightClassEntity
 import com.berkekucuk.mmaapp.data.local.entity.FighterFightCrossRef
 import com.berkekucuk.mmaapp.data.local.entity.FightEntity
 import com.berkekucuk.mmaapp.data.local.entity.InteractionEntity
-import com.berkekucuk.mmaapp.domain.model.Interaction
+import com.berkekucuk.mmaapp.data.local.entity.BlockedUserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
@@ -39,9 +39,10 @@ import kotlinx.coroutines.IO
         FightNotificationEntity::class,
         FightEntity::class,
         FighterFightCrossRef::class,
-        InteractionEntity::class
+        InteractionEntity::class,
+        BlockedUserEntity::class
     ],
-    version = 26
+    version = 28
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

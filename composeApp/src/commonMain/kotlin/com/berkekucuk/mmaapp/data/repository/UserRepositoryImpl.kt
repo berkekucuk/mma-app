@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.data.repository
 
 import com.berkekucuk.mmaapp.core.utils.RateLimiter
 import com.berkekucuk.mmaapp.data.local.dao.UserDao
+import com.berkekucuk.mmaapp.data.local.entity.BlockedUserEntity
 import com.berkekucuk.mmaapp.data.mapper.toDomain
 import com.berkekucuk.mmaapp.data.mapper.toEntity
 import com.berkekucuk.mmaapp.data.remote.api.UserRemoteDataSource
@@ -33,8 +34,8 @@ class UserRepositoryImpl(
             .flowOn(Dispatchers.IO)
     }
 
-    override fun getUsers(limit: Int): Flow<List<User>> {
-        return dao.getUsers(limit)
+    override fun getUsers(limit: Int, currentUserId: String): Flow<List<User>> {
+        return dao.getUsers(limit, currentUserId)
             .map { entities -> entities.map { it.toDomain() } }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
@@ -97,6 +98,43 @@ class UserRepositoryImpl(
             runCatching {
                 remoteDataSource.deleteUser(userId)
                 dao.deleteUser(userId)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override fun getBlockedUsers(currentUserId: String): Flow<List<User>> {
+        return dao.getBlockedUsers(currentUserId)
+            .map { entities -> entities.map { it.toDomain() } }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
+    override suspend fun reportUser(reporterId: String, reportedId: String, reason: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                remoteDataSource.reportUser(reporterId, reportedId, reason)
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun blockUser(blockerUserId: String, blockedUserId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                dao.upsertBlockedUser(BlockedUserEntity(blockerUserId, blockedUserId))
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun unblockUser(blockerUserId: String, blockedUserId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                dao.unblockUser(blockerUserId, blockedUserId)
             }.onFailure {
                 if (it is CancellationException) throw it
             }
