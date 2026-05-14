@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.berkekucuk.mmaapp.core.app.Route
+import com.berkekucuk.mmaapp.core.utils.AppError
 import com.berkekucuk.mmaapp.core.utils.AppErrorMapper
 import com.berkekucuk.mmaapp.domain.repository.AuthRepository
 import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
@@ -44,6 +45,9 @@ class ProfileViewModel(
 
     private fun observeProfile() {
         viewModelScope.launch {
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            _state.update { it.copy(isCurrentUser = currentUserId == userId) }
+            
             userRepository.getUserProfile(userId)
                 .collect { profile ->
                 _state.update { it.copy(profile = profile, isLoading = false) }
@@ -86,6 +90,39 @@ class ProfileViewModel(
             is ProfileUiAction.OnInteractionListClicked -> navigateTo(ProfileNavigationEvent.ToInteractionList(userId, action.type))
             is ProfileUiAction.OnPredictionClicked -> navigateTo(ProfileNavigationEvent.ToFightDetail(action.fightId))
             is ProfileUiAction.OnErrorDismissed -> _state.update { it.copy(error = null) }
+            
+            is ProfileUiAction.OnReportClicked -> _state.update { it.copy(showReportDialog = true) }
+            is ProfileUiAction.OnReportReasonChanged -> _state.update { it.copy(reportReason = action.reason) }
+            is ProfileUiAction.OnDismissReportDialog -> _state.update { it.copy(showReportDialog = false, reportReason = null) }
+            is ProfileUiAction.OnSubmitReport -> submitReport()
+        }
+    }
+
+    private fun submitReport() {
+        val reasonEnum = _state.value.reportReason ?: return
+        val reasonDbValue = reasonEnum.dbValue
+
+        viewModelScope.launch {
+            _state.update { it.copy(isReporting = true, error = null) }
+            val currentUserId = authRepository.getAuthenticatedUserId()
+            if (currentUserId == null) {
+                _state.update {
+                    it.copy(isReporting = false, showReportDialog = false, reportReason = null, error = AppError.UNAUTHENTICATED)
+                }
+                return@launch
+            }
+
+            userRepository.reportUser(currentUserId, userId, reasonDbValue)
+                .onSuccess {
+                    _state.update {
+                        it.copy(isReporting = false, showReportDialog = false, reportReason = null)
+                    }
+                }
+                .onFailure { e ->
+                    _state.update { 
+                        it.copy(isReporting = false, showReportDialog = false, reportReason = null, error = AppErrorMapper.map(e))
+                    }
+                }
         }
     }
 

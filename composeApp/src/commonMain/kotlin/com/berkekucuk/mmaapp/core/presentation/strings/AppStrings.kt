@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.utils.AppError
+import com.berkekucuk.mmaapp.domain.enums.ReportReason
 
 data class AppStrings(
     val language: AppLanguage,
@@ -97,6 +98,9 @@ data class AppStrings(
     val profileEditDeleteAccount: String,
     val profileEditDeleteAccountTitle: String,
     val profileEditDeleteAccountConfirm: String,
+    val reportUserTitle: String,
+    val reportUserSubmit: String,
+    val reportReasonDisplayName: (ReportReason) -> String,
     // Fighter Search Screen
     val fighterSearchPlaceholder: String,
     val fighterSearchEmpty: String,

@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.utils.AppError
+import com.berkekucuk.mmaapp.domain.enums.ReportReason
 
 val TrStrings = AppStrings(
     language = AppLanguage.TR,
@@ -87,6 +88,17 @@ val TrStrings = AppStrings(
     profileEditDeleteAccount = "Hesabı Sil",
     profileEditDeleteAccountTitle = "Hesabı Sil",
     profileEditDeleteAccountConfirm = "Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz ve tüm verileriniz kalıcı olarak silinecektir.",
+    reportUserTitle = "Kullanıcıyı Şikayet Et",
+    reportUserSubmit = "Gönder",
+    reportReasonDisplayName = { reason ->
+        when (reason) {
+            ReportReason.INAPPROPRIATE_PROFILE_PICTURE -> "Uygunsuz profil fotoğrafı"
+            ReportReason.INAPPROPRIATE_USERNAME -> "Uygunsuz kullanıcı adı"
+            ReportReason.SPAM_OR_BOT -> "Spam veya bot"
+            ReportReason.ABUSIVE_OR_HARASSING_BEHAVIOR -> "Taciz edici veya kötüye kullanım"
+            ReportReason.OTHER -> "Diğer"
+        }
+    },
     fighterSearchPlaceholder = "Dövüşçü ara...",
     fighterSearchEmpty = "Dövüşçü bulunamadı",
     retry = "Yenile",
@@ -193,6 +205,7 @@ val TrStrings = AppStrings(
             AppError.EVENT_OVER -> "Etkinlik zaten tamamlandı."
             AppError.FIGHT_OVER -> "Bu dövüş zaten tamamlandı."
             AppError.FIGHT_PENDING -> "Sonuç bekleniyor. Tahminler kapandı."
+            AppError.ALREADY_REPORTED -> "Bu kullanıcıyı zaten şikayet ettiniz."
             else -> null
         }
     }

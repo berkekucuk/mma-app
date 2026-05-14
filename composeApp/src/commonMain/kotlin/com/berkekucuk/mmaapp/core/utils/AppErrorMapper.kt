@@ -10,6 +10,7 @@ object AppErrorMapper {
             message.contains("profiles_username_key") -> AppError.USERNAME_TAKEN
             message.contains("unique_user_fighter_interaction") -> AppError.ALREADY_EXISTS
             message.contains("not authenticated") || message.contains("unauthenticated") -> AppError.UNAUTHENTICATED
+            message.contains("unique_reporter_reported") -> AppError.ALREADY_REPORTED
             
             message.contains("odds pending.") -> AppError.ODDS_NOT_PUBLISHED
             message.contains("event already over.") -> AppError.EVENT_OVER
@@ -45,5 +46,6 @@ enum class AppError {
     EVENT_OVER,
     FIGHT_OVER,
     FIGHT_PENDING,
+    ALREADY_REPORTED,
     UNKNOWN
 }

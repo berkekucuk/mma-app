@@ -2,6 +2,7 @@ package com.berkekucuk.mmaapp.core.presentation.strings
 
 import com.berkekucuk.mmaapp.core.presentation.AppLanguage
 import com.berkekucuk.mmaapp.core.utils.AppError
+import com.berkekucuk.mmaapp.domain.enums.ReportReason
 
 val EnStrings = AppStrings(
     language = AppLanguage.EN,
@@ -87,6 +88,17 @@ val EnStrings = AppStrings(
     profileEditDeleteAccount = "Delete Account",
     profileEditDeleteAccountTitle = "Delete Account",
     profileEditDeleteAccountConfirm = "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.",
+    reportUserTitle = "Report User",
+    reportUserSubmit = "Submit",
+    reportReasonDisplayName = { reason ->
+        when (reason) {
+            ReportReason.INAPPROPRIATE_PROFILE_PICTURE -> "Inappropriate profile picture"
+            ReportReason.INAPPROPRIATE_USERNAME -> "Inappropriate username"
+            ReportReason.SPAM_OR_BOT -> "Spam or bot"
+            ReportReason.ABUSIVE_OR_HARASSING_BEHAVIOR -> "Abusive or harassing behavior"
+            ReportReason.OTHER -> "Other"
+        }
+    },
     fighterSearchPlaceholder = "Search fighters...",
     fighterSearchEmpty = "No fighters found",
     retry = "Retry",
@@ -185,6 +197,7 @@ val EnStrings = AppStrings(
             AppError.EVENT_OVER -> "Event already over."
             AppError.FIGHT_OVER -> "Fight already over."
             AppError.FIGHT_PENDING -> "Result pending. Predictions locked."
+            AppError.ALREADY_REPORTED -> "You have already reported this user."
             else -> null
         }
     }
