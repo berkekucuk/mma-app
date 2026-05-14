@@ -15,15 +15,12 @@ interface UserDao {
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUser(userId: String): Flow<UserEntity?>
 
-    @Query("SELECT * FROM users WHERE id NOT IN (SELECT blocked_user_id FROM blocked_users) ORDER BY total_points DESC, full_name ASC LIMIT :limit")
-    fun getUsers(limit: Int): Flow<List<UserEntity>>
+    @Query("SELECT * FROM users WHERE id NOT IN (SELECT blocked_user_id FROM blocked_users WHERE blocker_user_id = :currentUserId) ORDER BY total_points DESC, full_name ASC LIMIT :limit")
+    fun getUsers(limit: Int, currentUserId: String): Flow<List<UserEntity>>
 
     @Transaction
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUserProfile(userId: String): Flow<UserProfileRelation?>
-
-    @Upsert
-    suspend fun insertBlockedUser(blockedUser: BlockedUserEntity)
 
     @Upsert
     suspend fun upsertUsers(users: List<UserEntity>)
@@ -45,4 +42,13 @@ interface UserDao {
             deleteUsersExcept(retainedIds = newIds, currentUserId = currentUserId)
         }
     }
+
+    @Query("SELECT * FROM users WHERE id IN (SELECT blocked_user_id FROM blocked_users WHERE blocker_user_id = :currentUserId) ORDER BY full_name ASC")
+    fun getBlockedUsers(currentUserId: String): Flow<List<UserEntity>>
+
+    @Upsert
+    suspend fun upsertBlockedUser(blockedUser: BlockedUserEntity)
+
+    @Query("DELETE FROM blocked_users WHERE blocker_user_id = :blockerUserId AND blocked_user_id = :blockedUserId")
+    suspend fun unblockUser(blockerUserId: String, blockedUserId: String)
 }

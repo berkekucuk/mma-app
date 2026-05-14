@@ -120,6 +120,10 @@ data class AppStrings(
     val settingsSectionTheme: String,
     val settingsThemeLight: String,
     val settingsThemeDark: String,
+    val settingsSectionBlockedUsers: String,
+    val settingsSectionBlockedUsersSub: String,
+    val unblockUser: String,
+    val blockedUsersEmpty: String,
     // Menu Screen
     val menuSignInPrompt: String,
     val menuTitle: String,

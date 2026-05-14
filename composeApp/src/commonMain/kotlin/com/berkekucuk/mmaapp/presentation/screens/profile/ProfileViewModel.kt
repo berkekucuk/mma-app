@@ -139,7 +139,7 @@ class ProfileViewModel(
                 return@launch
             }
 
-            userRepository.blockUser(userId)
+            userRepository.blockUser(currentUserId, userId)
                 .onSuccess {
                     navigateTo(ProfileNavigationEvent.Back)
                 }

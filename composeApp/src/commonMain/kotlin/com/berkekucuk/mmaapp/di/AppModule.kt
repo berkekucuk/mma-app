@@ -47,6 +47,7 @@ import com.berkekucuk.mmaapp.domain.repository.FighterRepository
 import com.berkekucuk.mmaapp.domain.repository.InteractionRepository
 import com.berkekucuk.mmaapp.domain.repository.WeightClassRepository
 import com.berkekucuk.mmaapp.domain.repository.UserRepository
+import com.berkekucuk.mmaapp.presentation.screens.blocked_users.BlockedUsersViewModel
 import com.berkekucuk.mmaapp.presentation.screens.event_detail.EventDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailViewModel
 import com.berkekucuk.mmaapp.presentation.screens.fight_detail.FightDetailViewModel
@@ -59,6 +60,7 @@ import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailVi
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchViewModel
 import com.berkekucuk.mmaapp.presentation.screens.rankings.RankingViewModel
 import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardViewModel
+import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.qualifier.named
 
@@ -337,6 +339,19 @@ val appModule = module {
     viewModel {
         LeaderboardViewModel(
             userRepository = get(),
+            authRepository = get()
+        )
+    }
+
+    viewModel {
+        BlockedUsersViewModel(
+            userRepository = get(),
+            authRepository = get()
+        )
+    }
+
+    viewModel {
+        SettingsViewModel(
             authRepository = get()
         )
     }

@@ -42,7 +42,7 @@ import kotlinx.coroutines.IO
         InteractionEntity::class,
         BlockedUserEntity::class
     ],
-    version = 27
+    version = 28
 )
 @TypeConverters(Converters::class)
 @ConstructedBy(AppDatabaseConstructor::class)

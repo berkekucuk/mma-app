@@ -26,7 +26,7 @@ import com.berkekucuk.mmaapp.presentation.components.FighterPortrait
 @Composable
 fun RankedFighterRow(
     rankNumber: Int,
-    isChampion: Boolean,
+    isChampion: Boolean = false,
     name: String,
     record: String,
     imageUrl: String,

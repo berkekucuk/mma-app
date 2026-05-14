@@ -1,12 +1,10 @@
-package com.berkekucuk.mmaapp.presentation.screens.leaderboard
+package com.berkekucuk.mmaapp.presentation.screens.blocked_users
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -16,12 +14,12 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,15 +33,13 @@ import com.berkekucuk.mmaapp.core.presentation.colors.LocalAppColors
 import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.presentation.components.ErrorSnackbar
 import com.berkekucuk.mmaapp.presentation.components.ListContainer
-import com.berkekucuk.mmaapp.presentation.components.LoadingContent
 import com.berkekucuk.mmaapp.presentation.components.SnackbarEffect
-import com.berkekucuk.mmaapp.presentation.components.AppAlertDialog
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankedFighterRow
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LeaderboardScreenRoot(
-    viewModel: LeaderboardViewModel = koinViewModel(),
+fun BlockedUsersScreenRoot(
+    viewModel: BlockedUsersViewModel = koinViewModel(),
     onNavigateBack: () -> Unit,
     onNavigateToProfile: (String) -> Unit
 ) {
@@ -52,13 +48,13 @@ fun LeaderboardScreenRoot(
     LaunchedEffect(Unit) {
         viewModel.navigation.collect { event ->
             when (event) {
-                is LeaderboardNavigationEvent.Back -> onNavigateBack()
-                is LeaderboardNavigationEvent.ToUserProfile -> onNavigateToProfile(event.userId)
+                is BlockedUsersNavigationEvent.Back -> onNavigateBack()
+                is BlockedUsersNavigationEvent.ToUserProfile -> onNavigateToProfile(event.userId)
             }
         }
     }
 
-    LeaderboardScreen(
+    BlockedUsersScreen(
         state = state,
         onAction = viewModel::onAction
     )
@@ -66,17 +62,14 @@ fun LeaderboardScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LeaderboardScreen(
-    state: LeaderboardUiState,
-    onAction: (LeaderboardUiAction) -> Unit
+fun BlockedUsersScreen(
+    state: BlockedUsersUiState,
+    onAction: (BlockedUsersUiAction) -> Unit
 ) {
-    val onBackClicked = remember(onAction) { { onAction(LeaderboardUiAction.OnBackClicked) } }
-    val onUserClicked = remember(onAction) { { userId: String -> onAction(LeaderboardUiAction.OnUserClicked(userId)) } }
-    val onRefresh = remember(onAction) { { onAction(LeaderboardUiAction.OnRefresh) } }
-    val onErrorShown = remember(onAction) { { onAction(LeaderboardUiAction.OnErrorShown) } }
-    val showInfoDialog = remember { mutableStateOf(false) }
-    val onInfoDialogDismiss = remember { { showInfoDialog.value = false } }
-    val onInfoDialogConfirmed = remember { { showInfoDialog.value = false} }
+    val onBackClicked = remember(onAction) { { onAction(BlockedUsersUiAction.OnBackClicked) } }
+    val onUserClicked = remember(onAction) { { userId: String -> onAction(BlockedUsersUiAction.OnUserClicked(userId)) } }
+    val onUnblockClicked = remember(onAction) { { userId: String -> onAction(BlockedUsersUiAction.OnUnblockClicked(userId)) } }
+    val onErrorShown = remember(onAction) { { onAction(BlockedUsersUiAction.OnErrorShown) } }
     val strings = LocalAppStrings.current
     val colors = LocalAppColors.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -114,7 +107,7 @@ fun LeaderboardScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = strings.menuItemLeaderboard,
+                            text = strings.settingsSectionBlockedUsers,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                         )
@@ -127,37 +120,38 @@ fun LeaderboardScreen(
                             )
                         }
                     },
-                    actions = {
-                        IconButton(onClick = { showInfoDialog.value = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Info,
-                                contentDescription = strings.contentDescriptionInfo,
-                            )
-                        }
-                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
                         scrolledContainerColor = Color.Transparent,
                         navigationIconContentColor = colors.textPrimary,
                         titleContentColor = colors.textPrimary,
-                        actionIconContentColor = colors.textPrimary,
                     )
                 )
             }
         }
     ) { innerPadding ->
-        LoadingContent(
-            isLoading = state.isLoading && state.leaderboard.isEmpty(),
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+        ListContainer(
+            isRefreshing = false,
+            onRefresh = {},
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            contentPadding = PaddingValues(top = 8.dp),
+            verticalSpacing = 0.dp,
+            extraBottomPadding = navBarBottomPadding,
         ) {
-            ListContainer(
-                isRefreshing = state.isRefreshing,
-                onRefresh = onRefresh,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(top = 8.dp),
-                verticalSpacing = 0.dp,
-                extraBottomPadding = navBarBottomPadding,
-            ) {
+            if (state.blockedUsers.isEmpty()) {
+                item(contentType = "EmptyState") {
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = strings.blockedUsersEmpty,
+                            color = colors.textSecondary,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            } else {
                 item {
                     Column(
                         modifier = Modifier
@@ -165,7 +159,7 @@ fun LeaderboardScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .background(colors.fightItemBackground)
                     ) {
-                        state.leaderboard.forEachIndexed { index, user ->
+                        state.blockedUsers.forEachIndexed { index, user ->
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -178,29 +172,21 @@ fun LeaderboardScreen(
                                     imageUrl = user.avatarUrl ?: "",
                                     countryCode = null,
                                     trailingContent = {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            modifier = Modifier.padding(end = 4.dp)
+                                        TextButton(
+                                            onClick = { onUnblockClicked(user.id) }
                                         ) {
                                             Text(
-                                                text = user.totalPoints.toString(),
+                                                text = strings.unblockUser,
                                                 color = colors.winnerFrame,
                                                 fontWeight = FontWeight.Bold,
-                                                fontSize = 16.sp
-                                            )
-                                            Spacer(Modifier.width(4.dp))
-                                            Icon(
-                                                imageVector = Icons.Default.EmojiEvents,
-                                                contentDescription = null,
-                                                tint = colors.winnerFrame,
-                                                modifier = Modifier.size(18.dp)
+                                                fontSize = 14.sp
                                             )
                                         }
                                     },
                                     onFighterClicked = { onUserClicked(user.id) }
                                 )
 
-                                if (index < state.leaderboard.lastIndex) {
+                                if (index < state.blockedUsers.lastIndex) {
                                     HorizontalDivider(
                                         color = colors.dividerColor,
                                         thickness = 0.8.dp,
@@ -212,15 +198,5 @@ fun LeaderboardScreen(
                 }
             }
         }
-    }
-
-    if (showInfoDialog.value) {
-        AppAlertDialog(
-            onDismissRequest = onInfoDialogDismiss,
-            onConfirmClick = onInfoDialogConfirmed,
-            title = strings.leaderboardInfoTitle,
-            text = strings.leaderboardInfoText,
-            confirmText = strings.leaderboardInfoClose
-        )
     }
 }

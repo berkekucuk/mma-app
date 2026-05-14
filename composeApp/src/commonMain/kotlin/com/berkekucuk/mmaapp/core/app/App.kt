@@ -39,10 +39,11 @@ import com.berkekucuk.mmaapp.presentation.screens.fighter_detail.FighterDetailSc
 import com.berkekucuk.mmaapp.presentation.screens.fighter_search.FighterSearchScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.interaction_list.InteractionListScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile.ProfileScreenRoot
-import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreen
+import com.berkekucuk.mmaapp.presentation.screens.settings.SettingsScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.profile_edit.ProfileEditScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.ranking_detail.RankingDetailScreenRoot
 import com.berkekucuk.mmaapp.presentation.screens.leaderboard.LeaderboardScreenRoot
+import com.berkekucuk.mmaapp.presentation.screens.blocked_users.BlockedUsersScreenRoot
 
 object DeepLinkManager {
     private val _route = Channel<Route>(Channel.BUFFERED)
@@ -301,7 +302,7 @@ fun App() {
                 popEnterTransition = NavTransitions.slideFromLeft,
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
-                SettingsScreen(
+                SettingsScreenRoot(
                     onBackClick = { rootNavController.navigateUp() },
                     onLanguageChange = {
                         languageState.value = it
@@ -319,6 +320,9 @@ fun App() {
                         themeModeState.value = it
                         themeStorage.save(it.name)
                     },
+                    onBlockedUsersClick = {
+                        rootNavController.navigate(Route.BlockedUsers)
+                    }
                 )
             }
 
@@ -329,6 +333,20 @@ fun App() {
                 popExitTransition = NavTransitions.slideOutToRight
             ) {
                 LeaderboardScreenRoot(
+                    onNavigateBack = { rootNavController.navigateUp() },
+                    onNavigateToProfile = { userId ->
+                        rootNavController.navigate(Route.Profile(userId))
+                    }
+                )
+            }
+
+            composable<Route.BlockedUsers>(
+                enterTransition = NavTransitions.slideFromRight,
+                exitTransition = NavTransitions.slideOutToLeft,
+                popEnterTransition = NavTransitions.slideFromLeft,
+                popExitTransition = NavTransitions.slideOutToRight
+            ) {
+                BlockedUsersScreenRoot(
                     onNavigateBack = { rootNavController.navigateUp() },
                     onNavigateToProfile = { userId ->
                         rootNavController.navigate(Route.Profile(userId))

@@ -27,20 +27,48 @@ import com.berkekucuk.mmaapp.core.presentation.strings.LocalAppStrings
 import com.berkekucuk.mmaapp.core.storage.NotificationStorage
 import com.berkekucuk.mmaapp.core.utils.OnResumeEffect
 import org.koin.compose.koinInject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.berkekucuk.mmaapp.domain.enums.SettingsDialogType
+import com.berkekucuk.mmaapp.domain.model.AuthState
+import org.koin.compose.viewmodel.koinViewModel
 
-enum class SettingsDialogType {
-    THEME, LANGUAGE, MEASUREMENT, ODDS
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
+fun SettingsScreenRoot(
     onBackClick: () -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
     onMeasurementUnitChange: (MeasurementUnit) -> Unit,
     onOddsFormatChange: (OddsFormat) -> Unit,
     onThemeModeChange: (ThemeMode) -> Unit,
-    notificationStorage: NotificationStorage = koinInject()
+    onBlockedUsersClick: () -> Unit,
+    notificationStorage: NotificationStorage = koinInject(),
+    viewModel: SettingsViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    SettingsScreen(
+        state = state,
+        onBackClick = onBackClick,
+        onLanguageChange = onLanguageChange,
+        onMeasurementUnitChange = onMeasurementUnitChange,
+        onOddsFormatChange = onOddsFormatChange,
+        onThemeModeChange = onThemeModeChange,
+        onBlockedUsersClick = onBlockedUsersClick,
+        notificationStorage = notificationStorage
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SettingsScreen(
+    state: SettingsUiState,
+    onBackClick: () -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
+    onMeasurementUnitChange: (MeasurementUnit) -> Unit,
+    onOddsFormatChange: (OddsFormat) -> Unit,
+    onThemeModeChange: (ThemeMode) -> Unit,
+    onBlockedUsersClick: () -> Unit,
+    notificationStorage: NotificationStorage
 ) {
     var notificationsEnabled by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -153,6 +181,15 @@ fun SettingsScreen(
                 subtitle = if (notificationsEnabled) strings.menuNotificationsEnabled else strings.menuNotificationsDisabled,
                 onClick = { notificationStorage.openNotificationSettings() }
             )
+
+            if (state.authState is AuthState.Authenticated) {
+                SettingsCard(
+                    icon = Icons.Default.Block,
+                    title = strings.settingsSectionBlockedUsers,
+                    subtitle = strings.settingsSectionBlockedUsersSub,
+                    onClick = onBlockedUsersClick
+                )
+            }
         }
     }
 

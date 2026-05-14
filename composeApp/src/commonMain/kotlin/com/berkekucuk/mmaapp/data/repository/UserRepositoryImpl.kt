@@ -34,8 +34,8 @@ class UserRepositoryImpl(
             .flowOn(Dispatchers.IO)
     }
 
-    override fun getUsers(limit: Int): Flow<List<User>> {
-        return dao.getUsers(limit)
+    override fun getUsers(limit: Int, currentUserId: String): Flow<List<User>> {
+        return dao.getUsers(limit, currentUserId)
             .map { entities -> entities.map { it.toDomain() } }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
@@ -104,6 +104,13 @@ class UserRepositoryImpl(
         }
     }
 
+    override fun getBlockedUsers(currentUserId: String): Flow<List<User>> {
+        return dao.getBlockedUsers(currentUserId)
+            .map { entities -> entities.map { it.toDomain() } }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
+    }
+
     override suspend fun reportUser(reporterId: String, reportedId: String, reason: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
@@ -114,10 +121,20 @@ class UserRepositoryImpl(
         }
     }
 
-    override suspend fun blockUser(userId: String): Result<Unit> {
+    override suspend fun blockUser(blockerUserId: String, blockedUserId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             runCatching {
-                dao.insertBlockedUser(BlockedUserEntity(userId))
+                dao.upsertBlockedUser(BlockedUserEntity(blockerUserId, blockedUserId))
+            }.onFailure {
+                if (it is CancellationException) throw it
+            }
+        }
+    }
+
+    override suspend fun unblockUser(blockerUserId: String, blockedUserId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                dao.unblockUser(blockerUserId, blockedUserId)
             }.onFailure {
                 if (it is CancellationException) throw it
             }
