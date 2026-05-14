@@ -31,3 +31,7 @@ A modern, cross-platform Mixed Martial Arts application built with **Kotlin Mult
 * **Asynchronous Operations:** Kotlin Coroutines & Flows
 * **Image Loading:** Coil 3
 * **Networking:** Ktor
+
+## 📬 Contact
+
+Please contact us with any questions, support requests, or feedback: **[clinchapp0@gmail.com](mailto:clinchapp0@gmail.com)**
