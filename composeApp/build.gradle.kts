@@ -60,7 +60,6 @@ kotlin {
                 implementation(libs.androidx.sqlite.bundled)
 
                 implementation(libs.navigation.compose)
-                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
 
@@ -97,44 +96,6 @@ kotlin {
         languageSettings{
             optIn("kotlin.time.ExperimentalTime")
             optIn("kotlin.RequiresOptIn")
-            enableLanguageFeature("ExpectActualClasses")
-        }
-    }
-}
-
-android {
-    namespace = "com.berkekucuk.mmaapp"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "com.berkekucuk.mmaapp"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "1.1"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
@@ -145,15 +106,55 @@ if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
+android {
+    namespace = "com.berkekucuk.mmaapp"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(localProperties.getProperty("KEYSTORE_PATH") ?: "keystore.jks")
+            storePassword = localProperties.getProperty("KEYSTORE_PASSWORD")
+            keyAlias = localProperties.getProperty("KEY_ALIAS")
+            keyPassword = localProperties.getProperty("KEY_PASSWORD")
+        }
+    }
+    defaultConfig {
+        applicationId = "com.berkekucuk.mmaapp"
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = 3
+        versionName = "1.2"
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
+}
+
 buildConfig {
     packageName("com.berkekucuk.mmaapp")
 
     val url = localProperties.getProperty("SUPABASE_URL") ?: ""
     val key = localProperties.getProperty("SUPABASE_KEY") ?: ""
+    val googleClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
+
     buildConfigField("String", "SUPABASE_URL", "\"$url\"")
     buildConfigField("String", "SUPABASE_KEY", "\"$key\"")
-
-    val googleClientId = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""
     buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleClientId\"")
 }
 
